@@ -5,6 +5,7 @@ import React from "react";
 import FormComponentWrapper, {
   LabelWithRequired,
 } from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomInputProps {
   fieldId?: string;
@@ -32,6 +33,41 @@ const CustomInput: React.FC<CustomInputProps> = ({
     initialData?.required || false
   );
 
+  // Attempt to get integration context at top-level (hooks must be called at top-level)
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  // If integrated, try to hydrate current saved values from integration.formData
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+
+      const formData = integration.formData;
+      if (!formData) return;
+
+      // Find the field in formData
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+
+      if (foundField) {
+        if (typeof foundField.label === "string")
+          setLabelValue(foundField.label);
+        if (typeof foundField.placeholder === "string")
+          setInputValue(foundField.placeholder);
+        if (typeof foundField.required === "boolean")
+          setIsRequired(foundField.required);
+      }
+    } catch (err) {
+      // ignore hydration errors
+      console.warn("Error hydrating field from integration.formData:", err);
+    }
+  }, [integration, fieldId]);
+
   const handleSave = async (): Promise<void> => {
     const fieldData = {
       fieldId,
@@ -44,14 +80,32 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
     console.log("Saving input configuration:", fieldData);
 
-    // Here you would typically call a server action or API
-    // For now, we'll simulate a save operation
-    await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.log("Input field saved successfully!");
-        resolve();
-      }, 500);
-    });
+    // If integrated with the FormBuilderIntegration provider, call its save
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.INPUT,
+          label: labelValue,
+          placeholder: inputValue,
+          required: isRequired,
+        } as any);
+        console.log("Input field saved via integration.saveField");
+        return;
+      }
+
+      // Fallback to simulated save for demo / non-integrated usage
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          console.log("Input field saved (simulated)!");
+          resolve();
+        }, 500);
+      });
+    } catch (err) {
+      console.error("Error saving input field:", err);
+      throw err;
+    }
   };
 
   const previewContent = ({ isRequired }: { isRequired: boolean }) => (

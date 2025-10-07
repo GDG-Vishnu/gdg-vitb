@@ -15,20 +15,7 @@ export function FormDeletionLoading({
     <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center">
       <div className="relative bg-white dark:bg-gray-900 rounded-xl shadow-2xl border p-8 max-w-sm w-full mx-4 overflow-hidden">
         {/* Background Doodles */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <SparkleDoodle
-            color="#EA4335"
-            className="absolute w-8 h-8 top-4 right-4 opacity-20"
-          />
-          <CurvedDoodle
-            color="#FBBC04"
-            className="absolute w-12 h-6 bottom-4 left-4 opacity-15"
-          />
-          <SparkleDoodle
-            color="#4285F4"
-            className="absolute w-6 h-6 top-8 left-8 opacity-25"
-          />
-        </div>
+     
 
         {/* Content */}
         <div className="relative z-10 text-center space-y-6">

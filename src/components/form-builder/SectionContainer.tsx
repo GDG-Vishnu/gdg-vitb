@@ -67,7 +67,7 @@ function FieldItem({
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           {/* Drag handle */}
-          <div className="flex-shrink-0 cursor-grab active:cursor-grabbing mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex-shrink-0 cursor-grab active:cursor-grabbing mt-1 opacity-100 transition-opacity">
             <GripVertical className="h-4 w-4 text-muted-foreground" />
           </div>
 
@@ -148,9 +148,10 @@ function FieldItem({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="h-8 w-8 p-0 opacity-100 hover:bg-muted/30 transition-all rounded"
+                aria-label="Field settings"
               >
-                <Settings className="h-4 w-4" />
+                <Settings className="h-4 w-4 text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -353,8 +354,13 @@ export function SectionContainer({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                  <Settings className="h-4 w-4" />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 w-8 p-0 opacity-100 hover:bg-muted/30 transition-all rounded"
+                  aria-label="Section settings"
+                >
+                  <Settings className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

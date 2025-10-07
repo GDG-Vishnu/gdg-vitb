@@ -108,16 +108,38 @@ const FormComponentWrapper: React.FC<FormComponentWrapperProps> = ({
       sectionId,
     });
 
-    if (!onSave) {
-      console.log("❌ No onSave handler provided - aborting save");
-      return;
-    }
-
     setIsSaving(true);
-    console.log("💾 Setting saving state to true, calling onSave...");
+    console.log(
+      "💾 Setting saving state to true, attempting to persist field..."
+    );
 
     try {
-      await onSave();
+      // If integration context is available, prefer centralized save which updates DB
+      if (integrationContext && fieldId) {
+        // Build minimal FieldConfiguration object for save
+        const fieldToSave: any = {
+          id: fieldId,
+          sectionId,
+          type: fieldType,
+          // Consumers should update label/placeholder/defaults via provided onSave
+        };
+
+        // If the consumer provided onSave, call it first to allow local mutation
+        if (onSave) {
+          await onSave();
+        }
+
+        // Then persist via integration context
+        await integrationContext.saveField(fieldToSave as any);
+      } else if (onSave) {
+        // Fallback to the provided onSave handler
+        await onSave();
+      } else {
+        console.log(
+          "⚠️ No save handler or integration context available - skipping DB save"
+        );
+      }
+
       console.log("✅ Save completed successfully!");
       toast.success("Field saved successfully!");
       setIsConfigOpen(false); // Close configuration after successful save
@@ -205,7 +227,8 @@ const FormComponentWrapper: React.FC<FormComponentWrapperProps> = ({
         <Button
           variant="ghost"
           size="sm"
-          className="absolute top-2 right-2 h-8 w-8 p-0 opacity-60 hover:opacity-100"
+          className="absolute top-2 right-2 h-8 w-8 p-0 opacity-100 hover:opacity-100 hover:bg-muted/30 transition-all rounded"
+          aria-label="Open field settings"
           onClick={() => {
             console.log(
               "⚙️ Settings button clicked - Toggling configuration panel"
