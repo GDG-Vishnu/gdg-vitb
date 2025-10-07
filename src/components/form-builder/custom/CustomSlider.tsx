@@ -4,6 +4,7 @@ import { defaultFieldConfig } from "@/constants";
 import { FieldType } from "@prisma/client";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomSliderProps {
   fieldId?: string;
@@ -18,6 +19,40 @@ const CustomSlider: React.FC<CustomSliderProps> = ({ fieldId, sectionId }) => {
   const [maxValue, setMaxValue] = React.useState(100);
   const [step, setStep] = React.useState(1);
   const [isRequired, setIsRequired] = React.useState(false);
+
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof (foundField as any).label === "string")
+          setLabelValue((foundField as any).label);
+        if (Array.isArray((foundField as any).value))
+          setValue((foundField as any).value);
+        if (typeof (foundField as any).min === "number")
+          setMinValue((foundField as any).min);
+        if (typeof (foundField as any).max === "number")
+          setMaxValue((foundField as any).max);
+        if (typeof (foundField as any).step === "number")
+          setStep((foundField as any).step);
+        if (typeof (foundField as any).required === "boolean")
+          setIsRequired((foundField as any).required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating slider field:", err);
+    }
+  }, [integration, fieldId]);
 
   const handleSave = async (): Promise<void> => {
     const fieldData = {
@@ -34,14 +69,33 @@ const CustomSlider: React.FC<CustomSliderProps> = ({ fieldId, sectionId }) => {
 
     console.log("Saving slider configuration:", fieldData);
 
-    // Here you would typically call a server action or API
-    // For now, we'll simulate a save operation
-    await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.log("Slider field saved successfully!");
-        resolve();
-      }, 500);
-    });
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.SLIDER,
+          label: labelValue,
+          value,
+          min: minValue,
+          max: maxValue,
+          step,
+          required: isRequired,
+        } as any);
+        return;
+      }
+
+      // Fallback simulated save
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          console.log("Slider field saved successfully!");
+          resolve();
+        }, 500);
+      });
+    } catch (err) {
+      console.error("Error saving slider field:", err);
+      throw err;
+    }
   };
 
   const previewContent = (

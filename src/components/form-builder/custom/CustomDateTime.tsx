@@ -4,6 +4,7 @@ import { defaultFieldConfig } from "@/constants";
 import { FieldType } from "@prisma/client";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomDateTimeProps {
   fieldId?: string;
@@ -21,14 +22,61 @@ const CustomDateTime: React.FC<CustomDateTimeProps> = ({
   const [maxDateTime, setMaxDateTime] = React.useState("");
   const [isRequired, setIsRequired] = React.useState(false);
 
-  const handleSave = () => {
-    console.log("Saving datetime configuration:", {
-      label: labelValue,
-      dateTime,
-      minDateTime,
-      maxDateTime,
-      required: isRequired,
-    });
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof (foundField as any).label === "string")
+          setLabelValue((foundField as any).label);
+        if (typeof (foundField as any).minDateTime === "string")
+          setMinDateTime((foundField as any).minDateTime);
+        if (typeof (foundField as any).maxDateTime === "string")
+          setMaxDateTime((foundField as any).maxDateTime);
+        if (typeof (foundField as any).required === "boolean")
+          setIsRequired((foundField as any).required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating datetime field:", err);
+    }
+  }, [integration, fieldId]);
+
+  const handleSave = async () => {
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.DATETIME,
+          label: labelValue,
+          minDateTime,
+          maxDateTime,
+          required: isRequired,
+        } as any);
+        return;
+      }
+      console.log("Saving datetime configuration:", {
+        label: labelValue,
+        dateTime,
+        minDateTime,
+        maxDateTime,
+        required: isRequired,
+      });
+    } catch (err) {
+      console.error("Error saving datetime field:", err);
+      throw err;
+    }
   };
 
   const previewContent = (

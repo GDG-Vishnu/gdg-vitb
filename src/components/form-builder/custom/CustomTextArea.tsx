@@ -6,6 +6,7 @@ import React from "react";
 import FormComponentWrapper, {
   LabelWithRequired,
 } from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomTextAreaProps {
   fieldId?: string;
@@ -25,6 +26,38 @@ const CustomTextArea: React.FC<CustomTextAreaProps> = ({
   const [minWords, setMinWords] = React.useState(0);
   const [isRequired, setIsRequired] = React.useState(false);
 
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof foundField.label === "string")
+          setLabelValue(foundField.label);
+        if (typeof foundField.placeholder === "string")
+          setPlaceholderValue(foundField.placeholder);
+        if (typeof foundField.minCharacters === "number")
+          setMinCharacters(foundField.minCharacters);
+        if (typeof foundField.minWords === "number")
+          setMinWords(foundField.minWords);
+        if (typeof foundField.required === "boolean")
+          setIsRequired(foundField.required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating textarea field:", err);
+    }
+  }, [integration, fieldId]);
+
   const handleSave = async (): Promise<void> => {
     const fieldData = {
       fieldId,
@@ -37,16 +70,32 @@ const CustomTextArea: React.FC<CustomTextAreaProps> = ({
       required: isRequired,
     };
 
-    console.log("Saving textarea configuration:", fieldData);
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.TEXTAREA,
+          label: labelValue,
+          placeholder: placeholderValue,
+          minCharacters,
+          minWords,
+          required: isRequired,
+        } as any);
+        console.log("Textarea field saved via integration.saveField");
+        return;
+      }
 
-    // Here you would typically call a server action or API
-    // For now, we'll simulate a save operation
-    await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.log("Textarea field saved successfully!");
-        resolve();
-      }, 500);
-    });
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          console.log("Textarea field saved (simulated)!");
+          resolve();
+        }, 500);
+      });
+    } catch (err) {
+      console.error("Error saving textarea field:", err);
+      throw err;
+    }
   };
 
   const previewContent = ({ isRequired }: { isRequired: boolean }) => (

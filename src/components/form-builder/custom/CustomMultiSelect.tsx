@@ -13,6 +13,7 @@ import { FieldType } from "@prisma/client";
 import { Plus, X } from "lucide-react";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomMultiSelectProps {
   fieldId?: string;
@@ -77,14 +78,64 @@ const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
     }
   };
 
-  const handleSave = () => {
-    console.log("Saving multi-select configuration:", {
-      label: labelValue,
-      options,
-      minSelections,
-      maxSelections,
-      required: isRequired,
-    });
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof (foundField as any).label === "string")
+          setLabelValue((foundField as any).label);
+        if (Array.isArray((foundField as any).options))
+          setOptions((foundField as any).options);
+        if (typeof (foundField as any).minSelections === "number")
+          setMinSelections((foundField as any).minSelections);
+        if (typeof (foundField as any).maxSelections === "number")
+          setMaxSelections((foundField as any).maxSelections);
+        if (typeof (foundField as any).required === "boolean")
+          setIsRequired((foundField as any).required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating multiselect field:", err);
+    }
+  }, [integration, fieldId]);
+
+  const handleSave = async () => {
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.MULTISELECT,
+          label: labelValue,
+          options,
+          minSelections,
+          maxSelections,
+          required: isRequired,
+        } as any);
+        return;
+      }
+      console.log("Saving multi-select configuration:", {
+        label: labelValue,
+        options,
+        minSelections,
+        maxSelections,
+        required: isRequired,
+      });
+    } catch (err) {
+      console.error("Error saving multi-select field:", err);
+      throw err;
+    }
   };
 
   const previewContent = (

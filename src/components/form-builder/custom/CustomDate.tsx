@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomDateProps {
   fieldId?: string;
@@ -27,14 +28,61 @@ const CustomDate: React.FC<CustomDateProps> = ({ fieldId, sectionId }) => {
   const [maxDate, setMaxDate] = React.useState("");
   const [isRequired, setIsRequired] = React.useState(false);
 
-  const handleSave = () => {
-    console.log("Saving date configuration:", {
-      label: labelValue,
-      date,
-      minDate,
-      maxDate,
-      required: isRequired,
-    });
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof (foundField as any).label === "string")
+          setLabelValue((foundField as any).label);
+        if (typeof (foundField as any).minDate === "string")
+          setMinDate((foundField as any).minDate);
+        if (typeof (foundField as any).maxDate === "string")
+          setMaxDate((foundField as any).maxDate);
+        if (typeof (foundField as any).required === "boolean")
+          setIsRequired((foundField as any).required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating date field:", err);
+    }
+  }, [integration, fieldId]);
+
+  const handleSave = async () => {
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.DATE,
+          label: labelValue,
+          minDate,
+          maxDate,
+          required: isRequired,
+        } as any);
+        return;
+      }
+      console.log("Saving date configuration:", {
+        label: labelValue,
+        date,
+        minDate,
+        maxDate,
+        required: isRequired,
+      });
+    } catch (err) {
+      console.error("Error saving date field:", err);
+      throw err;
+    }
   };
 
   const previewContent = (

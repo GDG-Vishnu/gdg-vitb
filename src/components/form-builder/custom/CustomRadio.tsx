@@ -9,6 +9,7 @@ import React from "react";
 import FormComponentWrapper, {
   LabelWithRequired,
 } from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomRadioProps {
   fieldId?: string;
@@ -48,12 +49,56 @@ const CustomRadio: React.FC<CustomRadioProps> = ({ fieldId, sectionId }) => {
     setOptions(updatedOptions);
   };
 
-  const handleSave = () => {
-    console.log("Saving radio configuration:", {
-      label: labelValue,
-      options,
-      required: isRequired,
-    });
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof (foundField as any).label === "string")
+          setLabelValue((foundField as any).label);
+        if (Array.isArray((foundField as any).options))
+          setOptions((foundField as any).options);
+        if (typeof (foundField as any).required === "boolean")
+          setIsRequired((foundField as any).required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating radio field:", err);
+    }
+  }, [integration, fieldId]);
+
+  const handleSave = async () => {
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.RADIO,
+          label: labelValue,
+          options,
+          required: isRequired,
+        } as any);
+        return;
+      }
+      console.log("Saving radio configuration:", {
+        label: labelValue,
+        options,
+        required: isRequired,
+      });
+    } catch (err) {
+      console.error("Error saving radio field:", err);
+      throw err;
+    }
   };
 
   const previewContent = ({ isRequired }: { isRequired: boolean }) => (

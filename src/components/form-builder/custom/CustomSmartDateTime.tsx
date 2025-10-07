@@ -7,12 +7,50 @@ import { getFieldIcon } from "@/utils";
 import { FieldType } from "@prisma/client";
 import { Trash } from "lucide-react";
 import React from "react";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
-const CustomSmartDateTime = () => {
+const CustomSmartDateTime = ({
+  fieldId,
+  sectionId,
+}: {
+  fieldId?: string;
+  sectionId?: string;
+}) => {
   const defaultValues = defaultFieldConfig[FieldType.SMART_DATETIME];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [startDateTime, setStartDateTime] = React.useState<Date>();
   const [endDateTime, setEndDateTime] = React.useState<Date>();
+  const [isRequired, setIsRequired] = React.useState(false);
+
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof (foundField as any).label === "string")
+          setLabelValue((foundField as any).label);
+        if (typeof (foundField as any).startDateTime === "string")
+          setStartDateTime(new Date((foundField as any).startDateTime));
+        if (typeof (foundField as any).endDateTime === "string")
+          setEndDateTime(new Date((foundField as any).endDateTime));
+        if (typeof (foundField as any).required === "boolean")
+          setIsRequired((foundField as any).required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating smart datetime field:", err);
+    }
+  }, [integration, fieldId]);
 
   return (
     <div className="flex flex-col items-center w-full bg-transparent">
@@ -39,7 +77,10 @@ const CustomSmartDateTime = () => {
           </div>
           <div className="flex items-center gap-3">
             <h3 className="font-medium">Required</h3>
-            <Switch />
+            <Switch
+              checked={isRequired}
+              onCheckedChange={(v) => setIsRequired(Boolean(v))}
+            />
           </div>
         </div>
         <div className="flex flex-col bg-muted/100 border gap-3 p-4 rounded-2xl">
@@ -76,7 +117,33 @@ const CustomSmartDateTime = () => {
             <Trash className="text-destructive h-5 w-5" />
           </div>
           <div>
-            <Button size="sm">Save</Button>
+            <Button
+              size="sm"
+              onClick={async () => {
+                try {
+                  if (integration && fieldId) {
+                    await integration.saveField({
+                      id: fieldId,
+                      sectionId: sectionId || "",
+                      type: FieldType.SMART_DATETIME,
+                      label: labelValue,
+                      startDateTime: startDateTime?.toISOString(),
+                      endDateTime: endDateTime?.toISOString(),
+                      required: isRequired,
+                    } as any);
+                    return;
+                  }
+                  console.log("Save smart datetime (simulated)", {
+                    label: labelValue,
+                  });
+                } catch (err) {
+                  console.error("Error saving smart datetime field:", err);
+                  throw err;
+                }
+              }}
+            >
+              Save
+            </Button>
           </div>
         </div>
       </div>

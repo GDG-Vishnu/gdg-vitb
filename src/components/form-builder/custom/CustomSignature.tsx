@@ -7,10 +7,44 @@ import { getFieldIcon } from "@/utils";
 import { FieldType } from "@prisma/client";
 import { Trash } from "lucide-react";
 import React from "react";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
-const CustomSignature = () => {
+const CustomSignature = ({
+  fieldId,
+  sectionId,
+}: {
+  fieldId?: string;
+  sectionId?: string;
+}) => {
   const defaultValues = defaultFieldConfig[FieldType.SIGNATURE];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
+  const [isRequired, setIsRequired] = React.useState(false);
+
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof (foundField as any).label === "string")
+          setLabelValue((foundField as any).label);
+        if (typeof (foundField as any).required === "boolean")
+          setIsRequired((foundField as any).required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating signature field:", err);
+    }
+  }, [integration, fieldId]);
 
   return (
     <div className="flex flex-col items-center w-full bg-transparent">
@@ -39,7 +73,10 @@ const CustomSignature = () => {
           </div>
           <div className="flex items-center gap-3">
             <h3 className="font-medium">Required</h3>
-            <Switch />
+            <Switch
+              checked={isRequired}
+              onCheckedChange={(v) => setIsRequired(Boolean(v))}
+            />
           </div>
         </div>
         <div className="flex flex-col bg-muted/100 border gap-3 p-4 rounded-2xl">
@@ -58,7 +95,32 @@ const CustomSignature = () => {
             <Trash className="text-destructive h-5 w-5" />
           </div>
           <div>
-            <Button size="sm">Save</Button>
+            <Button
+              size="sm"
+              onClick={async () => {
+                try {
+                  if (integration && fieldId) {
+                    await integration.saveField({
+                      id: fieldId,
+                      sectionId: sectionId || "",
+                      type: FieldType.SIGNATURE,
+                      label: labelValue,
+                      required: isRequired,
+                    } as any);
+                    return;
+                  }
+                  console.log("Save signature (simulated)", {
+                    label: labelValue,
+                    required: isRequired,
+                  });
+                } catch (err) {
+                  console.error("Error saving signature field:", err);
+                  throw err;
+                }
+              }}
+            >
+              Save
+            </Button>
           </div>
         </div>
       </div>

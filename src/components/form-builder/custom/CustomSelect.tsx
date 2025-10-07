@@ -12,6 +12,7 @@ import { FieldType } from "@prisma/client";
 import { Plus, X } from "lucide-react";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomSelectProps {
   fieldId?: string;
@@ -27,6 +28,33 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ fieldId, sectionId }) => {
     { value: "option3", label: "Option 3" },
   ]);
   const [isRequired, setIsRequired] = React.useState(false);
+
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof foundField.label === "string")
+          setLabelValue(foundField.label);
+        if (Array.isArray(foundField.options)) setOptions(foundField.options);
+        if (typeof foundField.required === "boolean")
+          setIsRequired(foundField.required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating select field:", err);
+    }
+  }, [integration, fieldId]);
 
   const addOption = () => {
     const newOption = {
@@ -63,15 +91,29 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ fieldId, sectionId }) => {
     };
 
     console.log("Saving select configuration:", fieldData);
-
-    // Here you would typically call a server action or API
-    // For now, we'll simulate a save operation
-    await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.log("Select field saved successfully!");
-        resolve();
-      }, 500);
-    });
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.SELECT,
+          label: labelValue,
+          options,
+          required: isRequired,
+        } as any);
+        console.log("Select field saved via integration.saveField");
+        return;
+      }
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          console.log("Select field saved (simulated)!");
+          resolve();
+        }, 500);
+      });
+    } catch (err) {
+      console.error("Error saving select field:", err);
+      throw err;
+    }
   };
 
   const previewContent = (

@@ -4,6 +4,7 @@ import { defaultFieldConfig } from "@/constants";
 import { FieldType } from "@prisma/client";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
+import { useFormBuilderIntegration } from "../FormBuilderIntegration";
 
 interface CustomPhoneProps {
   fieldId?: string;
@@ -15,6 +16,32 @@ const CustomPhone: React.FC<CustomPhoneProps> = ({ fieldId, sectionId }) => {
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [isRequired, setIsRequired] = React.useState(false);
 
+  let integration = null as ReturnType<typeof useFormBuilderIntegration> | null;
+  try {
+    integration = useFormBuilderIntegration();
+  } catch {
+    integration = null;
+  }
+
+  React.useEffect(() => {
+    try {
+      if (!integration || !fieldId) return;
+      const formData = integration.formData;
+      if (!formData) return;
+      const foundField = formData.sections
+        ?.flatMap((s) => s.fields || [])
+        .find((f: any) => f.id === fieldId);
+      if (foundField) {
+        if (typeof foundField.label === "string")
+          setLabelValue(foundField.label);
+        if (typeof foundField.required === "boolean")
+          setIsRequired(foundField.required);
+      }
+    } catch (err) {
+      console.warn("Error hydrating phone field:", err);
+    }
+  }, [integration, fieldId]);
+
   const handleSave = async (): Promise<void> => {
     const fieldData = {
       fieldId,
@@ -24,16 +51,29 @@ const CustomPhone: React.FC<CustomPhoneProps> = ({ fieldId, sectionId }) => {
       required: isRequired,
     };
 
-    console.log("Saving phone configuration:", fieldData);
+    try {
+      if (integration && fieldId) {
+        await integration.saveField({
+          id: fieldId,
+          sectionId: sectionId || "",
+          type: FieldType.PHONE,
+          label: labelValue,
+          required: isRequired,
+        } as any);
+        console.log("Phone field saved via integration.saveField");
+        return;
+      }
 
-    // Here you would typically call a server action or API
-    // For now, we'll simulate a save operation
-    await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.log("Phone field saved successfully!");
-        resolve();
-      }, 500);
-    });
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          console.log("Phone field saved (simulated)!");
+          resolve();
+        }, 500);
+      });
+    } catch (err) {
+      console.error("Error saving phone field:", err);
+      throw err;
+    }
   };
 
   const previewContent = (
