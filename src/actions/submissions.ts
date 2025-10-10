@@ -139,7 +139,10 @@ export async function createSubmission(
   submissionData: z.infer<typeof createSubmissionSchema>
 ) {
   try {
+    console.log("🔍 Server: Received submission data:", submissionData);
+
     const validatedData = createSubmissionSchema.parse(submissionData);
+    console.log("🔍 Server: Validated data:", validatedData);
 
     // Check if form exists (simplified for current schema)
     const form = await prisma.form.findUnique({
@@ -154,6 +157,14 @@ export async function createSubmission(
         },
       },
     });
+
+    console.log("🔍 Server: Found form:", form ? "Yes" : "No");
+    if (form) {
+      console.log(
+        "🔍 Server: Form fields count:",
+        form.sections.flatMap((s) => s.fields).length
+      );
+    }
 
     if (!form) {
       throw new Error("Form not found");
@@ -187,6 +198,7 @@ export async function createSubmission(
     }
 
     // Create submission with responses in a transaction
+    console.log("🚀 Server: Creating submission in transaction...");
     const submission = await prisma.$transaction(async (tx) => {
       const newSubmission = await tx.formSubmission.create({
         data: {
@@ -195,14 +207,22 @@ export async function createSubmission(
         },
       });
 
+      console.log("✅ Server: Created submission:", newSubmission.id);
+
       // Create field responses
+      const responseData = validatedData.responses.map((response) => ({
+        submissionId: newSubmission.id,
+        fieldId: response.fieldId,
+        value: response.value,
+      }));
+
+      console.log("🔍 Server: Creating field responses:", responseData);
+
       await tx.fieldResponse.createMany({
-        data: validatedData.responses.map((response) => ({
-          submissionId: newSubmission.id,
-          fieldId: response.fieldId,
-          value: response.value,
-        })),
+        data: responseData,
       });
+
+      console.log("✅ Server: Created field responses");
 
       // Return submission with responses
       return tx.formSubmission.findUnique({
@@ -218,6 +238,8 @@ export async function createSubmission(
         },
       });
     });
+
+    console.log("✅ Server: Transaction completed successfully");
 
     // Don't revalidate for public submissions to avoid auth issues
     revalidatePath(`/admin/forms/${validatedData.formId}/submissions`);

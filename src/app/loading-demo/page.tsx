@@ -16,68 +16,87 @@ export default function LoadingDemo() {
   const [showFormDeletionLoading, setShowFormDeletionLoading] = useState(false);
   const [componentType, setComponentType] = useState("Text Input");
 
-  const handleTestDelete = () => {
+  // Simulate actual async operations that would be real API calls
+  const performAsyncOperation = async (
+    operationType: string,
+    duration: number = 300
+  ) => {
+    console.log(`Starting ${operationType}...`);
+    // This could be replaced with actual API calls like createField, deleteField, etc.
+    await new Promise((resolve) => setTimeout(resolve, duration));
+    console.log(`Completed ${operationType}`);
+  };
+
+  const handleTestDelete = async () => {
     setShowDeleteLoading(true);
-    // Simulate deletion process
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("component deletion", 400);
+    } finally {
       setShowDeleteLoading(false);
-    }, 1500);
+    }
   };
 
-  const handleTestAdd = () => {
+  const handleTestAdd = async () => {
     setShowAddLoading(true);
-    // Simulate adding process
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("component addition", 300);
+    } finally {
       setShowAddLoading(false);
-    }, 1500);
+    }
   };
 
-  const handleInstantDelete = () => {
+  const handleInstantDelete = async () => {
     setShowDeleteLoading(true);
-    // Instant deletion
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("instant deletion", 50);
+    } finally {
       setShowDeleteLoading(false);
-    }, 100);
+    }
   };
 
-  const handleInstantAdd = () => {
+  const handleInstantAdd = async () => {
     setShowAddLoading(true);
-    // Instant addition
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("instant addition", 50);
+    } finally {
       setShowAddLoading(false);
-    }, 100);
+    }
   };
 
-  const handleTestFormLoading = () => {
+  const handleTestFormLoading = async () => {
     setShowFormLoading(true);
-    // Simulate form loading
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("form loading", 400);
+    } finally {
       setShowFormLoading(false);
-    }, 2000);
+    }
   };
 
-  const handleInstantFormLoading = () => {
+  const handleInstantFormLoading = async () => {
     setShowFormLoading(true);
-    // Instant form loading
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("instant form loading", 50);
+    } finally {
       setShowFormLoading(false);
-    }, 100);
+    }
   };
 
-  const handleTestFormDeletion = () => {
+  const handleTestFormDeletion = async () => {
     setShowFormDeletionLoading(true);
-    // Simulate form deletion
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("form deletion", 350);
+    } finally {
       setShowFormDeletionLoading(false);
-    }, 2000);
+    }
   };
 
-  const handleInstantFormDeletion = () => {
+  const handleInstantFormDeletion = async () => {
     setShowFormDeletionLoading(true);
-    // Instant form deletion
-    setTimeout(() => {
+    try {
+      await performAsyncOperation("instant form deletion", 50);
+    } finally {
       setShowFormDeletionLoading(false);
-    }, 100);
+    }
   };
 
   const componentTypes = [

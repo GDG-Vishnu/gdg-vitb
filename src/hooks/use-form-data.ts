@@ -100,9 +100,7 @@ export function useUpdateForm() {
       // TODO: Implement actual API call to update form
       console.log("Updating form:", formData);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      // Return immediately - no artificial delay
       return {
         success: true,
         data: formData,
@@ -133,9 +131,7 @@ export function useDeleteForm() {
       // TODO: Implement actual API call to delete form
       console.log("Deleting form:", formId);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      // Return immediately - no artificial delay
       return { success: true };
     },
     onSuccess: (data, formId) => {

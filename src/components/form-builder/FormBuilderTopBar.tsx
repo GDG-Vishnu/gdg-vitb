@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button3D } from "@/components/ui/3d-button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,6 +51,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
   const router = useRouter();
   const deleteFormMutation = useDeleteForm();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [confirmationText, setConfirmationText] = useState("");
 
   // Debug log to check if formId is being passed
   console.log("FormBuilderTopBar props:", { formId, formTitle });
@@ -61,6 +64,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
     console.log("Cancel clicked, formId:", formId);
     if (formId) {
       console.log("Opening delete dialog for form:", formId);
+      setConfirmationText(""); // Clear confirmation text when opening dialog
       setIsDeleteDialogOpen(true);
     } else {
       console.log("No formId, calling onCancel or going back");
@@ -76,8 +80,15 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
       return;
     }
 
+    // Check if confirmation text matches form name
+    if (confirmationText !== (formTitle || "")) {
+      console.log("Confirmation text doesn't match form name");
+      return; // Don't proceed with deletion
+    }
+
     // Close dialog immediately and show loading
     setIsDeleteDialogOpen(false);
+    setConfirmationText(""); // Clear confirmation text
 
     try {
       console.log("Calling deleteFormMutation with formId:", formId);
@@ -91,6 +102,9 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
       // You might want to show a toast notification here
     }
   };
+
+  // Check if the confirmation text matches the form name exactly
+  const isConfirmationValid = confirmationText === (formTitle || "");
 
   // Use dynamic sections if provided, otherwise fall back to default sections
   const defaultSections = [
@@ -131,6 +145,28 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
         </div>
 
         <div className="flex items-center space-x-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/admin/forms/${formId}/responses`)}
+            className="gap-2"
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <span>View Responses</span>
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -217,7 +253,12 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
       {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
+        onOpenChange={(open) => {
+          setIsDeleteDialogOpen(open);
+          if (!open) {
+            setConfirmationText(""); // Clear confirmation text when dialog closes
+          }
+        }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -228,12 +269,34 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
               submissions will be permanently removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="confirmation-input">
+                To confirm deletion, type the form name:{" "}
+                <span className="font-semibold text-destructive">
+                  {formTitle || ""}
+                </span>
+              </Label>
+              <Input
+                id="confirmation-input"
+                type="text"
+                placeholder={`Type "${formTitle || ""}" to confirm`}
+                value={confirmationText}
+                onChange={(e) => setConfirmationText(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
+
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setConfirmationText("")}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
-              disabled={deleteFormMutation.isPending}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={deleteFormMutation.isPending || !isConfirmationValid}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {deleteFormMutation.isPending ? (
                 <>

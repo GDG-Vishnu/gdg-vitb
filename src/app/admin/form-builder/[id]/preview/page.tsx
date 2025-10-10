@@ -4,6 +4,7 @@ import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "@/hooks/use-form-data";
 import { FormData, SectionData, FieldData } from "@/types/form-builder";
+import { createSubmission } from "@/actions/submissions";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -536,6 +537,7 @@ const FormPreviewPage = () => {
 
   const { data: formData, isLoading, error } = useForm(formId);
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleFieldChange = (fieldId: string, value: any) => {
     setFormValues((prev) => ({
@@ -544,11 +546,66 @@ const FormPreviewPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted with values:", formValues);
-    // Here you would typically submit the form data
-    alert("Form submitted successfully! Check console for values.");
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      // Debug: Log form data and values
+      console.log("🔍 Form ID:", formData?.id);
+      console.log("🔍 Form Values:", formValues);
+      console.log("🔍 Form Data Structure:", formData);
+
+      // Format the form values to match the backend schema
+      const responses = Object.entries(formValues)
+        .filter(
+          ([fieldId, value]) =>
+            value !== undefined && value !== null && value !== ""
+        )
+        .map(([fieldId, value]) => ({
+          fieldId,
+          value,
+        }));
+
+      console.log("🔍 Formatted Responses:", responses);
+
+      if (responses.length === 0) {
+        alert("Please fill at least one field before submitting.");
+        return;
+      }
+
+      // Submit to backend
+      console.log("🚀 Calling createSubmission...");
+      const result = await createSubmission({
+        formId: formData!.id,
+        responses,
+        submittedBy: undefined, // Anonymous submission for now
+      });
+
+      console.log("🔍 Backend Result:", result);
+
+      if (result.success) {
+        alert(
+          `🎉 Form submitted successfully! Submission ID: ${result.data?.id}`
+        );
+        handleClearForm();
+        // Optional: redirect back to form builder or show success page
+        // router.push(`/admin/forms/${formData!.id}/submissions`);
+      } else {
+        console.error("❌ Submission failed:", result.error);
+        alert(`❌ Failed to submit form: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("❌ Error submitting form:", error);
+      alert(
+        "💥 An error occurred while submitting the form. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClearForm = () => {
@@ -759,14 +816,16 @@ const FormPreviewPage = () => {
                   <button
                     type="button"
                     onClick={handleClearForm}
-                    className="text-red-500 hover:text-red-600 font-medium text-sm underline hover:no-underline transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="text-red-500 hover:text-red-600 font-medium text-sm underline hover:no-underline transition-all duration-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
                     Clear Form
                   </button>
 
                   <Button
                     type="submit"
-                    className="flex items-center px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium shadow-md transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="flex items-center px-6 py-3 bg-gray-800 hover:bg-gray-900 disabled:bg-gray-400 text-white rounded-full font-medium shadow-md transition-all duration-200 disabled:cursor-not-allowed"
                   >
                     <svg
                       className="w-4 h-4 mr-2"
@@ -781,7 +840,7 @@ const FormPreviewPage = () => {
                         d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                       />
                     </svg>
-                    Submit
+                    {isSubmitting ? "Submitting..." : "Submit"}
                   </Button>
                 </div>
               </div>
