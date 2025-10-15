@@ -222,7 +222,7 @@ const FormComponentWrapper: React.FC<FormComponentWrapperProps> = ({
   return (
     <div className="flex flex-col items-center w-full bg-transparent">
       {/* Preview Section */}
-      <div className="w-full flex flex-col gap-2 bg-muted/50 p-4 rounded-2xl border border-border relative">
+      <div className="w-full flex flex-col gap-2 bg-muted/50 p-4 rounded-2xl border border-border relative text-black dark:text-white">
         {/* Settings Button - positioned in top-right corner */}
         <Button
           variant="ghost"

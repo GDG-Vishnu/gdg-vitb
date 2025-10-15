@@ -17,6 +17,7 @@ import CustomSignature from "./CustomSignature";
 import CustomSlider from "./CustomSlider";
 import CustomTags from "./CustomTags";
 import CustomOtp from "./CustomOtp";
+import CustomEmail from "./CustomEmail";
 
 interface CustomComponentProps {
   fieldId?: string;
@@ -27,6 +28,7 @@ const CustomComponents: Record<string, React.FC<CustomComponentProps>> = {
   Checkbox: CustomCheckbox,
   TextArea: CustomTextArea,
   Input: CustomInput,
+  Email: CustomEmail,
   Password: CustomPassword,
   Phone: CustomPhone,
   Radio: CustomRadio,

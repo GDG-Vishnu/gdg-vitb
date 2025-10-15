@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toastNotifications } from "@/components/toast";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button3D } from "@/components/ui/3d-button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -81,8 +82,20 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
     }
 
     // Check if confirmation text matches form name
-    if (confirmationText !== (formTitle || "")) {
-      console.log("Confirmation text doesn't match form name");
+    const expectedName = (formTitle || "").trim();
+    const enteredName = confirmationText.trim();
+
+    console.log("Delete validation:", {
+      formTitle,
+      expectedName,
+      enteredName,
+      match: enteredName === expectedName,
+    });
+
+    if (enteredName !== expectedName || expectedName === "") {
+      console.log(
+        "Confirmation text doesn't match form name or form name is empty"
+      );
       return; // Don't proceed with deletion
     }
 
@@ -95,16 +108,28 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
       const result = await deleteFormMutation.mutateAsync(formId);
       console.log("Delete result:", result);
       if (result.success) {
+        toastNotifications.success.formDeleted();
         router.push("/admin/forms");
       }
     } catch (error) {
       console.error("Error deleting form:", error);
-      // You might want to show a toast notification here
+      toastNotifications.error.submissionFailed("Failed to delete form");
     }
   };
 
   // Check if the confirmation text matches the form name exactly
-  const isConfirmationValid = confirmationText === (formTitle || "");
+  const expectedFormName = (formTitle || "").trim();
+  const enteredText = confirmationText.trim();
+  const isConfirmationValid =
+    enteredText === expectedFormName && expectedFormName !== "";
+
+  console.log("Form validation:", {
+    formTitle,
+    expectedFormName,
+    enteredText,
+    isConfirmationValid,
+    match: enteredText === expectedFormName,
+  });
 
   // Use dynamic sections if provided, otherwise fall back to default sections
   const defaultSections = [
@@ -113,9 +138,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
     { id: "rules", title: "Rules" },
     { id: "scripts", title: "Scripts" },
   ];
-
   const displaySections = sections.length > 0 ? sections : defaultSections;
-
   return (
     <div className="border-b bg-background border-border">
       {/* First Line: Back button, Form name, Draft badge, and Action buttons */}
@@ -129,7 +152,6 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-
           <div className="flex items-center space-x-3">
             {isLoading ? (
               <Skeleton className="h-8 w-48" />
@@ -143,7 +165,6 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             </Badge>
           </div>
         </div>
-
         <div className="flex items-center space-x-3">
           <Button
             variant="outline"
@@ -166,7 +187,6 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             </svg>
             <span>View Responses</span>
           </Button>
-
           <Button
             variant="outline"
             size="sm"
@@ -176,7 +196,6 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             <Eye className="h-4 w-4" />
             <span>View Form</span>
           </Button>
-
           <Button3D
             variant="destructive"
             size="sm"
@@ -193,7 +212,6 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
               {deleteFormMutation.isPending ? "Deleting..." : "Delete"}
             </span>
           </Button3D>
-
           <Button3D
             variant="default"
             size="sm"
@@ -205,7 +223,6 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
           </Button3D>
         </div>
       </div>
-
       {/* Second Line: Tabs only */}
       <div className="flex items-center px-6 h-12">
         <div className="flex items-center h-full">
@@ -275,17 +292,40 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
               <Label htmlFor="confirmation-input">
                 To confirm deletion, type the form name:{" "}
                 <span className="font-semibold text-destructive">
-                  {formTitle || ""}
+                  {expectedFormName || "Untitled Form"}
                 </span>
               </Label>
               <Input
                 id="confirmation-input"
                 type="text"
-                placeholder={`Type "${formTitle || ""}" to confirm`}
+                placeholder={`Type "${
+                  expectedFormName || "Untitled Form"
+                }" to confirm`}
                 value={confirmationText}
                 onChange={(e) => setConfirmationText(e.target.value)}
-                className="w-full"
+                onFocus={() =>
+                  console.log("Input focused, expected name:", expectedFormName)
+                }
+                className={`w-full ${
+                  confirmationText.trim() !== ""
+                    ? isConfirmationValid
+                      ? "border-green-500 focus:border-green-500"
+                      : "border-red-500 focus:border-red-500"
+                    : ""
+                }`}
+                autoComplete="off"
               />
+              {confirmationText.trim() !== "" && (
+                <div
+                  className={`text-xs mt-1 ${
+                    isConfirmationValid ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {isConfirmationValid
+                    ? "✓ Form name matches"
+                    : "✗ Form name doesn't match"}
+                </div>
+              )}
             </div>
           </div>
 
@@ -294,7 +334,15 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDeleteConfirm}
+              onClick={() => {
+                console.log("Delete button clicked!", {
+                  isConfirmationValid,
+                  confirmationText: confirmationText.trim(),
+                  expectedFormName,
+                  isPending: deleteFormMutation.isPending,
+                });
+                handleDeleteConfirm();
+              }}
               disabled={deleteFormMutation.isPending || !isConfirmationValid}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >

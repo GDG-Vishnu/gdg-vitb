@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useForm } from "@/hooks/use-form-data";
 import { FormData, SectionData, FieldData } from "@/types/form-builder";
 import { createSubmission } from "@/actions/submissions";
+import { toastNotifications } from "@/components/toast";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -573,7 +574,7 @@ const FormPreviewPage = () => {
       console.log("🔍 Formatted Responses:", responses);
 
       if (responses.length === 0) {
-        alert("Please fill at least one field before submitting.");
+        toastNotifications.warning.emptyForm();
         return;
       }
 
@@ -588,21 +589,17 @@ const FormPreviewPage = () => {
       console.log("🔍 Backend Result:", result);
 
       if (result.success) {
-        alert(
-          `🎉 Form submitted successfully! Submission ID: ${result.data?.id}`
-        );
+        toastNotifications.success.formSubmitted();
         handleClearForm();
         // Optional: redirect back to form builder or show success page
         // router.push(`/admin/forms/${formData!.id}/submissions`);
       } else {
         console.error("❌ Submission failed:", result.error);
-        alert(`❌ Failed to submit form: ${result.error}`);
+        toastNotifications.error.submissionFailed(result.error);
       }
     } catch (error) {
       console.error("❌ Error submitting form:", error);
-      alert(
-        "💥 An error occurred while submitting the form. Please try again."
-      );
+      toastNotifications.error.unexpectedError();
     } finally {
       setIsSubmitting(false);
     }
@@ -618,9 +615,22 @@ const FormPreviewPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div
+        className="min-h-screen py-8"
+        style={{
+          backgroundColor: "white",
+          backgroundImage: `
+            linear-gradient(#f0f0f040 1px, transparent 1px),
+            linear-gradient(90deg, #f0f0f040 1px, transparent 1px)
+          `,
+          backgroundSize: "20px 20px",
+        }}
+      >
         <div className="max-w-4xl mx-auto px-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div
+            className="rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+            style={{ backgroundColor: "white" }}
+          >
             <div className="px-8 py-8">
               <Skeleton className="h-8 w-48 mb-4" />
               <Skeleton className="h-4 w-full mb-2" />
@@ -639,7 +649,7 @@ const FormPreviewPage = () => {
 
   if (error || !formData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-semibold text-gray-900 mb-2">
             Form Not Found
@@ -657,9 +667,22 @@ const FormPreviewPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: "white",
+        backgroundImage: `
+          linear-gradient(#f0f0f040 1px, transparent 1px),
+          linear-gradient(90deg, #f0f0f040 1px, transparent 1px)
+        `,
+        backgroundSize: "20px 20px",
+      }}
+    >
       {/* Navigation Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div
+        className="border-b border-gray-200 sticky top-0 z-50"
+        style={{ backgroundColor: "white" }}
+      >
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -695,7 +718,10 @@ const FormPreviewPage = () => {
           {/* Form Container */}
           <div className="space-y-6">
             {/* GDG Header Card */}
-            <div className="bg-white rounded-xl shadow-sm border-2 border-blue-500 p-6 mb-10">
+            <div
+              className="rounded-xl shadow-sm border-2 border-blue-500 p-6 mb-10"
+              style={{ backgroundColor: "white" }}
+            >
               <div className="flex items-center justify-center">
                 <div className="flex items-center space-x-4">
                   <img
@@ -716,7 +742,10 @@ const FormPreviewPage = () => {
             </div>
 
             {/* Form Title & Description Card */}
-            <div className="bg-white rounded-xl shadow-sm border-2 border-red-500 p-8 mb-10">
+            <div
+              className="rounded-xl shadow-sm border-2 border-red-500 p-8 mb-10"
+              style={{ backgroundColor: "white" }}
+            >
               <div className="text-center space-y-6">
                 <h1 className="text-4xl font-semibold leading-tight bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-transparent">
                   {formData.name}
@@ -741,7 +770,10 @@ const FormPreviewPage = () => {
 
             {/* Form Image Card (if exists) */}
             {formData.imageUrl && (
-              <div className="bg-white rounded-xl shadow-sm border-2 border-green-500 p-6 mb-10">
+              <div
+                className="rounded-xl shadow-sm border-2 border-green-500 p-6 mb-10"
+                style={{ backgroundColor: "white" }}
+              >
                 <div className="text-center">
                   <Image
                     src={formData.imageUrl}
@@ -761,7 +793,10 @@ const FormPreviewPage = () => {
                 .map((section: SectionData, sectionIndex: number) => (
                   <div key={section.id} className="space-y-8">
                     {section.title && (
-                      <div className="bg-white rounded-xl shadow-sm border-2 border-green-500 p-6">
+                      <div
+                        className="rounded-xl shadow-sm border-2 border-green-500 p-6"
+                        style={{ backgroundColor: "white" }}
+                      >
                         <h2 className="text-xl font-medium bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
                           {section.title}
                         </h2>
@@ -784,7 +819,8 @@ const FormPreviewPage = () => {
                           return (
                             <div
                               key={field.id}
-                              className={`bg-white rounded-xl shadow-sm border-2 ${borderColor} p-6 transition-all duration-200 hover:shadow-md`}
+                              className={`rounded-xl shadow-sm border-2 ${borderColor} p-6 transition-all duration-200 hover:shadow-md`}
+                              style={{ backgroundColor: "white" }}
                             >
                               <div className="flex items-start space-x-3">
                                 <span className="font-medium text-sm mt-1 bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text text-transparent">
@@ -811,7 +847,10 @@ const FormPreviewPage = () => {
                 ))}
 
               {/* Form Actions Card */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div
+                className="rounded-xl shadow-sm p-6"
+                style={{ backgroundColor: "white" }}
+              >
                 <div className="flex justify-between items-center">
                   <button
                     type="button"

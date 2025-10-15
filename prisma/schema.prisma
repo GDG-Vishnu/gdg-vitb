@@ -25,6 +25,7 @@ enum UserRole {
 // Form field types enum for Form Builder
 enum FieldType {
     INPUT
+    EMAIL
     TEXTAREA
     PASSWORD
     PHONE

@@ -3,6 +3,7 @@
 import React from "react";
 import { FormData, SectionData, FieldData } from "@/types/form-builder";
 import { createSubmission } from "@/actions/submissions";
+import { toastNotifications } from "@/components/toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -65,8 +66,11 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
             placeholder={field.placeholder || "Your answer"}
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 text-gray-900 placeholder:text-gray-500"
-            style={{ fontFamily: "Red Hat Display" }}
+            className="w-full border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 bg-transparent placeholder:text-gray-500"
+            style={{
+              fontFamily: "Red Hat Display",
+              color: "#111827", // Ensures text is dark gray
+            }}
           />
         );
 
@@ -77,8 +81,11 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             rows={3}
-            className="w-full resize-none border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 text-gray-900 placeholder:text-gray-500"
-            style={{ fontFamily: "Red Hat Display" }}
+            className="w-full resize-none border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 bg-transparent placeholder:text-gray-500"
+            style={{
+              fontFamily: "Red Hat Display",
+              color: "#111827", // Ensures text is dark gray
+            }}
           />
         );
 
@@ -90,8 +97,11 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
               placeholder={field.placeholder || "Your password"}
               value={value || ""}
               onChange={(e) => onChange(e.target.value)}
-              className="w-full border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 pr-10 text-gray-900 placeholder:text-gray-500"
-              style={{ fontFamily: "Red Hat Display" }}
+              className="w-full border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 pr-10 bg-transparent placeholder:text-gray-500"
+              style={{
+                fontFamily: "Red Hat Display",
+                color: "#111827", // Ensures text is dark gray
+              }}
             />
             <Button
               type="button"
@@ -116,8 +126,11 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
             placeholder={field.placeholder || "Your phone number"}
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 text-gray-900 placeholder:text-gray-500"
-            style={{ fontFamily: "Red Hat Display" }}
+            className="w-full border-0 border-b border-gray-300 rounded-none focus:border-blue-600 focus:ring-0 px-0 py-2 bg-transparent placeholder:text-gray-500"
+            style={{
+              fontFamily: "Red Hat Display",
+              color: "#111827", // Ensures text is dark gray
+            }}
           />
         );
 
@@ -296,7 +309,8 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
               type="date"
               value={value || ""}
               onChange={(e) => onChange(e.target.value)}
-              className="w-full text-stone-950"
+              className="w-full bg-transparent"
+              style={{ color: "#111827" }}
             />
             <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           </div>
@@ -308,7 +322,8 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
             type="datetime-local"
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full text-gray-900"
+            className="w-full bg-transparent"
+            style={{ color: "#111827" }}
           />
         );
 
@@ -348,8 +363,11 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
               placeholder={field.placeholder || "Enter location..."}
               value={value || ""}
               onChange={(e) => onChange(e.target.value)}
-              className="w-full pl-10 text-gray-900 placeholder:text-gray-500"
-              style={{ fontFamily: "Red Hat Display" }}
+              className="w-full pl-10 bg-transparent placeholder:text-gray-500"
+              style={{
+                fontFamily: "Red Hat Display",
+                color: "#111827",
+              }}
             />
             <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
@@ -397,7 +415,7 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
                 key={index}
                 type="text"
                 maxLength={1}
-                className="w-12 h-12 text-center text-lg font-semibold text-gray-900"
+                className="w-12 h-12 text-center text-lg font-semibold text-black dark:text-white"
                 value={(value || "")[index] || ""}
                 onChange={(e) => {
                   const newValue = (value || "").split("");
@@ -449,7 +467,7 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
                   e.currentTarget.value = "";
                 }
               }}
-              className="w-full text-gray-900 placeholder:text-gray-500"
+              className="w-full text-black dark:text-white placeholder:text-gray-500"
               style={{ fontFamily: "Red Hat Display" }}
             />
           </div>
@@ -461,7 +479,7 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
             placeholder={field.placeholder || "Enter value..."}
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full text-gray-900 placeholder:text-gray-500"
+            className="w-full text-black dark:text-white placeholder:text-gray-500"
             style={{ fontFamily: "Red Hat Display" }}
           />
         );
@@ -471,7 +489,7 @@ const PreviewField: React.FC<PreviewFieldProps> = ({
   return (
     <div className="space-y-2">
       <Label
-        className="text-sm font-normal text-gray-900"
+        className="text-sm font-normal text-black dark:text-white"
         style={{ fontFamily: "Red Hat Display" }}
       >
         {field.label}
@@ -489,6 +507,24 @@ export const FormPreview: React.FC<FormPreviewProps> = ({
 }) => {
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  // Standard card layout used across preview cards
+  const cardStyle: React.CSSProperties = {
+    backgroundColor: "white",
+    width: 861,
+    height: 330,
+    borderWidth: 1,
+    borderRadius: 28,
+    paddingTop: 34,
+    paddingRight: 33,
+    paddingBottom: 34,
+    paddingLeft: 33,
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+    opacity: 1,
+    overflow: "auto",
+  };
 
   const handleFieldChange = (fieldId: string, value: any) => {
     setFormValues((prev) => ({
@@ -524,7 +560,7 @@ export const FormPreview: React.FC<FormPreviewProps> = ({
       console.log("🔍 Formatted Responses:", responses);
 
       if (responses.length === 0) {
-        alert("Please fill at least one field before submitting.");
+        toastNotifications.warning.emptyForm();
         setIsSubmitting(false);
         return;
       }
@@ -540,16 +576,16 @@ export const FormPreview: React.FC<FormPreviewProps> = ({
       console.log("🔍 Backend Result:", result);
 
       if (result.success) {
-        alert("Form submitted successfully!");
+        toastNotifications.success.formSubmitted();
         handleClearForm();
         onClose();
       } else {
         console.error("❌ Submission failed:", result.error);
-        alert(`Failed to submit form: ${result.error}`);
+        toastNotifications.error.submissionFailed(result.error);
       }
     } catch (error) {
       console.error("❌ Error submitting form:", error);
-      alert("An error occurred while submitting the form. Please try again.");
+      toastNotifications.error.unexpectedError();
     } finally {
       setIsSubmitting(false);
     }
@@ -561,8 +597,21 @@ export const FormPreview: React.FC<FormPreviewProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-gray-50">
-        <DialogHeader className="px-6 py-4 border-b bg-white">
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] p-0"
+        style={{
+          backgroundColor: "white",
+          backgroundImage: `
+          linear-gradient(#f0f0f040 1px, transparent 1px),
+          linear-gradient(90deg, #f0f0f040 1px, transparent 1px)
+        `,
+          backgroundSize: "20px 20px",
+        }}
+      >
+        <DialogHeader
+          className="px-6 py-4 border-b"
+          style={{ backgroundColor: "white" }}
+        >
           <DialogTitle className="text-xl font-semibold text-gray-800">
             Form Preview - {formData.name}
           </DialogTitle>
@@ -570,12 +619,23 @@ export const FormPreview: React.FC<FormPreviewProps> = ({
 
         <ScrollArea className="flex-1">
           <div
-            className="min-h-full bg-gray-50 py-8"
-            style={{ fontFamily: "Red Hat Display" }}
+            className="min-h-full py-8 text-black dark:text-white"
+            style={{
+              fontFamily: "Red Hat Display",
+              backgroundColor: "white",
+              backgroundImage: `
+                linear-gradient(#f0f0f040 1px, transparent 1px),
+                linear-gradient(90deg, #f0f0f040 1px, transparent 1px)
+              `,
+              backgroundSize: "20px 20px",
+            }}
           >
             <div className="max-w-2xl mx-auto px-6">
               {/* Form Container */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div
+                className="shadow-sm border border-gray-200 overflow-hidden"
+                style={cardStyle}
+              >
                 {/* Form Header */}
                 <div className="px-8 py-8 border-b border-gray-200">
                   <div className="flex flex-start items-center justify-start mb-6">
@@ -650,51 +710,55 @@ export const FormPreview: React.FC<FormPreviewProps> = ({
                 </div>
 
                 {/* Form Content */}
-                <form onSubmit={handleSubmit} className="px-8 py-6">
+                <form onSubmit={handleSubmit} className="p-0">
                   <div className="space-y-8">
                     {formData.sections
                       .sort((a, b) => a.order - b.order)
                       .map((section: SectionData, sectionIndex: number) => (
-                        <div key={section.id} className="space-y-6">
-                          {section.title && (
-                            <div className="pb-2">
-                              <h2
-                                className="text-lg font-medium text-red-500"
-                                style={{ fontFamily: "Red Hat Display" }}
-                              >
-                                {section.title}
-                              </h2>
-                            </div>
-                          )}
+                        <div key={section.id} style={cardStyle}>
                           <div className="space-y-6">
-                            {section.fields
-                              .sort((a, b) => a.order - b.order)
-                              .map((field: FieldData, fieldIndex: number) => (
-                                <div key={field.id} className="space-y-2">
-                                  <div className="flex items-start space-x-1">
-                                    <span
-                                      className="text-gray-900 font-medium text-sm mt-1"
-                                      style={{ fontFamily: "Red Hat Display" }}
-                                    >
-                                      {sectionIndex === 0
-                                        ? fieldIndex + 1
-                                        : `${sectionIndex + 1}.${
-                                            fieldIndex + 1
-                                          }`}
-                                      .
-                                    </span>
-                                    <div className="flex-1">
-                                      <PreviewField
-                                        field={field}
-                                        value={formValues[field.id]}
-                                        onChange={(value) =>
-                                          handleFieldChange(field.id, value)
-                                        }
-                                      />
+                            {section.title && (
+                              <div className="pb-2">
+                                <h2
+                                  className="text-lg font-medium text-red-500"
+                                  style={{ fontFamily: "Red Hat Display" }}
+                                >
+                                  {section.title}
+                                </h2>
+                              </div>
+                            )}
+                            <div className="space-y-6">
+                              {section.fields
+                                .sort((a, b) => a.order - b.order)
+                                .map((field: FieldData, fieldIndex: number) => (
+                                  <div key={field.id} className="space-y-2">
+                                    <div className="flex items-start space-x-1">
+                                      <span
+                                        className="text-black dark:text-white font-medium text-sm mt-1"
+                                        style={{
+                                          fontFamily: "Red Hat Display",
+                                        }}
+                                      >
+                                        {sectionIndex === 0
+                                          ? fieldIndex + 1
+                                          : `${sectionIndex + 1}.${
+                                              fieldIndex + 1
+                                            }`}
+                                        .
+                                      </span>
+                                      <div className="flex-1">
+                                        <PreviewField
+                                          field={field}
+                                          value={formValues[field.id]}
+                                          onChange={(value) =>
+                                            handleFieldChange(field.id, value)
+                                          }
+                                        />
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
+                            </div>
                           </div>
                         </div>
                       ))}

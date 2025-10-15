@@ -1,8 +1,8 @@
 import React from "react";
-import { ComingSoonPage } from "@/components/coming-soon";
+import HomePage from "@/components/Home/page";
 
 const ClientPage = () => {
-  return <ComingSoonPage />;
+  return <HomePage />;
 };
 
 export default ClientPage;

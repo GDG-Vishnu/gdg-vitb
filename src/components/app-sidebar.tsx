@@ -10,6 +10,7 @@ import {
   HelpCircle,
   Settings,
   LogOut,
+  Cloud,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -184,6 +185,8 @@ const data = {
       url: "/admin/forms",
       icon: FormInput,
     },
+    // cloudinay icon and path
+    // { name: "Cloudinary", url: "/admin/cloudinary", icon: Cloud },
   ],
 };
 

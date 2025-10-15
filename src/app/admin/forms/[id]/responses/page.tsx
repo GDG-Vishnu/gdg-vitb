@@ -1,12 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
+import { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toastNotifications } from "@/components/toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
@@ -26,9 +31,16 @@ import {
   BarChart3,
   Grid3X3,
   Trash2,
+  Edit,
 } from "lucide-react";
-import { getFormSubmissions, deleteSubmission } from "@/actions/submissions";
+import {
+  getFormSubmissions,
+  deleteSubmission,
+  updateSubmission,
+} from "@/actions/submissions";
 import { getFormById } from "@/actions/forms";
+import BarChart from "@/components/analytics/BarChart";
+import PieChart from "@/components/analytics/PieChart";
 
 interface FormResponsesPageProps {}
 
@@ -39,6 +51,11 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
   // State for delete dialog
   const [submissionToDelete, setSubmissionToDelete] = useState<any>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // State for edit dialog
+  const [submissionToEdit, setSubmissionToEdit] = useState<any>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState<Record<string, any>>({});
 
   // Fetch form data to get schema
   const {
@@ -97,10 +114,37 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
       queryClient.invalidateQueries({ queryKey: ["form-submissions", formId] });
       setIsDeleteDialogOpen(false);
       setSubmissionToDelete(null);
+      toastNotifications.success.responseDeleted();
     },
     onError: (error) => {
       console.error("Failed to delete submission:", error);
-      // You could add a toast notification here
+      toastNotifications.error.submissionFailed("Failed to delete response");
+    },
+  });
+
+  // Update submission mutation
+  const updateSubmissionMutation = useMutation({
+    mutationFn: async (submissionData: {
+      id: string;
+      responses: Array<{ fieldId: string; value: any }>;
+    }) => {
+      const result = await updateSubmission(submissionData);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update submission");
+      }
+      return result;
+    },
+    onSuccess: () => {
+      // Refetch submissions after successful update
+      queryClient.invalidateQueries({ queryKey: ["form-submissions", formId] });
+      setIsEditDialogOpen(false);
+      setSubmissionToEdit(null);
+      setEditFormData({});
+      toastNotifications.success.responseUpdated();
+    },
+    onError: (error) => {
+      console.error("Failed to update submission:", error);
+      toastNotifications.error.submissionFailed("Failed to update response");
     },
   });
 
@@ -108,6 +152,31 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
     if (submissionToDelete) {
       deleteSubmissionMutation.mutate(submissionToDelete.id);
     }
+  };
+
+  const handleEditSubmission = (submission: any) => {
+    setSubmissionToEdit(submission);
+    // Initialize form data with current values
+    const initialData: Record<string, any> = {};
+    submission.responses.forEach((response: any) => {
+      initialData[response.fieldId] = response.value;
+    });
+    setEditFormData(initialData);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateSubmission = () => {
+    if (!submissionToEdit) return;
+
+    const responses = Object.entries(editFormData).map(([fieldId, value]) => ({
+      fieldId,
+      value,
+    }));
+
+    updateSubmissionMutation.mutate({
+      id: submissionToEdit.id,
+      responses,
+    });
   };
 
   const handleBack = () => {
@@ -170,6 +239,35 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
   const isLoading = isFormLoading || isSubmissionsLoading;
   const error = formError || submissionsError;
 
+  // Analytics state: selected field and computed chart data
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+
+  const chartData = useMemo(() => {
+    if (!selectedFieldId) return [] as Array<{ label: string; value: number }>;
+
+    // collect all responses for the selected field
+    const fieldResponses = submissions.flatMap((submission: any) =>
+      submission.responses.filter((r: any) => r.fieldId === selectedFieldId)
+    );
+
+    // aggregate counts for each distinct value (support array values too)
+    const counts: Record<string, number> = {};
+    fieldResponses.forEach((r: any) => {
+      const val = r.value;
+      if (Array.isArray(val)) {
+        val.forEach((v) => {
+          const key = String(v ?? "");
+          counts[key] = (counts[key] || 0) + 1;
+        });
+      } else {
+        const key = String(val ?? "");
+        counts[key] = (counts[key] || 0) + 1;
+      }
+    });
+
+    return Object.entries(counts).map(([label, value]) => ({ label, value }));
+  }, [selectedFieldId, submissions]);
+
   if (error) {
     return (
       <div className="min-h-screen bg-white text-black flex items-center justify-center font-red-hat-display">
@@ -214,7 +312,10 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                   <h1 className="text-2xl font-semibold text-black">
                     {formData?.name} - Responses
                   </h1>
-                  <Badge variant="secondary" className="text-sm text-black">
+                  <Badge
+                    variant="secondary"
+                    className="text-sm text-black bg-blue-100 border-blue-200"
+                  >
                     {submissions?.length || 0} response(s)
                   </Badge>
                 </div>
@@ -269,7 +370,7 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[...Array(3)].map((_, i) => (
-                    <Card key={i} className="bg-white/80">
+                    <Card key={i} className="bg-white shadow-sm">
                       <CardHeader>
                         <Skeleton className="h-6 w-32" />
                       </CardHeader>
@@ -286,34 +387,34 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                 {/* Summary Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <Card
-                    className="border-2 bg-white/80"
+                    className="border-2 bg-white shadow-sm"
                     style={{ borderColor: "#33A854" }}
                   >
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium text-black">
                         Total Responses
                       </CardTitle>
                       <FileText className="h-4 w-4 text-black" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">
+                      <div className="text-2xl font-bold text-black">
                         {submissions.length}
                       </div>
                     </CardContent>
                   </Card>
 
                   <Card
-                    className="border-2 bg-white/80"
+                    className="border-2 bg-white shadow-sm"
                     style={{ borderColor: "#F1AE08" }}
                   >
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium text-black">
                         Latest Response
                       </CardTitle>
                       <Calendar className="h-4 w-4 text-black" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-sm font-medium">
+                      <div className="text-sm font-medium text-black">
                         {submissions.length > 0
                           ? new Date(
                               submissions[0].submittedAt
@@ -324,17 +425,17 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                   </Card>
 
                   <Card
-                    className="border-2 bg-white/80"
+                    className="border-2 bg-white shadow-sm"
                     style={{ borderColor: "#E6452D" }}
                   >
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium text-black">
                         Form Fields
                       </CardTitle>
                       <User className="h-4 w-4 text-black" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">
+                      <div className="text-2xl font-bold text-black">
                         {formData?.sections.reduce(
                           (total, section) => total + section.fields.length,
                           0
@@ -363,17 +464,20 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                       return (
                         <Card
                           key={submission.id}
-                          className="overflow-hidden border-2 bg-white/80"
+                          className="overflow-hidden border-2 bg-white shadow-sm"
                           style={{ borderColor }}
                         >
-                          <CardHeader className="bg-white/60 border-b">
+                          <CardHeader className="bg-white border-b">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-4">
                                 <div className="flex items-center space-x-2">
                                   <span className="text-sm font-medium text-black">
                                     Response #{submissions.length - index}
                                   </span>
-                                  <Badge variant="outline" className="text-xs">
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs text-black bg-gray-50 border-gray-300"
+                                  >
                                     ID: {submission.id.slice(-8)}
                                   </Badge>
                                 </div>
@@ -393,17 +497,29 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                                     ).toLocaleString()}
                                   </span>
                                 </div>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSubmissionToDelete(submission);
-                                    setIsDeleteDialogOpen(true);
-                                  }}
-                                  className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
+                                <div className="flex items-center space-x-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleEditSubmission(submission)
+                                    }
+                                    className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-2"
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSubmissionToDelete(submission);
+                                      setIsDeleteDialogOpen(true);
+                                    }}
+                                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               </div>
                             </div>
                           </CardHeader>
@@ -417,12 +533,12 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                                     </label>
                                     <Badge
                                       variant="secondary"
-                                      className="text-xs text-black"
+                                      className="text-xs text-black bg-blue-100 border-blue-200"
                                     >
                                       {response.field?.type || "UNKNOWN"}
                                     </Badge>
                                   </div>
-                                  <div className="p-3 bg-white/90 border rounded-md">
+                                  <div className="p-3 bg-white border border-gray-200 rounded-md shadow-sm">
                                     <p className="text-sm text-black break-words">
                                       {typeof response.value === "string"
                                         ? response.value
@@ -466,7 +582,7 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
             {isLoading ? (
               <div className="space-y-4">
                 {[...Array(5)].map((_, i) => (
-                  <Card key={i} className="bg-white/80">
+                  <Card key={i} className="bg-white shadow-sm">
                     <CardHeader>
                       <Skeleton className="h-6 w-48" />
                     </CardHeader>
@@ -496,7 +612,7 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                   return (
                     <Card
                       key={section.id}
-                      className="border-2 bg-white/80"
+                      className="border-2 bg-white shadow-sm"
                       style={{ borderColor }}
                     >
                       <CardHeader>
@@ -526,14 +642,14 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                                   </h3>
                                   <Badge
                                     variant="outline"
-                                    className="text-xs text-black"
+                                    className="text-xs text-black bg-gray-50 border-gray-300"
                                   >
                                     {field.type}
                                   </Badge>
                                 </div>
                                 <Badge
                                   variant="secondary"
-                                  className="text-black"
+                                  className="text-black bg-green-100 border-green-200"
                                 >
                                   {fieldResponses.length} response(s)
                                 </Badge>
@@ -580,14 +696,53 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
-            <div className="text-center py-12">
-              <BarChart3 className="w-16 h-16 text-black mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-black mb-2">
+            {/* Analytics UI: select a field and show charts */}
+            <div>
+              <h2 className="text-lg font-semibold text-black mb-2">
                 Analytics
               </h2>
-              <p className="text-black">
-                Advanced analytics and insights coming soon.
+              <p className="text-sm text-muted-foreground mb-4">
+                Select a field to visualize responses (bar chart and pie chart).
               </p>
+
+              {/* Field selector */}
+              <div className="mb-6">
+                <label className="text-sm font-medium text-black block mb-2">
+                  Field
+                </label>
+                <select
+                  className="px-3 py-2 border rounded-md w-full max-w-sm"
+                  onChange={(e) => setSelectedFieldId(e.target.value)}
+                  value={selectedFieldId || ""}
+                >
+                  <option value="">-- Select a field --</option>
+                  {formData?.sections
+                    .flatMap((s) => s.fields)
+                    .map((f: any) => (
+                      <option key={f.id} value={f.id}>
+                        {f.label} ({f.type})
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Show charts when field selected */}
+              {selectedFieldId ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 bg-white border rounded">
+                    <h3 className="text-sm font-medium mb-2">Bar Chart</h3>
+                    <BarChart data={chartData} />
+                  </div>
+                  <div className="p-4 bg-white border rounded">
+                    <h3 className="text-sm font-medium mb-2">Pie Chart</h3>
+                    <PieChart data={chartData} />
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Choose a field to view analytics.
+                </p>
+              )}
             </div>
           </TabsContent>
         </Tabs>
@@ -595,25 +750,25 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-[425px] bg-white border border-gray-200 text-black">
+          <DialogHeader className="bg-white">
             <DialogTitle className="text-black">Delete Response</DialogTitle>
             <DialogDescription className="text-black">
               Are you sure you want to delete this response from{" "}
-              <span className="font-semibold">
+              <span className="font-semibold text-black">
                 {submissionToDelete?.submittedBy || "Anonymous"}
               </span>
               ? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="bg-white">
             <Button
               variant="outline"
               onClick={() => {
                 setIsDeleteDialogOpen(false);
                 setSubmissionToDelete(null);
               }}
-              className="text-black"
+              className="text-black bg-white border-gray-300 hover:bg-gray-50"
             >
               Cancel
             </Button>
@@ -621,10 +776,101 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
               variant="destructive"
               onClick={handleDeleteSubmission}
               disabled={deleteSubmissionMutation.isPending}
+              className="bg-red-600 hover:bg-red-700 text-white"
             >
               {deleteSubmissionMutation.isPending
                 ? "Deleting..."
                 : "Delete Response"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Response Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] bg-white border border-gray-200 text-black max-h-[80vh] overflow-y-auto">
+          <DialogHeader className="bg-white">
+            <DialogTitle className="text-black">Edit Response</DialogTitle>
+            <DialogDescription className="text-black">
+              Edit the response from{" "}
+              <span className="font-semibold text-black">
+                {submissionToEdit?.submittedBy || "Anonymous"}
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {submissionToEdit?.responses.map((response: any) => (
+              <div key={response.id} className="space-y-2">
+                <Label
+                  htmlFor={`field-${response.fieldId}`}
+                  className="text-sm font-medium text-black"
+                >
+                  {response.field?.label || "Unknown Field"}
+                  <Badge
+                    variant="outline"
+                    className="ml-2 text-xs text-black bg-gray-50 border-gray-300"
+                  >
+                    {response.field?.type || "UNKNOWN"}
+                  </Badge>
+                </Label>
+                {response.field?.type === "TEXTAREA" ? (
+                  <Textarea
+                    id={`field-${response.fieldId}`}
+                    value={editFormData[response.fieldId] || ""}
+                    onChange={(e) =>
+                      setEditFormData((prev) => ({
+                        ...prev,
+                        [response.fieldId]: e.target.value,
+                      }))
+                    }
+                    className="w-full bg-white border border-gray-300 text-black"
+                    rows={3}
+                  />
+                ) : (
+                  <Input
+                    id={`field-${response.fieldId}`}
+                    type={
+                      response.field?.type === "EMAIL"
+                        ? "email"
+                        : response.field?.type === "NUMBER"
+                        ? "number"
+                        : "text"
+                    }
+                    value={editFormData[response.fieldId] || ""}
+                    onChange={(e) =>
+                      setEditFormData((prev) => ({
+                        ...prev,
+                        [response.fieldId]: e.target.value,
+                      }))
+                    }
+                    className="w-full bg-white border border-gray-300 text-black"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter className="bg-white">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsEditDialogOpen(false);
+                setSubmissionToEdit(null);
+                setEditFormData({});
+              }}
+              className="text-black bg-white border-gray-300 hover:bg-gray-50"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleUpdateSubmission}
+              disabled={updateSubmissionMutation.isPending}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {updateSubmissionMutation.isPending
+                ? "Saving..."
+                : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>

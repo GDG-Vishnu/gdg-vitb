@@ -17,6 +17,12 @@ export const fieldTypes: FieldTypeInfo[] = [
     type: FormalFieldTypes.INPUT,
   },
   {
+    name: "Email",
+    isNew: false,
+    section: "Basic Inputs",
+    type: FormalFieldTypes.EMAIL,
+  },
+  {
     name: "Textarea",
     isNew: false,
     section: "Basic Inputs",
@@ -41,6 +47,12 @@ export const fieldTypes: FieldTypeInfo[] = [
     isNew: false,
     section: "Selection",
     type: FormalFieldTypes.CHECKBOX,
+  },
+  {
+    name: "Radio",
+    isNew: false,
+    section: "Selection",
+    type: FormalFieldTypes.RADIO,
   },
   // { name: "RadioGroup", isNew: false, section: "Selection", type: FormalFieldTypes.RADIO_GROUP },
   {
@@ -131,6 +143,7 @@ export const fieldTypes: FieldTypeInfo[] = [
 
 export const FormalNames: Record<string, string> = {
   [FormalFieldTypes.INPUT]: "Input",
+  [FormalFieldTypes.EMAIL]: "Email",
   [FormalFieldTypes.TEXTAREA]: "Textarea",
   [FormalFieldTypes.PASSWORD]: "Password",
   [FormalFieldTypes.PHONE]: "Phone",
@@ -182,6 +195,11 @@ export const defaultFieldConfig: Record<
     label: "Username",
     description: "This is your public display name.",
     placeholder: "@username",
+  },
+  [FormalFieldTypes.EMAIL]: {
+    label: "Email Address",
+    description: "Enter a valid email address.",
+    placeholder: "name@example.com",
   },
   [FormalFieldTypes.OTP]: {
     label: "One-Time Password",

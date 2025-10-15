@@ -20,6 +20,7 @@ function renderCustomComponent(field: FieldData) {
   // Map field types to component names
   const componentMap: Record<string, string> = {
     INPUT: "Input",
+    EMAIL: "Email",
     TEXTAREA: "TextArea",
     PASSWORD: "Password",
     PHONE: "Phone",

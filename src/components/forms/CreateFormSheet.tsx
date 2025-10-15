@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useCreateForm } from "@/hooks/use-forms";
-import { toast } from "sonner";
+import { toastNotifications } from "@/components/toast";
 import { Plus, Loader2 } from "lucide-react";
 
 const createFormSchema = z.object({
@@ -58,14 +58,16 @@ export function CreateFormSheet({ children }: CreateFormSheetProps) {
       const result = await createFormMutation.mutateAsync(data);
 
       if (result.success) {
-        toast.success("Form created successfully!");
+        toastNotifications.success.formCreated();
         reset();
         setOpen(false);
       } else {
-        toast.error(result.error || "Failed to create form");
+        toastNotifications.error.submissionFailed(
+          result.error || "Failed to create form"
+        );
       }
     } catch (error) {
-      toast.error("An unexpected error occurred");
+      toastNotifications.error.unexpectedError();
       console.error("Error creating form:", error);
     }
   };
