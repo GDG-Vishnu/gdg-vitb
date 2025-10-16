@@ -2,11 +2,14 @@
 
 import React from "react";
 import Navbar from "./navbar";
+import Events from "./events";
+import FAQs from "./faqs";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button3D as MagneticButton } from "@/components/ui/3d-button";
 import { LogOut, User, LogIn } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Footer from "@/app/client/footer/Footer";
 
 const HomePage = () => {
   const { data: session } = useSession();
@@ -96,7 +99,7 @@ const HomePage = () => {
         {/* Main heading with Google colors */}
         <div className="text-center mb-8">
           <h1
-            className="text-4xl md:text-8xl font-bold mb-4 font-mono leading-tight whitespace-nowrap"
+            className="text-4xl md:text-9xl font-bold mb-4 font-mono leading-tight whitespace-nowrap"
             style={{
               fontFamily:
                 '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
@@ -118,50 +121,89 @@ const HomePage = () => {
             <span className="text-black">Group</span>
           </h1>
 
-          <h3 style={{
+          <h3
+            className="text-black"
+            style={{
               fontFamily:
                 '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
               fontWeight: 400,
               fontStyle: "normal",
-              // Use a responsive clamp so the heading can scale and stay on one line across viewports
               fontSize: "45px",
               lineHeight: "146%",
               letterSpacing: "0",
               textTransform: "capitalize",
-              // leading-trim is not a standard CSS property in browsers; omitted
-            }} className="text-black">
+              // Heading background image
+
+              padding: "0.75rem 1.25rem",
+
+              color: "#0b1220",
+            }}
+          >
             Vishnu Institute Of Technology
           </h3>
         </div>
-
+        <img
+          src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581438/Main_Gate_yflgsj.png"
+          alt=""
+        />
         {/* Subtitle */}
         {/* <div className="text-center mb-12">
           <p className="text-xl md:text-2xl text-gray-500 font-medium font-mono tracking-wide">
             Converting Ideas Into Reality!
           </p>
         </div> */}
+        <img
+          src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581715/Abous_Us_ajp4jn.png"
+          alt=""
+        />
+        <div className="my-8 flex  items-center w-full ">
+          <div className="w-[180px]"></div>
+          <div className="flex *:flex-1 justify-center items-center space-x-4">
+            <img
+              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581801/Frame_60_odp3q8.png"
+              alt=""
+            />
+            <img
+              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581899/Events_Star_dwmobw.png"
+              alt=""
+            />
+            <h2
+              className="text-6xl font-semibold text-stone-950"
+              style={{
+                fontFamily:
+                  '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+                fontWeight: 400,
+                fontStyle: "normal",
+                // Use a responsive clamp so the heading can scale and stay on one line across viewports
 
-        {/* Admin button n check if the user is logged in */}
-        {isLoggedIn && (
-          <div className="text-center mb-8">
-            <MagneticButton
-              onClick={() => router.push("/admin")}
-              variant="default"
-              className="px-12 bg-blue-600 hover:bg-blue-700"
+                lineHeight: "146%",
+                letterSpacing: "0",
+                textTransform: "capitalize",
+                // leading-trim is not a standard CSS property in browsers; omitted
+              }}
             >
-              Admin
-            </MagneticButton>
+              Events{" "}
+            </h2>
+            <img
+              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581899/Events_Star_dwmobw.png"
+              alt=""
+            />
+            <img
+              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581801/Frame_60_odp3q8.png"
+              alt=""
+            />
           </div>
-        )}
-
-        {/* Google-colored decorative elements */}
-        <div className="flex items-center space-x-4">
-          <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-          <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-          <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-          <div className="w-4 h-4 bg-green-500 rounded-full"></div>
         </div>
+        {/* Events carousel component insertion */}
+        <div className="w-full px-4">
+          <Events />
+        </div>
+        {/* Admin button n check if the user is logged in */}
+        ``
       </div>
+
+      {/* FAQs section */}
+      <FAQs />
 
       {/* Floating elements */}
       <div className="absolute top-1/4 left-8 text-blue-500 opacity-30">
@@ -175,6 +217,8 @@ const HomePage = () => {
       <div className="absolute bottom-1/3 left-16 text-green-500 opacity-30">
         <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-current"></div>
       </div>
+      {/* Site footer */}
+      <Footer />
     </div>
   );
 };

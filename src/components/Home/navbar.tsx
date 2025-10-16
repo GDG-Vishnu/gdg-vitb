@@ -21,7 +21,7 @@ const navItems: NavItem[] = [
 
 export default function Navbar({ className }: { className?: string }) {
   return (
-    <header className={cn("w-full flex justify-center  py-6 px-4", className)}>
+    <header className={cn("w-full flex justify-center  py-6 px-4 ", className)}>
       <nav
         className="w-full bg-white rounded-[40px] border border-black shadow-md shadow-black/10 px-10 py-3.5  flex items-center justify-between mx-6 relative"
         style={{
@@ -46,7 +46,7 @@ export default function Navbar({ className }: { className?: string }) {
               className="h-12 w-auto object-contain"
             />
           </div>
-          <span className="font-semibold text-base md:text-lg">GDG VITB</span>
+      
         </div>
 
         {/* Centered nav links */}
@@ -68,7 +68,10 @@ export default function Navbar({ className }: { className?: string }) {
           
        
         <div className="ml-auto  flex items-center gap-4">
-             <button className="px-6 py-3 rounded-full border border-black bg-black text-white text-base md:text-lg font-medium hover:bg-gray-500">
+             <button className="px-6 py-3 rounded-full border border-black bg-black text-white text-base md:text-lg font-medium hover:bg-gray-500" onClick={() => {
+            //navigate to the auth/login 
+            window.location.href = "/auth/login";
+             }}>
             Get Started
           </button>
           <button className="px-6 py-3 rounded-full border border-black bg-white text-black text-base md:text-lg font-medium hover:bg-gray-50">
