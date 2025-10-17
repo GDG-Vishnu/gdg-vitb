@@ -4,6 +4,7 @@ import React from "react";
 import Navbar from "./navbar";
 import Events from "./events";
 import FAQs from "./faqs";
+import AboutSection from "./about";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button3D as MagneticButton } from "@/components/ui/3d-button";
@@ -99,14 +100,14 @@ const HomePage = () => {
         {/* Main heading with Google colors */}
         <div className="text-center mb-8">
           <h1
-            className="text-4xl md:text-9xl font-bold mb-4 font-mono leading-tight whitespace-nowrap"
+            className="text-4xl md:text-9xl sm:text-2xl font-bold mb-4 font-mono leading-tight whitespace-nowrap"
             style={{
               fontFamily:
                 '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
               fontWeight: 400,
               fontStyle: "normal",
               // Use a responsive clamp so the heading can scale and stay on one line across viewports
-              fontSize: "clamp(48px, 10vw, 110px)",
+              fontSize: "clamp(28px, 8vw, 80px)",
               lineHeight: "146%",
               letterSpacing: "0",
               textTransform: "capitalize",
@@ -128,12 +129,12 @@ const HomePage = () => {
                 '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
               fontWeight: 400,
               fontStyle: "normal",
-              fontSize: "45px",
+            
               lineHeight: "146%",
               letterSpacing: "0",
               textTransform: "capitalize",
               // Heading background image
-
+                   fontSize: "clamp(28px, 8vw, 80px)",
               padding: "0.75rem 1.25rem",
 
               color: "#0b1220",
@@ -143,25 +144,28 @@ const HomePage = () => {
           </h3>
         </div>
         <img
+          className=""
           src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581438/Main_Gate_yflgsj.png"
           alt=""
         />
+        {/* About section insertion */}
+        <AboutSection />
         {/* Subtitle */}
         {/* <div className="text-center mb-12">
           <p className="text-xl md:text-2xl text-gray-500 font-medium font-mono tracking-wide">
             Converting Ideas Into Reality!
           </p>
         </div> */}
-        <img
+        {/* <img className=""
           src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581715/Abous_Us_ajp4jn.png"
           alt=""
-        />
+        /> */}
         <div className="my-8 flex  items-center w-full ">
-          <div className="w-[180px]"></div>
+          <div className="md:w-[180px] sm:w-[200px]"></div>
           <div className="flex *:flex-1 justify-center items-center space-x-4">
             <img
               src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581801/Frame_60_odp3q8.png"
-              alt=""
+              alt="" className="hidden md:block"
             />
             <img
               src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581899/Events_Star_dwmobw.png"
@@ -191,6 +195,7 @@ const HomePage = () => {
             <img
               src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581801/Frame_60_odp3q8.png"
               alt=""
+              className="hidden md:block"
             />
           </div>
         </div>

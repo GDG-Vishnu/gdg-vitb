@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -20,37 +20,33 @@ const navItems: NavItem[] = [
 ];
 
 export default function Navbar({ className }: { className?: string }) {
-  return (
-    <header className={cn("w-full flex justify-center  py-6 px-4 ", className)}>
-      <nav
-        className="w-full bg-white rounded-[40px] border border-black shadow-md shadow-black/10 px-10 py-3.5  flex items-center justify-between mx-6 relative"
-        style={{
-          boxShadow: "0 8px 0 rgba(0,0,0,0.08), 0 4px 14px rgba(0,0,0,0.06)",
-          fontFamily:
-            '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-          fontWeight: 800,
-          fontStyle: "normal",
-          fontSize: "20px",
-          // leading-trim is not a standard CSS property in browsers; omitted
-          lineHeight: "146%",
-          letterSpacing: "0",
-          textTransform: "capitalize",
-        }}
-      >
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  React.useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) setMobileOpen(false);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  function renderDesktop() {
+    return (
+      <>
         <div className="flex items-center space-x-4">
           <div className="flex items-center justify-center w-[150px] h-[60px] rounded-md bg-transparent">
-            {/* Placeholder logo: swap with real Image if available */}
             <img
-              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760546851/Logo_cnbwsr.png"
+              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760630856/GDG-Lockup-1Line-White_3_1_ed5gem.png"
               alt="GDG VITB"
-              className="h-12 w-auto object-contain"
+              className="h-10 w-auto object-contain"
             />
           </div>
-      
         </div>
 
-        {/* Centered nav links */}
-        <ul className="hidden md:flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
+        <ul className="flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
           {navItems.map((item) => (
             <li key={item.label}>
               <a
@@ -65,20 +61,114 @@ export default function Navbar({ className }: { className?: string }) {
             </li>
           ))}
         </ul>
-          
-       
-        <div className="ml-auto  flex items-center gap-4">
-             <button className="px-6 py-3 rounded-full border border-black bg-black text-white text-base md:text-lg font-medium hover:bg-gray-500" onClick={() => {
-            //navigate to the auth/login 
-            window.location.href = "/auth/login";
-             }}>
-            Get Started
-          </button>
-          <button className="px-6 py-3 rounded-full border border-black bg-white text-black text-base md:text-lg font-medium hover:bg-gray-50">
-            Sign Up
+
+        <div className="ml-auto flex items-center gap-4">
+          <div className="flex items-center gap-4">
+            <button
+              className="px-6 py-3 rounded-full border border-black bg-black text-white text-base md:text-lg font-medium hover:bg-gray-500"
+              onClick={() => {
+                window.location.href = "/auth/login";
+              }}
+            >
+              Get Started
+            </button>
+            <button className="px-6 py-3 rounded-full border border-black bg-white text-black text-base md:text-lg font-medium hover:bg-gray-50">
+              Sign Up
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  function renderMobile() {
+    return (
+      <>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-between w-[180px] h-[40px] rounded-md bg-transparent">
+            <img
+              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760630856/GDG-Lockup-1Line-White_3_1_ed5gem.png"
+              alt="GDG VITB"
+              className="h-6 w-auto object-contain"
+            />
+          </div>
+        </div>
+
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            className="p-2 rounded-md border flex items-center justify-center"
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            <span className="flex flex-col justify-center items-center gap-1">
+              <span
+                className={cn(
+                  "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
+                  mobileOpen ? "translate-y-1 rotate-45" : ""
+                )}
+              />
+              <span
+                className={cn(
+                  "block w-6 h-0.5 bg-stone-950 transition-opacity duration-200",
+                  mobileOpen ? "opacity-0" : "opacity-100"
+                )}
+              />
+              <span
+                className={cn(
+                  "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
+                  mobileOpen ? "-translate-y-1 -rotate-45" : ""
+                )}
+              />
+            </span>
           </button>
         </div>
-        
+      </>
+    );
+  }
+
+  return (
+    <header className={cn("w-full flex justify-center  py-6 px-4 ", className)}>
+      <nav
+        className="w-full bg-white rounded-[40px] border border-black shadow-md shadow-black/10 px-6 py-2 md:py-3.5  flex items-center justify-between mx-4 relative"
+        style={{
+          boxShadow: "0 8px 0 rgba(0,0,0,0.08), 0 4px 14px rgba(0,0,0,0.06)",
+          fontFamily:
+            '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+          fontWeight: 800,
+          fontStyle: "normal",
+          fontSize: "18px",
+          lineHeight: "146%",
+          letterSpacing: "0",
+          textTransform: "capitalize",
+        }}
+      >
+        {isMobile ? renderMobile() : renderDesktop()}
+
+        {/* Mobile menu (kept outside flow so it overlays) */}
+        {isMobile && (
+          <div className="absolute left-0 right-0 top-full mt-2 z-30">
+            <div
+              className={cn(
+                "mx-4 rounded-lg bg-white border shadow-lg overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out",
+                mobileOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+              )}
+            >
+              <ul className="flex flex-col gap-0">
+                {navItems.map((item) => (
+                  <li key={item.label} className="border-b last:border-b-0">
+                    <a
+                      href={item.href}
+                      className="block px-4 py-3  text-stone-950 hover:bg-gray-50"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );

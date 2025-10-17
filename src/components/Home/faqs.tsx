@@ -30,7 +30,9 @@ export default function FAQs() {
 
         {/* Right FAQs */}
         <div className="flex-1">
+          
           <div className="space-y-4">
+            <h2 className="text-stone-950 sm:block">FAQ'S</h2>
             {faqs.map((q, i) => (
               <div
                 key={i}
