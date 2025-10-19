@@ -15,7 +15,7 @@ const sampleEvents: EventItem[] = [
     id: "e1",
     title: "Hackatron",
     image:
-      "https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609217/Frame_56_nxhvdp.png",
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1760852134/Frame_56_z0oyf0.png",
     ctacolor: "pink",
   },
   {
@@ -23,16 +23,16 @@ const sampleEvents: EventItem[] = [
     title: "Kode Kuru Kshetra",
 
     image:
-      "https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609853/Frame_56_1_eogacs.png",
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1760852185/Frame_56_1_cjtstq.png",
     ctacolor: "yellow",
   },
 
   {
     id: "e3",
-    title: "Hackathon Weekend",
+    title: "GENISIS",
 
     image:
-      "https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609980/Frame_56_2_yfup42.png",
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1760852218/Frame_56_2_yuagvz.png",
     ctacolor: "black",
   },
 ];

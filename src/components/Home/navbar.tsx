@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -11,9 +12,9 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "#", active: true },
+  { label: "Home", href: "/client", active: true },
   { label: "About", href: "#" },
-  { label: "Team", href: "#" },
+  { label: "Team", href: "/teams" },
   { label: "Events", href: "#" },
   { label: "Domain", href: "#" },
   { label: "Contact Us", href: "#" },
@@ -22,6 +23,7 @@ const navItems: NavItem[] = [
 export default function Navbar({ className }: { className?: string }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const pathname = usePathname();
 
   React.useEffect(() => {
     function handleResize() {
@@ -47,19 +49,24 @@ export default function Navbar({ className }: { className?: string }) {
         </div>
 
         <ul className="flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
-          {navItems.map((item) => (
-            <li key={item.label}>
-              <a
-                href={item.href}
-                className={cn(
-                  "text-base md:text-lg font-medium",
-                  item.active ? "text-black" : "text-gray-600 hover:text-black"
-                )}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const active = item.href && pathname === item.href;
+            return (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  className={cn(
+                    "text-base md:text-lg font-medium",
+                    active || item.active
+                      ? "text-black font-bold"
+                      : "text-gray-600 hover:text-black"
+                  )}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="ml-auto flex items-center gap-4">

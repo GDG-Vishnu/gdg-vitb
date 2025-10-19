@@ -20,5 +20,6 @@
   "/admin/form-builder": "src/app/admin/form-builder/page.tsx",
   "/admin/form-builder/:id": "src/app/admin/form-builder/[id]/page.tsx",
   "/admin/form-builder/:id/preview": "src/app/admin/form-builder/[id]/preview/page.tsx",
-  "/admin/cloudinary": "src/app/admin/cloudinary/page.tsx"
+  "/admin/cloudinary": "src/app/admin/cloudinary/page.tsx",
+  "/admin/teams": "src/app/admin/teams/page.tsx"
 }

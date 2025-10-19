@@ -68,6 +68,19 @@ model User {
 
     @@map("users")
 }
+//teams page model
+
+model TeamMember {
+    id          String   @id @default(cuid())
+    imageUrl    String
+    name        String
+    designation String
+    position    String?
+    linkedinUrl String?
+    mail        String?
+    bgColor     String?
+    @@map("team_members")
+}
 
 // NextAuth.js Account model
 model Account {
@@ -89,6 +102,7 @@ model Account {
     @@unique([provider, providerAccountId])
     @@map("accounts")
 }
+
 
 // NextAuth.js Session model
 model Session {

@@ -152,7 +152,6 @@ function Calendar({
               />
             );
           }
-
           return (
             <ChevronDownIcon className={cn("size-4", className)} {...props} />
           );
@@ -173,7 +172,6 @@ function Calendar({
     />
   );
 }
-
 function CalendarDayButton({
   className,
   day,
@@ -186,7 +184,6 @@ function CalendarDayButton({
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
-
   return (
     <Button
       ref={ref}
@@ -211,5 +208,4 @@ function CalendarDayButton({
     />
   );
 }
-
 export { Calendar, CalendarDayButton, type CalendarProps };

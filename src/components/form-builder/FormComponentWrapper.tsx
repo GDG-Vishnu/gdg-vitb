@@ -227,7 +227,7 @@ const FormComponentWrapper: React.FC<FormComponentWrapperProps> = ({
         <Button
           variant="ghost"
           size="sm"
-          className="absolute top-2 right-2 h-8 w-8 p-0 opacity-100 hover:opacity-100 hover:bg-muted/30 transition-all rounded"
+          className="absolute top-2 right-2 h-8 w-8 p-0 opacity-100 hover:opacity-100 hover:bg-muted/30 transition-all rounded z-20"
           aria-label="Open field settings"
           onClick={() => {
             console.log(
@@ -240,7 +240,7 @@ const FormComponentWrapper: React.FC<FormComponentWrapperProps> = ({
             setIsConfigOpen(!isConfigOpen);
           }}
         >
-          <Settings className="h-4 w-4" />
+          <Settings className="h-4 w-4 text-foreground" />
         </Button>
 
         {/* Preview Content */}

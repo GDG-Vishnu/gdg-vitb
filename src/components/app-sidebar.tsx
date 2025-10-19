@@ -185,8 +185,13 @@ const data = {
       url: "/admin/forms",
       icon: FormInput,
     },
-    // cloudinay icon and path
-    // { name: "Cloudinary", url: "/admin/cloudinary", icon: Cloud },
+    {
+      name: "Team Manage",
+      url: "/admin/teams",
+      icon: Users,
+    },
+    // cloudinary icon and path
+    { name: "Cloudinary", url: "/admin/cloudinary", icon: Cloud },
   ],
 };
 

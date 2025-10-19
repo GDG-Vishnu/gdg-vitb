@@ -25,6 +25,14 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { DatetimePicker } from "@/components/ui/extension/date-time-picker";
 
 interface Field {
   id: string;
@@ -51,13 +59,57 @@ export const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({
     String(field.defaultValue || "")
   );
   const [showPassword, setShowPassword] = React.useState(false);
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
+  const [selectedDateTime, setSelectedDateTime] = React.useState<
+    Date | undefined
+  >();
+
+  // Normalize incoming field.type values (many parts of the app use
+  // enum-like keys such as "OTP", "TAGS", or slightly different labels).
+  // Map common variants to the canonical case labels used below so the
+  // preview renderer consistently finds the correct branch.
+  const normalizedType = React.useMemo(() => {
+    const raw = String(field.type || "");
+    const key = raw.replace(/[\s_-]+/g, " ").toLowerCase();
+    // Use alias lists to avoid duplicate keys in object literals
+    const aliases: Array<[string[], string]> = [
+      [["otp", "input otp", "input-otp", "input_otp", "otpinput"], "Input OTP"],
+      [["tags", "tags input", "tags_input", "tagsinput"], "Tags Input"],
+      [["location", "location input"], "Location Input"],
+      [["signature", "signature input"], "Signature Input"],
+      [["date", "date picker"], "Date Picker"],
+      [["datetime", "datetime picker"], "Datetime Picker"],
+      [["smart datetime input"], "Smart Datetime Input"],
+      [["multi select", "multiselect"], "Multi Select"],
+      [["combobox"], "Combobox"],
+      [["file input"], "File Input"],
+      [["email", "email input"], "Email"],
+    ];
+
+    for (const [keys, value] of aliases) {
+      if (keys.includes(key)) return value;
+    }
+
+    return raw;
+  }, [field.type]);
 
   const renderField = () => {
-    switch (field.type) {
+    switch (normalizedType) {
       case "Input":
         return (
           <Input
             placeholder={field.placeholder || "Enter text..."}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            disabled={!isPreview}
+          />
+        );
+
+      case "Email":
+        return (
+          <Input
+            type="email"
+            placeholder={field.placeholder || "Enter email..."}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             disabled={!isPreview}
@@ -216,27 +268,47 @@ export const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({
 
       case "Date Picker":
         return (
-          <Button
-            variant="outline"
-            className="w-full justify-start text-left font-normal"
-            disabled={!isPreview}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {value || field.placeholder || "Pick a date"}
-          </Button>
+          <div>
+            <label className="sr-only">{field.label}</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate
+                    ? format(selectedDate, "PPP")
+                    : value || field.placeholder || "Pick a date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(d) => setSelectedDate(d as Date)}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         );
 
       case "Datetime Picker":
       case "Smart Datetime Input":
         return (
-          <Button
-            variant="outline"
-            className="w-full justify-start text-left font-normal"
-            disabled={!isPreview}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {value || field.placeholder || "Pick date and time"}
-          </Button>
+          <div>
+            <label className="sr-only">{field.label}</label>
+            <DatetimePicker
+              value={selectedDateTime}
+              onChange={setSelectedDateTime}
+              format={[
+                ["months", "days", "years"],
+                ["hours", "minutes", "am/pm"],
+              ]}
+              className="w-full"
+            />
+          </div>
         );
 
       case "File Input":

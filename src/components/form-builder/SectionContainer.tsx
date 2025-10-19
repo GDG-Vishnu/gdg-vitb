@@ -148,10 +148,10 @@ function FieldItem({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 opacity-100 hover:bg-muted/30 transition-all rounded"
+                className="h-8 w-8 p-0 opacity-100 hover:bg-muted/30 transition-all rounded z-20"
                 aria-label="Field settings"
               >
-                <Settings className="h-4 w-4 text-muted-foreground" />
+                <Settings className="h-4 w-4 text-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -357,10 +357,10 @@ export function SectionContainer({
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 w-8 p-0 opacity-100 hover:bg-muted/30 transition-all rounded"
+                  className="h-8 w-8 p-0 opacity-100 hover:bg-muted/30 transition-all rounded z-20"
                   aria-label="Section settings"
                 >
-                  <Settings className="h-4 w-4 text-muted-foreground" />
+                  <Settings className="h-4 w-4 text-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 const keyboardImg =
-  "https://res.cloudinary.com/duvr3z2z0/image/upload/v1760611622/Group_69_wyuwym.png";
+  "https://res.cloudinary.com/dlupkibvq/image/upload/v1760852227/Group_69_smmnyr.png";
 
 const faqs = [
   "What Is GDG Vishnu Institute Of Technology?",

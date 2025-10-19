@@ -117,26 +117,15 @@ export default function CloudinaryPage() {
         <header className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-semibold">Cloudinary Upload Portal</h1>
-            <p className="text-sm text-muted-foreground">
-              Drop images anywhere on this page to upload them to Cloudinary.
-            </p>
+          
           </div>
           <div className="flex gap-3 items-center">
-            <div className="text-sm text-muted-foreground">
-              Using unsigned uploads. Cloud name:{" "}
-              <span className="font-medium">{cloudName}</span>, Upload preset:{" "}
-              <span className="font-medium">{uploadPreset}</span>
-            </div>
+         
             <div className="ml-4 text-sm text-muted-foreground">
               {uploading ? "Uploading..." : "Ready"}
             </div>
           </div>
-          <div className="mt-2 text-xs text-muted-foreground">
-            The upload preset is read from{" "}
-            <code>NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code> if set, otherwise
-            the built-in fallback preset <code>GDG_UNSIGNED</code> is used. For
-            production, a signed upload flow is recommended.
-          </div>
+         
         </header>
 
         {/* Full-page dropzone */}
@@ -144,7 +133,7 @@ export default function CloudinaryPage() {
           <Dropzone onUpload={handleUpload} />
         </div>
 
-        {/* Upload results */}
+        {/* Upload results 
         <section className="mt-8">
           <h2 className="text-xl font-medium mb-4">Uploaded</h2>
           <div className="space-y-4">
@@ -152,7 +141,7 @@ export default function CloudinaryPage() {
               <p className="text-muted-foreground">No uploads yet.</p>
             ) : null}
 
-            {/* In-progress uploads from progressMap */}
+             In-progress uploads from progressMap 
             {Object.keys(progressMap).length > 0 && (
               <div>
                 <h3 className="text-sm font-medium mb-2">Uploading</h3>
@@ -180,31 +169,10 @@ export default function CloudinaryPage() {
               </div>
             )}
 
-            {/* Completed uploads gallery */}
-            {results.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium mb-2">Uploaded</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {results.map((r, i) => (
-                    <div
-                      key={i}
-                      className="border border-border rounded overflow-hidden bg-card"
-                    >
-                      {r.secure_url ? (
-                        <img
-                          src={r.secure_url}
-                          alt={r.original_filename}
-                          className="w-full h-40 object-cover"
-                        />
-                      ) : null}
-                      <div className="p-2 text-sm">{r.original_filename}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+         
           </div>
         </section>
+        */}
       </div>
     </div>
   );

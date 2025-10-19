@@ -145,7 +145,7 @@ const HomePage = () => {
         </div>
         <img
           className=""
-          src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581438/Main_Gate_yflgsj.png"
+          src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851689/Main_Gate_rlrbwg.png"
           alt=""
         />
         {/* About section insertion */}
@@ -164,11 +164,11 @@ const HomePage = () => {
           <div className="md:w-[180px] sm:w-[200px]"></div>
           <div className="flex *:flex-1 justify-center items-center space-x-4">
             <img
-              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581801/Frame_60_odp3q8.png"
+              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
               alt="" className="hidden md:block"
             />
             <img
-              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581899/Events_Star_dwmobw.png"
+              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
               alt=""
             />
             <h2
@@ -189,11 +189,11 @@ const HomePage = () => {
               Events{" "}
             </h2>
             <img
-              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581899/Events_Star_dwmobw.png"
+              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
               alt=""
             />
             <img
-              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581801/Frame_60_odp3q8.png"
+              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
               alt=""
               className="hidden md:block"
             />

@@ -34,7 +34,7 @@ export default function AboutSection() {
           <div className="relative z-10 flex items-center gap-6">
             <div className="flex-shrink-0" style={{ width: 96 }}>
               <img
-                src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760665020/Group_88_p5bl7h.png"
+                src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852197/Group_88_inuttu.png"
                 alt="decorative"
                 className="w-20 h-20 md:w-32 md:h-32 object-contain"
                 style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.5))" }}
