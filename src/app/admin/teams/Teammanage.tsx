@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import MemberCard from "@/components/Teams/MemberCard";
+import MemberCard from "@/app/client/Teams/MemberCard";
 import AddMemberForm, {
   MemberFormData,
 } from "@/app/admin/teams/components/addmember";
@@ -155,62 +155,158 @@ export default function Teammanage() {
     }
 
     if (selectedAction === "UPDATE") {
-      if (editing) {
-        setMembers((prev) =>
-          prev.map((m) =>
-            m.id === editing.id
-              ? { ...(m as Member), ...(memberFormData as Member) }
-              : m
-          )
-        );
-        setStatusMessage(`Updated ${memberFormData.name || editing.name}`);
-        setEditing(null);
-        setMemberFormData({});
+      if (!previewMember && !editing) {
+        setStatusMessage("No member selected to update.");
         return;
       }
 
-      if (previewMember) {
-        setMembers((prev) =>
-          prev.map((m) =>
-            m.name.toLowerCase() === previewMember.name.toLowerCase()
-              ? { ...(m as Member), ...(memberFormData as Member) }
-              : m
-          )
-        );
-        setStatusMessage(
-          `Updated ${memberFormData.name || previewMember.name}`
-        );
-        setMemberFormData({});
-        return;
-      }
+      const originalName = editing?.name || previewMember?.name;
 
-      setStatusMessage("No member selected to update.");
+      // Persist to the database via API
+      (async () => {
+        try {
+          setStatusMessage("Updating member...");
+          const res = await fetch("/api/teams/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              originalName: originalName, // Use original name to find the member
+              name: memberFormData.name, // New name (can be same or different)
+              imageUrl: memberFormData.imageUrl,
+              designation: memberFormData.designation,
+              position: memberFormData.position,
+              linkedinUrl: memberFormData.linkedinUrl,
+              mail: memberFormData.mail,
+              bgColor: memberFormData.bgColor,
+            }),
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            setStatusMessage(
+              (err && (err.error || err.message)) || "Failed to update member"
+            );
+            return;
+          }
+
+          const updated = await res.json();
+
+          // Update local state
+          setMembers((prev) =>
+            prev.map((m) =>
+              m.name.toLowerCase() === originalName!.toLowerCase()
+                ? {
+                    ...m,
+                    name: updated.name || memberFormData.name || m.name,
+                    imageUrl:
+                      updated.imageUrl || memberFormData.imageUrl || m.imageUrl,
+                    designation:
+                      updated.designation ||
+                      memberFormData.designation ||
+                      m.designation,
+                    position:
+                      updated.position ?? memberFormData.position ?? m.position,
+                    linkedinUrl:
+                      updated.linkedinUrl ??
+                      memberFormData.linkedinUrl ??
+                      m.linkedinUrl,
+                    mail: updated.mail ?? memberFormData.mail ?? m.mail,
+                  }
+                : m
+            )
+          );
+
+          // Update preview with new data
+          if (previewMember) {
+            setPreviewMember({
+              ...previewMember,
+              name: updated.name || memberFormData.name || previewMember.name,
+              imageUrl:
+                updated.imageUrl ||
+                memberFormData.imageUrl ||
+                previewMember.imageUrl,
+              designation:
+                updated.designation ||
+                memberFormData.designation ||
+                previewMember.designation,
+              position:
+                updated.position ??
+                memberFormData.position ??
+                previewMember.position,
+              linkedinUrl:
+                updated.linkedinUrl ??
+                memberFormData.linkedinUrl ??
+                previewMember.linkedinUrl,
+              mail: updated.mail ?? memberFormData.mail ?? previewMember.mail,
+            });
+          }
+
+          setStatusMessage(
+            `Updated ${updated.name || memberFormData.name || originalName}`
+          );
+          setEditing(null);
+          setMemberFormData({});
+        } catch (err) {
+          console.error(err);
+          setStatusMessage("Failed to update member (network error)");
+        }
+      })();
+
       return;
     }
   }
 
   function handleFormDelete() {
-    if (editing) {
-      setMembers((prev) => prev.filter((m) => m.id !== editing.id));
-      setStatusMessage(`Deleted ${editing.name}`);
-      setEditing(null);
-      setMemberFormData({});
-      return;
-    }
+    (async () => {
+      // Prefer deleting by Prisma id when available on the DB row.
+      let targetName: string | undefined;
+      let targetId: string | undefined;
 
-    if (previewMember) {
-      setMembers((prev) =>
-        prev.filter(
-          (m) => m.name.toLowerCase() !== previewMember.name.toLowerCase()
-        )
-      );
-      setStatusMessage(`Deleted ${previewMember.name}`);
-      setPreviewMember(null);
-      setMemberFormData({});
-      return;
-    }
+      if (editing) {
+        targetName = editing.name;
+      }
 
-    setStatusMessage("No member selected to delete.");
+      if (previewMember) {
+        targetName = previewMember.name;
+      }
+
+      // If no preview or editing is set, nothing to delete
+      if (!targetName) {
+        setStatusMessage("No member selected to delete.");
+        return;
+      }
+
+      try {
+        setStatusMessage("Deleting member...");
+        const res = await fetch("/api/teams/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: targetName }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          setStatusMessage(
+            (err && (err.error || err.message)) || "Failed to delete member"
+          );
+          return;
+        }
+
+        const data = await res.json();
+
+        // Remove from local UI state (best-effort match by name)
+        setMembers((prev) =>
+          prev.filter((m) => m.name.toLowerCase() !== targetName!.toLowerCase())
+        );
+        setStatusMessage(`Deleted ${targetName}`);
+        setEditing(null);
+        setPreviewMember(null);
+        setMemberFormData({});
+      } catch (err) {
+        console.error(err);
+        setStatusMessage("Failed to delete member (network error)");
+      }
+    })();
   }
 
   function handleFormCancel() {
@@ -218,6 +314,90 @@ export default function Teammanage() {
     setEditing(null);
     // keep selectedAction so user can choose another, but clear preview
     setPreviewMember(null);
+  }
+
+  // Primary action (extracted from the button onclick) so it can be reused
+  async function handlePrimaryAction() {
+    setStatusMessage(null);
+    const name = memberNameInput.trim();
+    if (!selectedAction) {
+      // create a new member with the provided name locally
+      const newMember: Member = {
+        id: Date.now(),
+        imageUrl: "https://picsum.photos/300/300",
+        name: name || "New Member",
+        designation: "MEMBER",
+        position: "",
+        linkedinUrl: "",
+        mail: "",
+      };
+      setMembers((prev) => [newMember, ...prev]);
+      setStatusMessage(`Added member: ${newMember.name}`);
+      setMemberNameInput("");
+      return;
+    }
+
+    // For GET DETAILS / READ / UPDATE / DELETE we call the API to fetch by name
+    if (!name) {
+      setStatusMessage("Please enter a member name to look up.");
+      return;
+    }
+
+    try {
+      setStatusMessage("Looking up member...");
+      const res = await fetch(
+        `/api/teams/get-by-name?name=${encodeURIComponent(name)}`
+      );
+      if (!res.ok) {
+        if (res.status === 404) {
+          setPreviewMember(null);
+          setStatusMessage(`No member found with name '${name}'.`);
+          return;
+        }
+        throw new Error(`API error ${res.status}`);
+      }
+
+      const data = await res.json();
+      // Map database shape to Member type if needed
+      const memberFromDb: Member = {
+        id: Date.now(),
+        imageUrl: data.imageUrl || "",
+        name: data.name || "",
+        designation: data.designation || "",
+        position: data.position,
+        linkedinUrl: data.linkedinUrl,
+        mail: data.mail,
+      };
+
+      setPreviewMember(memberFromDb);
+      setStatusMessage(`Loaded ${memberFromDb.name}`);
+
+      if (selectedAction === "READ") {
+        setEditing(memberFromDb);
+      } else if (selectedAction === "UPDATE") {
+        setEditing(memberFromDb);
+        setForm(memberFromDb);
+        // Pre-populate the form with the member's current data
+        setMemberFormData({
+          imageUrl: data.imageUrl || "",
+          name: data.name || "",
+          designation: data.designation || "",
+          position: data.position || "",
+          linkedinUrl: data.linkedinUrl || "",
+          mail: data.mail || "",
+          bgColor: data.bgColor || "",
+        });
+      } else if (selectedAction === "DELETE") {
+        // If delete is requested, perform local delete of previewed member by name
+        setMembers((prev) =>
+          prev.filter((m) => m.name.toLowerCase() !== name.toLowerCase())
+        );
+        setStatusMessage(`Deleted member ${memberFromDb.name}`);
+      }
+    } catch (err) {
+      console.error(err);
+      setStatusMessage("Failed to fetch member details.");
+    }
   }
 
   return (
@@ -266,6 +446,12 @@ export default function Teammanage() {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setMemberNameInput(e.target.value)
           }
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              void handlePrimaryAction();
+            }
+          }}
           placeholder="Enter member name"
           className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-1"
         />
@@ -282,79 +468,8 @@ export default function Teammanage() {
       {/* Primary action button */}
       <div className="mb-6">
         <button
-          onClick={async () => {
-            setStatusMessage(null);
-            const name = memberNameInput.trim();
-            if (!selectedAction) {
-              // create a new member with the provided name
-              const newMember: Member = {
-                id: Date.now(),
-                imageUrl: "https://picsum.photos/300/300",
-                name: name || "New Member",
-                designation: "MEMBER",
-                position: "",
-                linkedinUrl: "",
-                mail: "",
-              };
-              setMembers((prev) => [newMember, ...prev]);
-              setStatusMessage(`Added member: ${newMember.name}`);
-              setMemberNameInput("");
-              return;
-            }
-
-            // For GET DETAILS / READ / UPDATE / DELETE we call the API to fetch by name
-            if (!name) {
-              setStatusMessage("Please enter a member name to look up.");
-              return;
-            }
-
-            try {
-              setStatusMessage("Looking up member...");
-              const res = await fetch(
-                `/api/teams/get-by-name?name=${encodeURIComponent(name)}`
-              );
-              if (!res.ok) {
-                if (res.status === 404) {
-                  setPreviewMember(null);
-                  setStatusMessage(`No member found with name '${name}'.`);
-                  return;
-                }
-                throw new Error(`API error ${res.status}`);
-              }
-
-              const data = await res.json();
-              // Map database shape to Member type if needed
-              const memberFromDb: Member = {
-                id: Date.now(),
-                imageUrl: data.imageUrl || "",
-                name: data.name || "",
-                designation: data.designation || "",
-                position: data.position,
-                linkedinUrl: data.linkedinUrl,
-                mail: data.mail,
-              };
-
-              setPreviewMember(memberFromDb);
-              setStatusMessage(`Loaded ${memberFromDb.name}`);
-
-              if (selectedAction === "READ") {
-                setEditing(memberFromDb);
-              } else if (selectedAction === "UPDATE") {
-                setEditing(memberFromDb);
-                setForm(memberFromDb);
-              } else if (selectedAction === "DELETE") {
-                // If delete is requested, perform local delete of previewed member by name
-                setMembers((prev) =>
-                  prev.filter(
-                    (m) => m.name.toLowerCase() !== name.toLowerCase()
-                  )
-                );
-                setStatusMessage(`Deleted member ${memberFromDb.name}`);
-              }
-            } catch (err) {
-              console.error(err);
-              setStatusMessage("Failed to fetch member details.");
-            }
+          onClick={() => {
+            void handlePrimaryAction();
           }}
           onMouseEnter={() => setIsHoveringButton(true)}
           onMouseLeave={() => setIsHoveringButton(false)}
@@ -390,8 +505,86 @@ export default function Teammanage() {
         )}
       </div>
       {/* Member form */}
+
       <div className="flex justify-between">
-        {selectedAction == "ADD" && (
+        {previewMember && (
+          <div className="mb-6 w-full mr-8">
+            <h3 className="text-lg font-semibold mb-4">Member Data</h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                <div className="text-xs text-gray-500">Member ID</div>
+                <div className="mt-1 text-lg font-semibold text-gray-900">
+                  {previewMember?.id ?? "-"}
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                <div className="text-xs text-gray-500">Name</div>
+                <div className="mt-1 text-lg font-semibold text-gray-900">
+                  {memberFormData.name ?? previewMember?.name ?? "-"}
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                <div className="text-xs text-gray-500">Designation</div>
+                <div className="mt-1 text-base text-gray-800">
+                  {memberFormData.designation ??
+                    previewMember?.designation ??
+                    "-"}
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                <div className="text-xs text-gray-500">
+                  Position / Department
+                </div>
+                <div className="mt-1 text-base text-gray-800">
+                  {memberFormData.position ?? previewMember?.position ?? "-"}
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                <div className="text-xs text-gray-500">LinkedIn</div>
+                <div className="mt-1 text-sm">
+                  {memberFormData.linkedinUrl ?? previewMember?.linkedinUrl ? (
+                    <a
+                      href={
+                        memberFormData.linkedinUrl ?? previewMember?.linkedinUrl
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      {memberFormData.linkedinUrl ?? previewMember?.linkedinUrl}
+                    </a>
+                  ) : (
+                    <span className="text-gray-500">-</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                <div className="text-xs text-gray-500">Email</div>
+                <div className="mt-1 text-sm">
+                  {memberFormData.mail ?? previewMember?.mail ? (
+                    <a
+                      href={`mailto:${
+                        memberFormData.mail ?? previewMember?.mail
+                      }`}
+                      className="text-blue-600 underline"
+                    >
+                      {memberFormData.mail ?? previewMember?.mail}
+                    </a>
+                  ) : (
+                    <span className="text-gray-500">-</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {selectedAction === "ADD" && (
           <AddMemberForm
             action={selectedAction}
             form={memberFormData}
@@ -402,6 +595,24 @@ export default function Teammanage() {
             editing={!!editing}
             preview={previewMember}
           />
+        )}
+
+        {selectedAction === "UPDATE" && previewMember && (
+          <div className="mb-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4 text-blue-600">
+              Update Member
+            </h3>
+            <AddMemberForm
+              action={selectedAction}
+              form={memberFormData}
+              setForm={(next) => setMemberFormData(next)}
+              onSubmit={handleFormSubmit}
+              onDelete={handleFormDelete}
+              onCancel={handleFormCancel}
+              editing={true}
+              preview={previewMember}
+            />
+          </div>
         )}
 
         {/* Preview panel */}
@@ -422,6 +633,18 @@ export default function Teammanage() {
               {/* email icon */}
               <Mail className="w-5 h-5 text-muted-foreground" />
               <p className="text-lg text-stone-900  ">{previewMember.mail}</p>
+            </div>
+            <div className="mt-4 flex items-center gap-2">
+              <button
+                onClick={() => {
+                  if (!confirm(`Delete member '${previewMember.name}'?`))
+                    return;
+                  handleFormDelete();
+                }}
+                className="px-3 py-1 rounded-md bg-red-600 text-white hover:bg-red-700"
+              >
+                Delete
+              </button>
             </div>
           </div>
         )}

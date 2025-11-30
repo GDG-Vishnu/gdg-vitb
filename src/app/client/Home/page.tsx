@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Button3D as MagneticButton } from "@/components/ui/3d-button";
 import { LogOut, User, LogIn } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Footer from "@/app/client/footer/Footer";
+import Footer from "@/components/footer/Footer";
 
 const HomePage = () => {
   const { data: session } = useSession();
@@ -30,7 +30,7 @@ const HomePage = () => {
   };
   return (
     <div
-      className="min-h-screen bg-white relative overflow-hidden "
+      className="min-h-screen bg-white relative overflow-hidden flex flex-col justify-center "
       style={{
         backgroundColor: "white",
         backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
@@ -129,12 +129,12 @@ const HomePage = () => {
                 '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
               fontWeight: 400,
               fontStyle: "normal",
-            
+
               lineHeight: "146%",
               letterSpacing: "0",
               textTransform: "capitalize",
               // Heading background image
-                   fontSize: "clamp(28px, 8vw, 80px)",
+              fontSize: "clamp(28px, 8vw, 80px)",
               padding: "0.75rem 1.25rem",
 
               color: "#0b1220",
@@ -144,9 +144,10 @@ const HomePage = () => {
           </h3>
         </div>
         <img
-          className=""
+          className="block mb-0"
           src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851689/Main_Gate_rlrbwg.png"
           alt=""
+          style={{ marginBottom: 0 }}
         />
         {/* About section insertion */}
         <AboutSection />
@@ -160,12 +161,13 @@ const HomePage = () => {
           src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760581715/Abous_Us_ajp4jn.png"
           alt=""
         /> */}
-        <div className="my-8 flex  items-center w-full ">
-          <div className="md:w-[180px] sm:w-[200px]"></div>
+        <div className="my-8 flex  justify-center items-center w-full ">
+         
           <div className="flex *:flex-1 justify-center items-center space-x-4">
             <img
               src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
-              alt="" className="hidden md:block"
+              alt=""
+              className="hidden md:block"
             />
             <img
               src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
@@ -200,7 +202,7 @@ const HomePage = () => {
           </div>
         </div>
         {/* Events carousel component insertion */}
-        <div className="w-full px-4">
+        <div className="w-full px-4 ">
           <Events />
         </div>
         {/* Admin button n check if the user is logged in */}

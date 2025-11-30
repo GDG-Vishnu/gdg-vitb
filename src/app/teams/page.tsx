@@ -1,5 +1,5 @@
 import React from "react";
-import TeamsPage from "@/components/Teams/page";
+import TeamsPage from "@/app/client/Teams/page";
 
 export default function Page() {
   return <TeamsPage />;

@@ -73,15 +73,17 @@ model User {
 model TeamMember {
     id          String   @id @default(cuid())
     imageUrl    String
+    logo        String?
     name        String
     designation String
-    position    String?
+    position    String? 
     linkedinUrl String?
     mail        String?
     bgColor     String?
+    rank        Int      @default(0)
+    dept_rank   Int      @default(0)
     @@map("team_members")
 }
-
 // NextAuth.js Account model
 model Account {
     id                String  @id @default(cuid())
@@ -114,6 +116,20 @@ model Session {
 
     @@map("sessions")
 }
+model Events {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  Date    DateTime
+  Time      String
+  venue        String
+  organizer    String
+  coOrganizer  String?
+  keyHighlights String[]
+  tags         String[]
+  status       String
+}
+
 
 // NextAuth.js Verification Token model
 model VerificationToken {

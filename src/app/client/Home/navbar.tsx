@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -15,7 +16,7 @@ const navItems: NavItem[] = [
   { label: "Home", href: "/client", active: true },
   { label: "About", href: "#" },
   { label: "Team", href: "/teams" },
-  { label: "Events", href: "#" },
+  { label: "Events", href: "/events" },
   { label: "Domain", href: "#" },
   { label: "Contact Us", href: "#" },
 ];
@@ -53,8 +54,8 @@ export default function Navbar({ className }: { className?: string }) {
             const active = item.href && pathname === item.href;
             return (
               <li key={item.label}>
-                <a
-                  href={item.href}
+                <Link
+                  href={item.href ?? "#"}
                   className={cn(
                     "text-base md:text-lg font-medium",
                     active || item.active
@@ -63,7 +64,7 @@ export default function Navbar({ className }: { className?: string }) {
                   )}
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             );
           })}
@@ -164,12 +165,12 @@ export default function Navbar({ className }: { className?: string }) {
               <ul className="flex flex-col gap-0">
                 {navItems.map((item) => (
                   <li key={item.label} className="border-b last:border-b-0">
-                    <a
-                      href={item.href}
+                    <Link
+                      href={item.href ?? "#"}
                       className="block px-4 py-3  text-stone-950 hover:bg-gray-50"
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

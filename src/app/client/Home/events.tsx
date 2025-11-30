@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useRef } from "react";
+import Link from "next/link";
 
 type EventItem = {
   id: string;
   title: string;
-
   image?: string;
   ctacolor?: string;
 };
@@ -30,7 +30,6 @@ const sampleEvents: EventItem[] = [
   {
     id: "e3",
     title: "GENISIS",
-
     image:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1760852218/Frame_56_2_yuagvz.png",
     ctacolor: "black",
@@ -50,11 +49,6 @@ export default function EventsCarousel() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  function scrollBy(amount: number) {
-    if (!scrollerRef.current) return;
-    scrollerRef.current.scrollBy({ left: amount, behavior: "smooth" });
-  }
-
   function renderDesktop() {
     return (
       <div
@@ -71,7 +65,11 @@ export default function EventsCarousel() {
 
   function renderMobile() {
     return (
-      <div className="flex flex-col gap-4 px-4">
+      <div
+        ref={scrollerRef}
+        className="no-scrollbar flex overflow-x-auto px-4 snap-x snap-mandatory"
+        style={{ scrollPadding: "1rem", gap: "12px" }}
+      >
         {sampleEvents.map((ev) => (
           <EventCardMobile key={ev.id} event={ev} />
         ))}
@@ -152,16 +150,22 @@ function EventCard({ event }: { event: EventItem }) {
                 bgClass = "bg-black hover:bg-gray-800 text-white";
 
               return (
-                <button
+                <Link
+                  href={`/events/${event.id}`}
                   aria-label={`Open ${event.title}`}
                   className={`${bgClass} rounded-full flex items-center justify-center shadow-lg`}
-                  style={{ width: 56, height: 56, fontSize: 18 }}
+                  style={{
+                    width: 56,
+                    height: 56,
+                    fontSize: 18,
+                    display: "inline-flex",
+                  }}
                 >
                   <img
                     src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                     alt=""
                   />
-                </button>
+                </Link>
               );
             })()}
           </div>
@@ -174,9 +178,10 @@ function EventCard({ event }: { event: EventItem }) {
 function EventCardMobile({ event }: { event: EventItem }) {
   return (
     <article
-      className="bg-transparent shadow-md overflow-hidden rounded-2xl"
+      className="bg-transparent shadow-md overflow-hidden rounded-2xl flex-shrink-0 snap-start"
       style={{
-        width: "100%",
+        width: 280,
+        minWidth: 280,
         borderWidth: 1,
         borderStyle: "solid",
         borderColor: "#000",
@@ -236,16 +241,22 @@ function EventCardMobile({ event }: { event: EventItem }) {
                 bgClass = "bg-black hover:bg-gray-800 text-white";
 
               return (
-                <button
+                <Link
+                  href={`/events/${event.id}`}
                   aria-label={`Open ${event.title}`}
                   className={`${bgClass} rounded-full flex items-center justify-center shadow-lg`}
-                  style={{ width: 48, height: 48, fontSize: 16 }}
+                  style={{
+                    width: 48,
+                    height: 48,
+                    fontSize: 16,
+                    display: "inline-flex",
+                  }}
                 >
                   <img
                     src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                     alt=""
                   />
-                </button>
+                </Link>
               );
             })()}
           </div>

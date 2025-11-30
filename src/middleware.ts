@@ -57,6 +57,7 @@ export default withAuth(
         // Allow access to public routes
         if (
           pathname === "/" ||
+          pathname.startsWith("/teams") ||
           pathname.startsWith("/api/auth") ||
           pathname.startsWith("/auth") ||
           pathname.startsWith("/_next") ||

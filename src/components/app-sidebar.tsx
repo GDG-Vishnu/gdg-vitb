@@ -11,6 +11,7 @@ import {
   Settings,
   LogOut,
   Cloud,
+  Calendar,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -190,8 +191,10 @@ const data = {
       url: "/admin/teams",
       icon: Users,
     },
+
     // cloudinary icon and path
     { name: "Cloudinary", url: "/admin/cloudinary", icon: Cloud },
+    {name:"Events",url:"/admin/events",icon:Calendar,},
   ],
 };
 

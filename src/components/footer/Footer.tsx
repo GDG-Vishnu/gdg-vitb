@@ -95,6 +95,7 @@ export default function Footer() {
                     <FaWhatsapp className="text-black w-5 h-5 md:w-6 md:h-6" />
                   </a> */}
                 </div>
+                <h2 className="text-[#FFE7A5] mt-2  text-sm md:text-lg"  >Email  us  at <a href="mailto:gdg@vishnu.edu.in" >gdg@vishnu.edu.in</a></h2>
               </div>
             </div>
           </div>

@@ -14,12 +14,13 @@ export async function GET(request: Request) {
 
   try {
     const member = await prisma.teamMember.findFirst({
-      where: {
-        name: {
-          equals: name,
-          mode: "insensitive",
-        },
-      },
+     where: {
+  name: {
+    startsWith: name,   // "ABC"
+    mode: "insensitive",
+  },
+},
+
     });
 
     if (!member) {
