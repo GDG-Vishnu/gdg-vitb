@@ -118,6 +118,7 @@ model Session {
 }
 model Events {
   id           Int      @id @default(autoincrement())
+  rank      Int      @default(0)
   title        String
   description  String
   Date    DateTime
@@ -128,7 +129,13 @@ model Events {
   keyHighlights String[]
   tags         String[]
   status       String
+  imageUrl     String?
+  coverUrl     String?
+  isDone      Boolean  @default(false)
+  MembersParticipated Int      @default(0)
+  Theme String[]
 }
+
 
 
 // NextAuth.js Verification Token model

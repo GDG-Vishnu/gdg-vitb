@@ -14,6 +14,7 @@ type TeamMember = {
   designation?: string | null;
   position?: string | null;
   rank?: number | null;
+  dept_rank?: number | null;
   linkedinUrl?: string | null;
   mail?: string | null;
 };
@@ -141,13 +142,21 @@ export default function TeamsPage() {
             // Group members by position and render a section per position
             <div id="team" className="space-y-8 w-full">
               {Object.entries(
-                // sort by rank (ascending) then name, then group by position
+                // sort by dept_rank (ascending), then rank, then name, then group by position
                 team
                   .slice()
                   .sort((a, b) => {
+                    // First sort by dept_rank (department position on page)
+                    const dra =
+                      typeof a.dept_rank === "number" ? a.dept_rank : 0;
+                    const drb =
+                      typeof b.dept_rank === "number" ? b.dept_rank : 0;
+                    if (dra !== drb) return dra - drb;
+                    // Then sort by rank within the position
                     const ra = typeof a.rank === "number" ? a.rank : 0;
                     const rb = typeof b.rank === "number" ? b.rank : 0;
                     if (ra !== rb) return ra - rb;
+                    // Finally sort by name
                     return (a.name || "").localeCompare(b.name || "");
                   })
                   .reduce<Record<string, TeamMember[]>>((acc, member) => {

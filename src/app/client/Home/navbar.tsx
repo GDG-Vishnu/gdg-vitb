@@ -16,9 +16,9 @@ const navItems: NavItem[] = [
   { label: "Home", href: "/client", active: true },
   { label: "About", href: "#" },
   { label: "Team", href: "/teams" },
-  { label: "Events", href: "/events" },
-  { label: "Domain", href: "#" },
-  { label: "Contact Us", href: "#" },
+  { label: "Events", href: "/client/events" },
+  { label: "Gallery", href: "#" },
+  { label: "Contact Us", href: "/client/contactus" },
 ];
 
 export default function Navbar({ className }: { className?: string }) {
@@ -40,11 +40,11 @@ export default function Navbar({ className }: { className?: string }) {
     return (
       <>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center justify-center w-[150px] h-[60px] rounded-md bg-transparent">
+          <div className="flex items-center justify-center w-[300px] h-[60px] rounded-md bg-transparent object-cover">
             <img
-              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760630856/GDG-Lockup-1Line-White_3_1_ed5gem.png"
+              src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1764661579/GDG_Insta_Post_1_1_pungg0.png"
               alt="GDG VITB"
-              className="h-10 w-auto object-contain"
+              className="h-[60px]  w-[300px] object-contain"
             />
           </div>
         </div>
@@ -70,21 +70,7 @@ export default function Navbar({ className }: { className?: string }) {
           })}
         </ul>
 
-        <div className="ml-auto flex items-center gap-4">
-          <div className="flex items-center gap-4">
-            <button
-              className="px-6 py-3 rounded-full border border-black bg-black text-white text-base md:text-lg font-medium hover:bg-gray-500"
-              onClick={() => {
-                window.location.href = "/auth/login";
-              }}
-            >
-              Get Started
-            </button>
-            <button className="px-6 py-3 rounded-full border border-black bg-white text-black text-base md:text-lg font-medium hover:bg-gray-50">
-              Sign Up
-            </button>
-          </div>
-        </div>
+   
       </>
     );
   }

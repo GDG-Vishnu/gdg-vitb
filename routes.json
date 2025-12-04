@@ -1,25 +1,55 @@
 {
-  "/": "src/app/page.tsx",
-  "/client": "src/app/client/page.tsx",
-  "/preview/:formId": "src/app/preview/[formId]/page.tsx",
-  "/form-builder/demo": "src/app/form-builder/demo/page.tsx",
-  "/demo/loading": "src/app/demo/loading/page.tsx",
-  "/unauthorized": "src/app/unauthorized/page.tsx",
-  "/sync-loading": "src/app/sync-loading/page.tsx",
-  "/loading-demo": "src/app/loading-demo/page.tsx",
-  "/auth/login": "src/app/auth/login/page.tsx",
-  "/auth/signup": "src/app/auth/signup/page.tsx",
-  "/auth/forgot-password": "src/app/auth/forgot-password/page.tsx",
-  "/auth/error": "src/app/auth/error/page.tsx",
-  "/admin": "src/app/admin/page.tsx",
-  "/admin/dashboard": "src/app/admin/dashboard/page.tsx",
-  "/admin/users": "src/app/admin/users/page.tsx",
-  "/admin/forms": "src/app/admin/forms/page.tsx",
-  "/admin/forms/:id/responses": "src/app/admin/forms/[id]/responses/page.tsx",
-  "/admin/form-preview/:id": "src/app/admin/form-preview/[id]/page.tsx",
-  "/admin/form-builder": "src/app/admin/form-builder/page.tsx",
-  "/admin/form-builder/:id": "src/app/admin/form-builder/[id]/page.tsx",
-  "/admin/form-builder/:id/preview": "src/app/admin/form-builder/[id]/preview/page.tsx",
-  "/admin/cloudinary": "src/app/admin/cloudinary/page.tsx",
-  "/admin/teams": "src/app/admin/teams/page.tsx"
+  "pages": {
+    "/": "src/app/page.tsx",
+    "/events": "src/app/events/page.tsx",
+    "/teams": "src/app/teams/page.tsx",
+    "/preview/:formId": "src/app/preview/[formId]/page.tsx",
+    "/unauthorized": "src/app/unauthorized/page.tsx"
+  },
+  "client": {
+    "/client": "src/app/client/page.tsx",
+    "/client/home": "src/app/client/Home/page.tsx",
+    "/client/events": "src/app/client/events/page.tsx",
+    "/client/events/:id": "src/app/client/events/[id]/page.tsx",
+    "/client/teams": "src/app/client/Teams/page.tsx",
+    "/client/contactus": "src/app/client/contactus/page.tsx"
+  },
+  "auth": {
+    "/auth/login": "src/app/auth/login/page.tsx",
+    "/auth/signup": "src/app/auth/signup/page.tsx",
+    "/auth/forgot-password": "src/app/auth/forgot-password/page.tsx",
+    "/auth/error": "src/app/auth/error/page.tsx"
+  },
+  "admin": {
+    "/admin": "src/app/admin/page.tsx",
+    "/admin/dashboard": "src/app/admin/dashboard/page.tsx",
+    "/admin/users": "src/app/admin/users/page.tsx",
+    "/admin/forms": "src/app/admin/forms/page.tsx",
+    "/admin/forms/:id/responses": "src/app/admin/forms/[id]/responses/page.tsx",
+    "/admin/form-preview/:id": "src/app/admin/form-preview/[id]/page.tsx",
+    "/admin/form-builder": "src/app/admin/form-builder/page.tsx",
+    "/admin/form-builder/:id": "src/app/admin/form-builder/[id]/page.tsx",
+    "/admin/form-builder/:id/preview": "src/app/admin/form-builder/[id]/preview/page.tsx",
+    "/admin/cloudinary": "src/app/admin/cloudinary/page.tsx",
+    "/admin/teams": "src/app/admin/teams/page.tsx",
+    "/admin/events": "src/app/admin/events/page.tsx",
+    "/admin/events-manage": "src/app/admin/events-manage/page.tsx"
+  },
+  "api": {
+    "/api/auth/[...nextauth]": "src/app/api/auth/[...nextauth]/route.ts",
+    "/api/email/validate": "src/app/api/email/validate/route.ts",
+    "/api/teams/list": "src/app/api/teams/list/route.ts",
+    "/api/teams/create": "src/app/api/teams/create/route.ts",
+    "/api/teams/update": "src/app/api/teams/update/route.ts",
+    "/api/teams/delete": "src/app/api/teams/delete/route.ts",
+    "/api/teams/get-by-name": "src/app/api/teams/get-by-name/route.ts",
+    "/api/teams/name-rank": "src/app/api/teams/name-rank/route.ts"
+  },
+  "demo": {
+    "/form-builder/demo": "src/app/form-builder/demo/page.tsx",
+    "/demo/loading": "src/app/demo/loading/page.tsx",
+    "/sync-loading": "src/app/sync-loading/page.tsx",
+    "/loading-demo": "src/app/loading-demo/page.tsx",
+    "/development": "src/app/development/page.tsx"
+  }
 }

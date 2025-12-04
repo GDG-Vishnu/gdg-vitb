@@ -10,9 +10,9 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-[#111214] text-gray-300 py-12">
+    <footer className="bg-[#111214] text-gray-300 py-12 w-full">
       <div className="w-full mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-0">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between  md:gap-0">
           {/* Left: Logo */}
           <div className="flex items-center gap-4">
             <img
@@ -33,7 +33,7 @@ export default function Footer() {
                 </h2>
               </div>
 
-              <div className="border p-4 border-[#CCF6C5]">
+              <div className="border p-4  border-[#CCF6C5] ">
                 <div className="font-semibold text-[#CCF6C5] text-base md:text-lg">
                   Quick Links
                 </div>
@@ -44,13 +44,15 @@ export default function Footer() {
                   <a href="#" className="hover:underline">
                     Domain
                   </a>
-                  <a href="#" className="hover:underline">
+                   </div>
+                   <div className="mt-2 flex flex-wrap gap-4 text-[#CCF6C5] p-1 text-sm md:text-lg"> <a href="#" className="hover:underline">
                     Team
                   </a>
                   <a href="#" className="hover:underline">
                     Contact us
-                  </a>
-                </div>
+                  </a></div>
+               
+              
               </div>
 
               <div className="border md:w-[450px] w-full border-[#FFE7A5] p-4">
