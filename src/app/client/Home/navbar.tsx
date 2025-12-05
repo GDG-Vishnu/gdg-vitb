@@ -40,16 +40,16 @@ export default function Navbar({ className }: { className?: string }) {
     return (
       <>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center justify-center w-[300px] h-[60px] rounded-md bg-transparent object-cover">
+          <div className="flex items-center justify-center w-[300px] h-[60px]">
             <img
               src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1764661579/GDG_Insta_Post_1_1_pungg0.png"
               alt="GDG VITB"
-              className="h-[60px]  w-[300px] object-contain"
+              className="h-[60px] w-[300px] object-contain"
             />
           </div>
         </div>
 
-        <ul className="flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
+        <ul className="flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2 font-productSans">
           {navItems.map((item) => {
             const active = item.href && pathname === item.href;
             return (
@@ -57,7 +57,7 @@ export default function Navbar({ className }: { className?: string }) {
                 <Link
                   href={item.href ?? "#"}
                   className={cn(
-                    "text-base md:text-lg font-medium",
+                    "text-base md:text-lg font-medium font-productSans",
                     active || item.active
                       ? "text-black font-bold"
                       : "text-gray-600 hover:text-black"
@@ -69,8 +69,6 @@ export default function Navbar({ className }: { className?: string }) {
             );
           })}
         </ul>
-
-   
       </>
     );
   }
@@ -79,7 +77,7 @@ export default function Navbar({ className }: { className?: string }) {
     return (
       <>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center justify-between w-[180px] h-[40px] rounded-md bg-transparent">
+          <div className="flex items-center justify-between w-[180px] h-[40px]">
             <img
               src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760630856/GDG-Lockup-1Line-White_3_1_ed5gem.png"
               alt="GDG VITB"
@@ -122,24 +120,15 @@ export default function Navbar({ className }: { className?: string }) {
   }
 
   return (
-    <header className={cn("w-full flex justify-center  py-6 px-4 ", className)}>
+    <header className={cn("w-full flex justify-center py-6 px-4", className)}>
       <nav
-        className="w-full bg-white rounded-[40px] border border-black shadow-md shadow-black/10 px-6 py-2 md:py-3.5  flex items-center justify-between mx-4 relative"
+        className="w-full bg-white rounded-[40px] border border-black shadow-md px-6 py-2 md:py-3.5 flex items-center justify-between mx-4 relative font-productSans"
         style={{
           boxShadow: "0 8px 0 rgba(0,0,0,0.08), 0 4px 14px rgba(0,0,0,0.06)",
-          fontFamily:
-            '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-          fontWeight: 800,
-          fontStyle: "normal",
-          fontSize: "18px",
-          lineHeight: "146%",
-          letterSpacing: "0",
-          textTransform: "capitalize",
         }}
       >
         {isMobile ? renderMobile() : renderDesktop()}
 
-        {/* Mobile menu (kept outside flow so it overlays) */}
         {isMobile && (
           <div className="absolute left-0 right-0 top-full mt-2 z-30">
             <div
@@ -148,12 +137,12 @@ export default function Navbar({ className }: { className?: string }) {
                 mobileOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
               )}
             >
-              <ul className="flex flex-col gap-0">
+              <ul className="flex flex-col gap-0 font-productSans">
                 {navItems.map((item) => (
                   <li key={item.label} className="border-b last:border-b-0">
                     <Link
                       href={item.href ?? "#"}
-                      className="block px-4 py-3  text-stone-950 hover:bg-gray-50"
+                      className="block px-4 py-3 text-stone-950 hover:bg-gray-50 font-productSans"
                     >
                       {item.label}
                     </Link>

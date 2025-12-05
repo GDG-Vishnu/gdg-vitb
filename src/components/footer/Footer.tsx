@@ -25,38 +25,48 @@ export default function Footer() {
           <div className="flex-1 flex items-center justify-center">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-[924px] md:h-[156px] px-4 md:px-[56px] py-4 text-sm text-gray-300">
               <div className="border p-4 flex flex-col items-center justify-center border-[#C3ECF6]">
-                <h2 className="text-[#C3ECF6] text-base md:text-xl font-medium">
+                <h2 className="text-[#C3ECF6] text-base md:text-xl font-medium font-productSans">
                   © 2025 GDG VITB.
                 </h2>
-                <h2 className="text-[#C3ECF6] text-sm md:text-lg">
+                <h2 className="text-[#C3ECF6] text-sm md:text-lg font-productSans">
                   All Rights are reserved
                 </h2>
               </div>
 
               <div className="border p-4  border-[#CCF6C5] ">
-                <div className="font-semibold text-[#CCF6C5] text-base md:text-lg">
+                <div className="font-semibold text-[#CCF6C5] text-base md:text-lg font-productSans">
                   Quick Links
                 </div>
                 <div className="mt-2 flex flex-wrap gap-4 text-[#CCF6C5] p-1 text-sm md:text-lg">
-                  <a href="#" className="hover:underline">
+                  <a href="/" className="hover:underline font-productSans">
                     Home
                   </a>
-                  <a href="#" className="hover:underline">
-                    Domain
+                  <a
+                    href="/gallery"
+                    className="hover:underline font-productSans"
+                  >
+                    Gallery
                   </a>
-                   </div>
-                   <div className="mt-2 flex flex-wrap gap-4 text-[#CCF6C5] p-1 text-sm md:text-lg"> <a href="#" className="hover:underline">
+                </div>
+                <div className="mt-2 flex flex-wrap gap-4 text-[#CCF6C5] p-1 text-sm md:text-lg">
+                  {" "}
+                  <a
+                    href="/client/Teams"
+                    className="hover:underline font-productSans  "
+                  >
                     Team
                   </a>
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="/client/contactus"
+                    className="hover:underline font-productSans"
+                  >
                     Contact us
-                  </a></div>
-               
-              
+                  </a>
+                </div>
               </div>
 
               <div className="border md:w-[450px] w-full border-[#FFE7A5] p-4">
-                <a className="font-semibold text-[#FFE7A5] text-base md:text-lg">
+                <a className="font-semibold text-[#FFE7A5] text-base md:text-lg font-productSans">
                   Connect
                 </a>
                 <div className="mt-2 flex items-center gap-3">
@@ -97,7 +107,10 @@ export default function Footer() {
                     <FaWhatsapp className="text-black w-5 h-5 md:w-6 md:h-6" />
                   </a> */}
                 </div>
-                <h2 className="text-[#FFE7A5] mt-2  text-sm md:text-lg"  >Email  us  at <a href="mailto:gdg@vishnu.edu.in" >gdg@vishnu.edu.in</a></h2>
+                <h2 className="text-[#FFE7A5] mt-2  text-sm md:text-lg font-productSans">
+                  Email us at{" "}
+                  <a href="mailto:gdg@vishnu.edu.in">gdg@vishnu.edu.in</a>
+                </h2>
               </div>
             </div>
           </div>
@@ -105,7 +118,7 @@ export default function Footer() {
           {/* Right: small locale */}
         </div>
 
-        <div className="text-center mt-6 text-sm text-gray-400">
+        <div className="text-center mt-6 text-sm text-gray-400 font-productSans">
           Designed With <span className="text-red-500">♥</span> By GDG VITB
           Team.
         </div>

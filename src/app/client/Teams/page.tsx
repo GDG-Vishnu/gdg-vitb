@@ -15,6 +15,7 @@ type TeamMember = {
   position?: string | null;
   rank?: number | null;
   dept_rank?: number | null;
+  dept_logo?: string | null;
   linkedinUrl?: string | null;
   mail?: string | null;
 };
@@ -183,7 +184,8 @@ export default function TeamsPage() {
                     >
                       {position}
                     </h2>
-                  </div>
+                     {/* <img src={members[0].dept_logo || "/default-logo.png"} alt={`${position} logo`} />*/}
+                  </div>  
                   <div className="h-4"></div>
                   <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
                     <div className="flex gap-6 px-4 min-w-max justify-start md:justify-center">

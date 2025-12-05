@@ -4,15 +4,18 @@ import React from "react";
 import { Mail, Linkedin } from "lucide-react";
 
 export type MemberCardProps = {
-  id: string | number;
-  imageUrl: string;
+ bgColor?: string | null;
+  logo?: string | null;
+  id: string;
+  imageUrl?: string | null;
   name: string;
-  designation: string; // e.g., "LEAD"
-  position?: string; // e.g., "Android"
-  linkedinUrl?: string;
-  mail?: string;
-  logo?: string;
-  bgColor?: string; // e.g., "#FF5733"
+  designation?: string | null;
+  position?: string | null;
+  rank?: number | null;
+  dept_rank?: number | null;
+  dept_logo?: string | null;
+  linkedinUrl?: string | null;
+  mail?: string | null;
 };
 
 export default function MemberCard({

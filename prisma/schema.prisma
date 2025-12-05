@@ -79,6 +79,7 @@ model TeamMember {
     position    String? 
     linkedinUrl String?
     mail        String?
+    dept_logo  String?
     bgColor     String?
     rank        Int      @default(0)
     dept_rank   Int      @default(0)
@@ -129,6 +130,7 @@ model Events {
   keyHighlights String[]
   tags         String[]
   status       String
+ 
   imageUrl     String?
   coverUrl     String?
   isDone      Boolean  @default(false)

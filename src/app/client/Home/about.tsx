@@ -42,10 +42,10 @@ export default function AboutSection() {
             </div>
 
             <div className="flex-1 text-center">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold font-productSans text-white mb-6">
                 About GDG-VITB
               </h2>
-              <p className="text-base md:text-lg text-stone-300 md:max-w-4xl max-w-3xl mx-auto">
+              <p className="text-base md:text-lg text-stone-300 md:max-w-4xl max-w-3xl mx-auto font-productSans">
                 GDG On Campus – Vishnu Institute Of Technology, Bhimavaram Is A
                 Student Community That Creates Opportunities For Aspiring
                 Developers To Learn, Practice, And Grow With Technology. We
@@ -84,8 +84,8 @@ export default function AboutSection() {
             className="w-20 h-20 object-contain"
             style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.5))" }}
           />
-          <h2 className="text-2xl font-semibold text-white">About GDG-VITB</h2>
-          <p className="text-sm text-stone-300">
+          <h2 className="text-2xl font-semibold text-white font-productSans">About GDG-VITB</h2>
+          <p className="text-sm text-stone-300 font-productSans">
             GDG On Campus – Vishnu Institute Of Technology, Bhimavaram Is A
             Student Community That Creates Opportunities For Aspiring Developers
             To Learn, Practice, And Grow With Technology. We Organize Workshops,

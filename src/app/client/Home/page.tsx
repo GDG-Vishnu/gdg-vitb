@@ -11,6 +11,8 @@ import { Button3D as MagneticButton } from "@/components/ui/3d-button";
 import { LogOut, User, LogIn } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Footer from "@/components/footer/Footer";
+import { url } from "inspector";
+import ExtensionSection from "./extension_section";
 
 const HomePage = () => {
   const { data: session } = useSession();
@@ -30,7 +32,7 @@ const HomePage = () => {
   };
   return (
     <div
-      className="min-h-screen bg-white relative overflow-hidden flex flex-col justify-center "
+      className="min-h-screen bg-white relative overflow-hidden flex flex-col "
       style={{
         backgroundColor: "white",
         backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
@@ -98,14 +100,16 @@ const HomePage = () => {
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-start pt-6 px-4">
         {/* Main heading with Google colors */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8"
+      
+        >
           <h1
-            className="text-4xl md:text-9xl sm:text-2xl font-bold mb-4 font-mono leading-tight whitespace-nowrap"
+            className="text-4xl md:text-9xl sm:text-2xl font-bold mb-2 font-productSans leading-tight whitespace-nowrap"
             style={{
               fontFamily:
                 '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
               fontWeight: 400,
-              fontStyle: "normal",
+              
               // Use a responsive clamp so the heading can scale and stay on one line across viewports
               fontSize: "clamp(28px, 8vw, 80px)",
               lineHeight: "146%",
@@ -121,27 +125,31 @@ const HomePage = () => {
             </span>
             <span className="text-black">Group</span>
           </h1>
+<div
+  className="flex justify-center items-center w-full bg-no-repeat bg-center bg-contain px-4 py-8"
+  style={{
+    marginBottom: "-1rem",
+    backgroundImage:
+      'url("https://res.cloudinary.com/duvr3z2z0/image/upload/v1764834053/Group_4_q0p7ui.png")',
+  }}
+>
+  <h3
+    className="text-black text-center"
+    style={{
+      fontFamily:
+        '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+      fontWeight: 400,
+      lineHeight: "146%",
+      fontSize: "clamp(28px, 8vw, 80px)",
+      padding: "0.75rem 1.25rem",
+      color: "#0b1220",
+    }}
+  >
+    Vishnu Institute Of Technology
+  </h3>
+</div>
 
-          <h3
-            className="text-black"
-            style={{
-              fontFamily:
-                '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-              fontWeight: 400,
-              fontStyle: "normal",
-
-              lineHeight: "146%",
-              letterSpacing: "0",
-              textTransform: "capitalize",
-              // Heading background image
-              fontSize: "clamp(28px, 8vw, 80px)",
-              padding: "0.75rem 1.25rem",
-
-              color: "#0b1220",
-            }}
-          >
-            Vishnu Institute Of Technology
-          </h3>
+         
         </div>
         <img
           className="block mb-0"
@@ -151,6 +159,10 @@ const HomePage = () => {
         />
         {/* About section insertion */}
         <AboutSection />
+        <div className="w-full" style={{background:"#F8D8D8"}}>
+          <ExtensionSection />
+        </div>
+        
         {/* Subtitle */}
         {/* <div className="text-center mb-12">
           <p className="text-xl md:text-2xl text-gray-500 font-medium font-mono tracking-wide">

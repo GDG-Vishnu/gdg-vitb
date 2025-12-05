@@ -149,28 +149,27 @@ function EventCard({ event }: { event: EventItem }) {
         backgroundColor: "transparent",
       }}
     >
-      {event.imageUrl && (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "transparent",
-            overflow: "hidden",
-          }}
-        >
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100%",
-              objectFit: "contain",
-            }}
-          />
-        </div>
-      )}
+    {event.imageUrl && (
+  <div
+    className="flex items-center justify-center overflow-hidden bg-transparent w-full"
+    style={{ flex: 1 }}
+  >
+    <img
+      src={event.imageUrl}
+      alt={event.title}
+      className="
+        w-full max-w-xs         /* mobile */
+        sm:max-w-sm
+        md:max-w-md
+        lg:max-w-lg
+        xl:max-w-xl
+            
+        h-auto object-contain
+      "
+    />
+  </div>
+)}
+
 
       <div style={{ padding: 30 }}>
         <div

@@ -9,6 +9,7 @@ type EventItem = {
   description?: string;
   Date?: string;
   Time?: string;
+  Theme?: string[];
   venue?: string;
   organizer?: string;
   coOrganizer?: string;
@@ -52,7 +53,7 @@ export default function EventsCarousel() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  function renderDesktop() {
+  function renderDesktop() {  
     return (
       <div
         ref={scrollerRef}
@@ -94,7 +95,7 @@ export default function EventsCarousel() {
     return (
       <section className="w-full py-10">
         <div className="flex justify-center items-center h-[400px]">
-          <p className="text-gray-500 text-lg">No events available</p>
+          <p className="text-gray-500 text-lg font-productSans">No events available</p>
         </div>
       </section>
     );
@@ -182,7 +183,7 @@ function EventCard({ event }: { event: EventItem }) {
           }}
         >
           <div>
-            <h3 className="text-2xl font-semibold text-stone-950">
+            <h3 className="text-2xl font-semibold text-stone-950 font-productSans">
               {event.title}
             </h3>
           </div>
@@ -288,7 +289,7 @@ function EventCardMobile({ event }: { event: EventItem }) {
           }}
         >
           <div>
-            <h3 className="text-lg font-semibold text-stone-950">
+            <h3 className="text-lg font-semibold text-stone-950 font-productSans">
               {event.title}
             </h3>
           </div>
@@ -298,7 +299,7 @@ function EventCardMobile({ event }: { event: EventItem }) {
               href={`/client/events/${event.id}`}
               aria-label={`Open ${event.title}`}
               className={`${getButtonClass(
-                event.ThemeColor
+                event.Theme ? event.Theme[0] : undefined
               )} rounded-full flex items-center justify-center shadow-lg`}
               style={{
                 width: 48,

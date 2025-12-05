@@ -16,6 +16,7 @@ import {
   Star,
 } from "lucide-react";
 import { is } from "date-fns/locale";
+import BentoGrid from "@/components/BentoGrid";
 
 type Event = {
   id: number;
@@ -72,7 +73,17 @@ const EventClosed = [
 const EVENT_CACHE_KEY_PREFIX = "gdg_event_";
 const EVENT_CACHE_TIMESTAMP_PREFIX = "gdg_event_timestamp_";
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
+const tiles = [
+  // Try to match the "bento" look by mixing spans
+  { src: "https://www.shutterstock.com/search/website-hero-banner", alt: "Big hero", cols: 2, rows: 1 },
+  { src: "https://www.shutterstock.com/search/square-thumbnail-image", alt: "Small", cols: 1, rows: 1 },
+  { src: "https://www.shutterstock.com/search/wide-landscape-image", alt: "Square", cols: 1, rows: 1 },
+  { src: "https://www.shutterstock.com/search/portrait-vertical-image", alt: "Wide", cols: 2, rows: 1 },
+  { src: "https://www.shutterstock.com/search/medium-size-image", alt: "Tall", cols: 1, rows: 2 },
+  { src: "https://www.shutterstock.com/search/curved-bottom-banner", alt: "Medium", cols: 1, rows: 1 },
+  { src: "/images/bento7.jpg", alt: "Wide bottom", cols: 2, rows: 1 },
+  
+];
 function getEventFromCache(eventId: string): Event | null {
   if (typeof window === "undefined") return null;
   try {
@@ -206,53 +217,58 @@ export default function EventDetailPage() {
             className="inline-flex items-center gap-2 text-gray-100 hover:text-gray-200 transition mb-6 bg-stone-900 p-2 rounded-4xl "
           >
             <ArrowLeft className="w-6 h-6 *: text-stone-950 rounded-full hover:rotate-2" style={{ backgroundColor: theme.primary }} />
-            Back to all events
+           <p className="hidden lg:block">Back to all events</p>
+
           </Link>
 
           {/* Event Image Banner */}
-          {event.imageUrl && (
-            <div
-              className="w-full mb-6 rounded-2xl overflow-hidden shadow-lg"
-              style={{
-                maxWidth: 1394,
-                height: 315,
-                opacity: 1,
-              }}
-            >
-              <img
-                src={event.coverUrl}
-                alt={event.title}
-                className="w-full h-full object-cover"
-                style={{
-                  width: "100%",
-                  height: 315,
-                }}
-              />
-            </div>
-          )}
-         <div className="flex flex-col sm:flex-row  sm:justify-start sm:items-start justify-start items-center w-full"> 
-            <ParticipantBadge
-              text={`${event.MembersParticipated}+`}
-              icon={<User className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
-              bgColor={theme.primary}
-            />
-            <ParticipantBadge
-              text={formatDate(event.Date)}
-              className="ml-4"
-              icon={
-                <Calendar className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />
-              }
-              bgColor={theme.secondary}
-            />
-            <ParticipantBadge
-              text={event.venue || "TBA"}
-              className="ml-4"
-              icon={
-                <MapPin className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />
-              }
-              bgColor={theme.accent}
-            />
-          </div>
+       {(event.coverUrl || event.imageUrl) && (
+  <div
+    className="w-full mb-6 rounded-2xl overflow-hidden shadow-lg"
+    style={{ maxWidth: 1394, height: 315 }}
+  >
+    <picture>
+      {/* Desktop image (≥1024px) */}
+      <source
+        media="(min-width: 1024px)"
+        srcSet={event.coverUrl}
+      />
+
+      {/* Mobile image (<1024px) */}
+      <img
+        src={event.imageUrl}
+        alt={event.title}
+        className="w-full h-full object-cover"
+        style={{ width: "100%", height: 315 }}
+      />
+    </picture>
+  </div>
+)}
+        <div className="flex flex-col sm:flex-row sm:justify-start sm:items-start justify-start items-start w-full">
+  <div className="w-[300px] hidden lg:block"></div>
+
+  <ParticipantBadge
+    text={`${event.MembersParticipated}+`}
+    icon={<User className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
+    bgColor={theme.primary}
+  />
+
+  <ParticipantBadge
+    text={formatDate(event.Date)}
+    className="mt-3 sm:mt-0 sm:ml-4"
+    icon={<Calendar className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
+    bgColor={theme.secondary}
+  />
+
+  <ParticipantBadge
+    text={event.venue || "TBA"}
+    className="mt-3 sm:mt-0 sm:ml-4"
+    icon={<MapPin className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
+    bgColor={theme.accent}
+  />
+</div>
+
+         
         </div>
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
           <div className="relative rounded-[32px]">
@@ -295,8 +311,8 @@ export default function EventDetailPage() {
             </div>
           </div>
         </div>
-
-        {/* Key Highlights + Organizers + Tags Combined Section */}
+           {/*     <BentoGrid tiles={tiles} />
+       Key Highlights + Organizers + Tags Combined Section */}
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
           <div className="relative rounded-[32px]">
             <div

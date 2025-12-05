@@ -105,22 +105,22 @@ export function ContactForm() {
   };
 
   return (
-    <div className="bg-stone-950 rounded-xl p-8 shadow-sm border border-gray-100 ">
-      <h2 className="text-2xl font-bold text-white mb-6">
+    <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 ">
+      <h2 className="text-2xl font-bold text-stone-900 mb-6">
         Send us a Message
       </h2>
 
       {submitStatus === "success" && (
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-          <p className="font-medium">Message sent successfully!</p>
-          <p className="text-sm">We&apos;ll get back to you soon.</p>
+          <p className="font-medium text-stone-900">Message sent successfully!</p>
+          <p className="text-sm text-stone-900">We&apos;ll get back to you soon.</p>
         </div>
       )}
 
       {submitStatus === "error" && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
-          <p className="font-medium">Failed to send message</p>
-          <p className="text-sm">Please try again later.</p>
+          <p className="font-medium text-stone-900">Failed to send message</p>
+          <p className="text-sm text-stone-900">Please try again later.</p>
         </div>
       )}
 
@@ -130,9 +130,9 @@ export function ContactForm() {
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-white mb-2"
+              className="block text-sm font-medium text-stone-900 mb-2"
             >
-              Your Name <span className="text-white">*</span>
+              Your Name <span className="text-stone-900">*</span>
             </label>
             <input
               type="text"
@@ -140,13 +140,13 @@ export function ContactForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
+              className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
                 errors.name ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="John Doe"
             />
             {errors.name && (
-              <p className="mt-1 text-sm text-white">{errors.name}</p>
+              <p className="mt-1 text-sm text-stone-900">{errors.name}</p>
             )}
           </div>
 
@@ -154,9 +154,9 @@ export function ContactForm() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-white mb-2"
+              className="block text-sm font-medium text-stone-900 mb-2"
             >
-              Email Address <span className="text-white">*</span>
+              Email Address <span className="text-red-600">*</span>
             </label>
             <input
               type="email"
@@ -164,13 +164,13 @@ export function ContactForm() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
+              className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="john@example.com"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-white">{errors.email}</p>
+              <p className="mt-1 text-sm text-stone-900">{errors.email}</p>
             )}
           </div>
         </div>
@@ -179,9 +179,9 @@ export function ContactForm() {
         <div>
           <label
             htmlFor="subject"
-            className="block text-sm font-medium text-white mb-2"
+            className="block text-sm font-medium text-stone-900 mb-2"
           >
-            Subject <span className="text-white">*</span>
+            Subject <span className="text-stone-900">*</span>
           </label>
           <input
             type="text"
@@ -189,13 +189,13 @@ export function ContactForm() {
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border rounded-lg bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
+            className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
               errors.subject ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="How can we help you?"
           />
           {errors.subject && (
-            <p className="mt-1 text-sm text-white">{errors.subject}</p>
+            <p className="mt-1 text-sm text-stone-900">{errors.subject}</p>
           )}
         </div>
 
@@ -203,9 +203,9 @@ export function ContactForm() {
         <div>
           <label
             htmlFor="message"
-            className="block text-sm font-medium text-white mb-2"
+            className="block text-sm font-medium text-stone-900 mb-2"
           >
-            Message <span className="text-white">*</span>
+            Message <span className="text-stone-900">*</span>
           </label>
           <textarea
             id="message"
@@ -213,7 +213,7 @@ export function ContactForm() {
             value={formData.message}
             onChange={handleChange}
             rows={5}
-            className={`w-full px-4 py-3 border rounded-lg bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 transition resize-none ${
+            className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition resize-none ${
               errors.message ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Write your message here..."
