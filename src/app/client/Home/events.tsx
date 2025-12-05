@@ -2,6 +2,8 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import LoadingEvents from "@/components/loadingPage/loading_events";
 
 type EventItem = {
   id: number;
@@ -53,7 +55,7 @@ export default function EventsCarousel() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  function renderDesktop() {  
+  function renderDesktop() {
     return (
       <div
         ref={scrollerRef}
@@ -82,20 +84,16 @@ export default function EventsCarousel() {
   }
 
   if (loading) {
-    return (
-      <section className="w-full py-10">
-        <div className="flex justify-center items-center h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-        </div>
-      </section>
-    );
+    return <LoadingEvents variant="section" />;
   }
 
   if (events.length === 0) {
     return (
       <section className="w-full py-10">
         <div className="flex justify-center items-center h-[400px]">
-          <p className="text-gray-500 text-lg font-productSans">No events available</p>
+          <p className="text-gray-500 text-lg font-productSans">
+            No events available
+          </p>
         </div>
       </section>
     );
@@ -109,28 +107,26 @@ export default function EventsCarousel() {
 }
 
 function EventCard({ event }: { event: EventItem }) {
-  // Helper to get button color class based on ThemeColor
-  const getButtonClass = (color?: string) => {
-    const themeColor = color?.toLowerCase() || "pink";
-    if (
-      themeColor === "yellow" ||
-      themeColor === "#ffeb3b" ||
-      themeColor.includes("yellow")
-    )
-      return "bg-yellow-400 hover:bg-yellow-500 text-black";
-    if (
-      themeColor === "black" ||
-      themeColor === "#000000" ||
-      themeColor.includes("black")
-    )
-      return "bg-black hover:bg-gray-800 text-white";
-    if (themeColor === "blue" || themeColor.includes("blue"))
-      return "bg-blue-500 hover:bg-blue-600 text-white";
-    if (themeColor === "green" || themeColor.includes("green"))
-      return "bg-green-500 hover:bg-green-600 text-white";
-    if (themeColor === "red" || themeColor.includes("red"))
-      return "bg-red-500 hover:bg-red-600 text-white";
-    return "bg-pink-500 hover:bg-pink-600 text-white";
+  // Get the primary theme color for the button
+  const getButtonStyle = () => {
+    const primaryColor =
+      event.Theme && event.Theme[0] ? event.Theme[0] : "#4285F4";
+    const isLightColor = (color: string) => {
+      const hex = color.replace("#", "");
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness > 155;
+    };
+
+    const textColor = isLightColor(primaryColor) ? "#000000" : "#ffffff";
+
+    return {
+      backgroundColor: primaryColor,
+      color: textColor,
+      borderColor: "#000000",
+    };
   };
 
   return (
@@ -153,12 +149,13 @@ function EventCard({ event }: { event: EventItem }) {
       {event.imageUrl && (
         <div
           style={{
-            flex: 1,
+            height: 350,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "transparent",
             overflow: "hidden",
+            padding: "20px",
           }}
         >
           <img
@@ -173,7 +170,7 @@ function EventCard({ event }: { event: EventItem }) {
         </div>
       )}
 
-      <div style={{ padding: 30 }}>
+      <div style={{ padding: "20px 30px 30px 30px" }}>
         <div
           style={{
             display: "flex",
@@ -189,24 +186,22 @@ function EventCard({ event }: { event: EventItem }) {
           </div>
 
           <div>
-            <Link
-              href={`/client/events/${event.id}`}
+            <Button
+              asChild
+              variant="noShadow"
+              size="round"
               aria-label={`Open ${event.title}`}
-              className={`${getButtonClass(
-                event.ThemeColor
-              )} rounded-full flex items-center justify-center shadow-lg`}
-              style={{
-                width: 56,
-                height: 56,
-                fontSize: 18,
-                display: "inline-flex",
-              }}
+              style={getButtonStyle()}
+              className="translate-x-1 translate-y-1 shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:translate-x-0 hover:translate-y-0 hover:shadow-none transition-all"
             >
-              <img
-                src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
-                alt=""
-              />
-            </Link>
+              <Link href={`/client/events/${event.id}`}>
+                <img
+                  src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
+                  alt=""
+                  className="w-[40px] h-[40px]"
+                />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -215,35 +210,33 @@ function EventCard({ event }: { event: EventItem }) {
 }
 
 function EventCardMobile({ event }: { event: EventItem }) {
-  // Helper to get button color class based on ThemeColor
-  const getButtonClass = (color?: string) => {
-    const themeColor = color?.toLowerCase() || "pink";
-    if (
-      themeColor === "yellow" ||
-      themeColor === "#ffeb3b" ||
-      themeColor.includes("yellow")
-    )
-      return "bg-yellow-400 hover:bg-yellow-500 text-black";
-    if (
-      themeColor === "black" ||
-      themeColor === "#000000" ||
-      themeColor.includes("black")
-    )
-      return "bg-black hover:bg-gray-800 text-white";
-    if (themeColor === "blue" || themeColor.includes("blue"))
-      return "bg-blue-500 hover:bg-blue-600 text-white";
-    if (themeColor === "green" || themeColor.includes("green"))
-      return "bg-green-500 hover:bg-green-600 text-white";
-    if (themeColor === "red" || themeColor.includes("red"))
-      return "bg-red-500 hover:bg-red-600 text-white";
-    return "bg-pink-500 hover:bg-pink-600 text-white";
+  // Get the primary theme color for the button
+  const getButtonStyle = () => {
+    const primaryColor =
+      event.Theme && event.Theme[0] ? event.Theme[0] : "#4285F4";
+    const isLightColor = (color: string) => {
+      const hex = color.replace("#", "");
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness > 155;
+    };
+
+    const textColor = isLightColor(primaryColor) ? "#000000" : "#ffffff";
+
+    return {
+      backgroundColor: primaryColor,
+      color: textColor,
+      borderColor: "#000000",
+    };
   };
 
   return (
     <article
       className="bg-transparent shadow-md overflow-hidden rounded-2xl flex-shrink-0 snap-start"
       style={{
-        width: 280,
+        width: 300,
         minWidth: 280,
         borderWidth: 1,
         borderStyle: "solid",
@@ -259,13 +252,14 @@ function EventCardMobile({ event }: { event: EventItem }) {
       {event.imageUrl && (
         <div
           style={{
-            height: 200,
+            height: 240,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "transparent",
             overflow: "hidden",
           }}
+          className="p-4"
         >
           <img
             src={event.imageUrl}
@@ -295,24 +289,22 @@ function EventCardMobile({ event }: { event: EventItem }) {
           </div>
 
           <div>
-            <Link
-              href={`/client/events/${event.id}`}
+            <Button
+              asChild
+              variant="noShadow"
+              size="roundSm"
               aria-label={`Open ${event.title}`}
-              className={`${getButtonClass(
-                event.Theme ? event.Theme[0] : undefined
-              )} rounded-full flex items-center justify-center shadow-lg`}
-              style={{
-                width: 48,
-                height: 48,
-                fontSize: 16,
-                display: "inline-flex",
-              }}
+              style={getButtonStyle()}
+              className="hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
             >
-              <img
-                src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
-                alt=""
-              />
-            </Link>
+              <Link href={`/client/events/${event.id}`}>
+                <img
+                  src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
+                  alt=""
+                  className="w-[40px] h-[40px] sm:w-[30px] sm:h-[30px]"
+                />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

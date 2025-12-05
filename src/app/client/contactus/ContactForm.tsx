@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Send, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { Send, Loader2, User, Mail, MessageSquare, Type } from "lucide-react";
 
 type FormData = {
   name: string;
@@ -61,6 +62,12 @@ export function ContactForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
+    // Enforce character limit for message field
+    if (name === "message" && value.length > 500) {
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
@@ -104,144 +111,350 @@ export function ContactForm() {
     }
   };
 
+  const formVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
-    <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 ">
-      <h2 className="text-2xl font-bold text-stone-900 mb-6">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={formVariants}
+      className="bg-white rounded-2xl p-8 shadow-2xl border-2 border-gray-900 relative overflow-hidden group"
+    >
+      {/* Animated background decoration */}
+      <motion.div
+        className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600"
+        initial={{ x: "-100%" }}
+        animate={{ x: "0%" }}
+        transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+      />
+
+      <motion.h2
+        variants={itemVariants}
+        className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3"
+      >
+        <MessageSquare className="w-8 h-8 text-blue-600" />
         Send us a Message
-      </h2>
+      </motion.h2>
 
       {submitStatus === "success" && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-          <p className="font-medium text-stone-900">Message sent successfully!</p>
-          <p className="text-sm text-stone-900">We&apos;ll get back to you soon.</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          className="mb-6 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl text-green-800 shadow-lg"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold text-green-900">
+                Message sent successfully!
+              </p>
+              <p className="text-sm text-green-700">
+                We&apos;ll get back to you within 24 hours.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       )}
 
       {submitStatus === "error" && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
-          <p className="font-medium text-stone-900">Failed to send message</p>
-          <p className="text-sm text-stone-900">Please try again later.</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          className="mb-6 p-6 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl text-red-800 shadow-lg"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold text-red-900">Failed to send message</p>
+              <p className="text-sm text-red-700">
+                Please try again later or contact us directly.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 ">
-        <div className="grid sm:grid-cols-2 gap-6">
+      <motion.form
+        onSubmit={handleSubmit}
+        className="space-y-8"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+              delayChildren: 0.3,
+            },
+          },
+        }}
+      >
+        <motion.div
+          className="grid sm:grid-cols-2 gap-6"
+          variants={itemVariants}
+        >
           {/* Name Field */}
-          <div>
+          <motion.div variants={itemVariants}>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-stone-900 mb-2"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
             >
-              Your Name <span className="text-stone-900">*</span>
+              <User className="w-4 h-4 text-blue-600" />
+              Your Name <span className="text-red-500">*</span>
             </label>
-            <input
+            <motion.input
               type="text"
               id="name"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
-                errors.name ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
+                errors.name
+                  ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                  : "border-gray-200"
               }`}
-              placeholder="John Doe"
+              placeholder="Enter your full name"
+              whileFocus={{ scale: 1.02 }}
             />
             {errors.name && (
-              <p className="mt-1 text-sm text-stone-900">{errors.name}</p>
+              <motion.p
+                className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.name}
+              </motion.p>
             )}
-          </div>
+          </motion.div>
 
           {/* Email Field */}
-          <div>
+          <motion.div variants={itemVariants}>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-stone-900 mb-2"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
             >
-              Email Address <span className="text-red-600">*</span>
+              <Mail className="w-4 h-4 text-blue-600" />
+              Email Address <span className="text-red-500">*</span>
             </label>
-            <input
+            <motion.input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
-                errors.email ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
+                errors.email
+                  ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                  : "border-gray-200"
               }`}
-              placeholder="john@example.com"
+              placeholder="your.email@example.com"
+              whileFocus={{ scale: 1.02 }}
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-stone-900">{errors.email}</p>
+              <motion.p
+                className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.email}
+              </motion.p>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Subject Field */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label
             htmlFor="subject"
-            className="block text-sm font-medium text-stone-900 mb-2"
+            className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
           >
-            Subject <span className="text-stone-900">*</span>
+            <Type className="w-4 h-4 text-blue-600" />
+            Subject <span className="text-red-500">*</span>
           </label>
-          <input
+          <motion.input
             type="text"
             id="subject"
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition ${
-              errors.subject ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
+              errors.subject
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                : "border-gray-200"
             }`}
-            placeholder="How can we help you?"
+            placeholder="What can we help you with today?"
+            whileFocus={{ scale: 1.02 }}
           />
           {errors.subject && (
-            <p className="mt-1 text-sm text-stone-900">{errors.subject}</p>
+            <motion.p
+              className="mt-2 text-sm text-red-600 flex items-center gap-1"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              {errors.subject}
+            </motion.p>
           )}
-        </div>
+        </motion.div>
 
         {/* Message Field */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label
             htmlFor="message"
-            className="block text-sm font-medium text-stone-900 mb-2"
+            className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
           >
-            Message <span className="text-stone-900">*</span>
+            <MessageSquare className="w-4 h-4 text-blue-600" />
+            Message <span className="text-red-500">*</span>
           </label>
-          <textarea
+          <motion.textarea
             id="message"
             name="message"
             value={formData.message}
             onChange={handleChange}
-            rows={5}
-            className={`w-full px-4 py-3 border rounded-lg bg-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 transition resize-none ${
-              errors.message ? "border-red-500" : "border-gray-300"
+            rows={6}
+            className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none ${
+              errors.message
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                : "border-gray-200"
             }`}
-            placeholder="Write your message here..."
+            placeholder="Tell us more about your inquiry, project, or how we can help you..."
+            whileFocus={{ scale: 1.02 }}
           />
-          {errors.message && (
-            <p className="mt-1 text-sm text-white">{errors.message}</p>
-          )}
-        </div>
+          <div className="mt-2 flex justify-between items-center">
+            {errors.message && (
+              <motion.p
+                className="text-sm text-red-600 flex items-center gap-1"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.message}
+              </motion.p>
+            )}
+            <span className="text-xs text-gray-500 ml-auto">
+              {formData.message.length}/500
+            </span>
+          </div>
+        </motion.div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Sending...
-            </>
-          ) : (
-            <>
-              <Send className="w-5 h-5" />
-              Send Message
-            </>
-          )}
-        </button>
-      </form>
-    </div>
+        <motion.div variants={itemVariants} className="pt-4">
+          <motion.button
+            type="submit"
+            disabled={isSubmitting}
+            className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {/* Button background glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Sending Message...</span>
+              </>
+            ) : (
+              <>
+                <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                <span>Send Message</span>
+              </>
+            )}
+          </motion.button>
+
+          <p className="mt-4 text-sm text-gray-500 text-center">
+            We typically respond within 24 hours. Your information is kept
+            confidential.
+          </p>
+        </motion.div>
+      </motion.form>
+    </motion.div>
   );
 }

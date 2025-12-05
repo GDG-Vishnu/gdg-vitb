@@ -27,7 +27,6 @@ export default function FAQs() {
   return (
     <section className="w-full py-12 px-4">
       <div className="max-w-[1500px] mx-auto flex items-center gap-8 border-2 border-gray-900 rounded-3xl p-6 md:p-12 bg-gray-50 rounded-[58px]">
-        
         {/* Left keyboard image */}
         <div className="flex-shrink-0 w-1.5/3 hidden md:flex items-center justify-center">
           <img
@@ -40,7 +39,9 @@ export default function FAQs() {
         {/* Right FAQs */}
         <div className="flex-1">
           <div className="space-y-4">
-            <h2 className="text-stone-950 font-productSans text-3xl mb-4">FAQ'S</h2>
+            <h2 className="text-stone-950 font-productSans text-3xl mb-4">
+              FAQ'S
+            </h2>
 
             {faqs.map((q, i) => {
               const open = openIndex === i;
@@ -72,7 +73,9 @@ export default function FAQs() {
                   <div
                     className={cn(
                       "grid transition-all duration-300 overflow-hidden text-sm text-gray-600 font-productSans",
-                      open ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0 mt-0"
+                      open
+                        ? "grid-rows-[1fr] opacity-100 mt-3"
+                        : "grid-rows-[0fr] opacity-0 mt-0"
                     )}
                   >
                     <div className="overflow-hidden">{answers[i]}</div>

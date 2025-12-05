@@ -34,14 +34,41 @@ function ExtensionSection() {
 
   return (
     <div
-      className="flex flex-col justify-center items-center my-20 mx-4 md:mx-20 lg:mx-40 space-y-10"
+      className="flex flex-col justify-center items-center my-20 mx-4 md:mx-20 lg:mx-40 space-y-10 relative"
       style={{ background: "#F8D8D8" }}
     >
-      <h1 className="text-center text-stone-950 text-4xl font-semibold">
+      {/* Background decoration */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `radial-gradient(rgba(0,0,0,0.08) 1px, transparent 1px), radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px)`,
+          backgroundSize: "25px 25px, 50px 50px",
+          backgroundPosition: "0 0, 12px 12px",
+          opacity: 0.6,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Floating decorative elements */}
+      <div className="hidden md:block absolute top-10 left-10 text-blue-500 opacity-20">
+        <div className="w-8 h-8 border-2 border-current transform rotate-12"></div>
+      </div>
+      <div className="hidden md:block absolute top-20 right-20 text-red-400 opacity-25">
+        <div className="w-6 h-6 bg-current rounded-full"></div>
+      </div>
+      <div className="hidden md:block absolute bottom-16 left-16 text-green-400 opacity-20">
+        <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-current transform -rotate-12"></div>
+      </div>
+      <div className="hidden md:block absolute bottom-10 right-12 text-yellow-400 opacity-25">
+        <div className="w-7 h-7 border-2 border-current rounded-full transform rotate-45"></div>
+      </div>
+
+      <h1 className="text-center text-stone-950 text-4xl font-semibold relative z-10">
         Why Join GDG VITB?
       </h1>
 
-      <div className="flex flex-col md:flex-row justify-center items-center space-y-10 md:space-y-0 md:space-x-10 w-full">
+      <div className="grid grid-cols-2 gap-4 md:flex md:flex-row md:justify-center md:items-center md:space-y-0 md:space-x-10 w-full relative z-10">
         {data.map((item, index) => (
           <Card
             key={index}
@@ -96,13 +123,13 @@ function Card({
   return (
     <div
       ref={ref}
-      className={`flex flex-col justify-around items-center space-y-4 border-2 border-black shadow-2xl rounded-2xl p-6 w-[313px] h-[414px] md:w-1/3 bg-white 
+      className={`flex flex-col justify-around items-center space-y-2 md:space-y-4 border-2 border-black shadow-2xl rounded-2xl p-3 md:p-6 w-full max-w-[160px] md:max-w-[313px] h-[200px] md:h-[414px] bg-white 
         transform transition-all duration-700 ease-out
         ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
         hover:scale-105 hover:shadow-2xl`}
-      style={{ willChange: "transform, opacity", borderBottomRightRadius: 30 }}
+      style={{ willChange: "transform, opacity" }}
     >
-      <div className="w-40 h-40 flex items-center justify-center overflow-hidden ">
+      <div className="w-16 h-16 md:w-40 md:h-40 flex items-center justify-center overflow-hidden ">
         <img
           src={imgUrl}
           alt={title}
@@ -111,10 +138,12 @@ function Card({
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold text-stone-950 text-center font-productSans    ">
+        <h2 className="text-xs md:text-xl font-semibold text-stone-950 text-center font-productSans">
           {title}
         </h2>
-        <p className="text-center text-stone-950 font-productSans">{description}</p>
+        <p className="text-xs md:text-base text-center text-stone-950 font-productSans hidden md:block">
+          {description}
+        </p>
       </div>
     </div>
   );

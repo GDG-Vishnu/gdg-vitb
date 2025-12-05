@@ -8,11 +8,13 @@
   },
   "client": {
     "/client": "src/app/client/page.tsx",
-    "/client/home": "src/app/client/Home/page.tsx",
+    "/client/Home": "src/app/client/Home/page.tsx",
+    "/client/about": "src/app/client/about/page.tsx",
     "/client/events": "src/app/client/events/page.tsx",
     "/client/events/:id": "src/app/client/events/[id]/page.tsx",
-    "/client/teams": "src/app/client/Teams/page.tsx",
-    "/client/contactus": "src/app/client/contactus/page.tsx"
+    "/client/Teams": "src/app/client/Teams/page.tsx",
+    "/client/contactus": "src/app/client/contactus/page.tsx",
+    "/client/gallery": "src/app/client/gallery/page.tsx"
   },
   "auth": {
     "/auth/login": "src/app/auth/login/page.tsx",

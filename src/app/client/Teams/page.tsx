@@ -176,7 +176,19 @@ export default function TeamsPage() {
                     style={{
                       backgroundColor: members[0]?.bgColor || undefined,
                     }}
-                    className="lg:w-[800px] lg:h-[54px] sm:w-[200px] sm:h-[54px] text-center rounded-[100px] items-center justify-center flex border-2 border-stone-900"
+                    className="
+  w-[370px]            /* mobile default */
+  h-[54px]
+  sm:w-[370px]         /* optional - keeps 370px on small screens */
+  lg:w-[800px]         /* large screen width */
+  text-center
+  rounded-[100px]
+  items-center
+  justify-center
+  flex
+  border-2
+  border-stone-900
+"
                   >
                     <h2
                       id={`pos-${position}`}
@@ -184,11 +196,11 @@ export default function TeamsPage() {
                     >
                       {position}
                     </h2>
-                     {/* <img src={members[0].dept_logo || "/default-logo.png"} alt={`${position} logo`} />*/}
-                  </div>  
+                    {/* <img src={members[0].dept_logo || "/default-logo.png"} alt={`${position} logo`} />*/}
+                  </div>
                   <div className="h-4"></div>
                   <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-                    <div className="flex gap-6 px-4 min-w-max justify-start md:justify-center">
+                    <div className="flex gap-6 px-4 min-w-max justify-center md:justify-center">
                       {members.map((m) => (
                         <div key={m.id} className="flex-shrink-0">
                           <MemberCard

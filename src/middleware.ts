@@ -7,10 +7,7 @@ export default withAuth(
     const { pathname } = req.nextUrl;
 
     // If user is not authenticated and trying to access protected routes
-    if (
-      !token &&
-      (pathname.startsWith("/admin") || pathname.startsWith("/client"))
-    ) {
+    if (!token && pathname.startsWith("/admin")) {
       return NextResponse.redirect(new URL("/", req.url));
     }
 
@@ -40,12 +37,7 @@ export default withAuth(
       }
     }
 
-    // Allow access to client routes for authenticated users
-    if (pathname.startsWith("/client")) {
-      if (!token) {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
-    }
+    // Client routes are now public - no authentication required
 
     return NextResponse.next();
   },
@@ -62,6 +54,7 @@ export default withAuth(
           pathname.startsWith("/auth") ||
           pathname.startsWith("/_next") ||
           pathname.startsWith("/favicon") ||
+          pathname.startsWith("/client") ||
           pathname.includes(".")
         ) {
           return true;

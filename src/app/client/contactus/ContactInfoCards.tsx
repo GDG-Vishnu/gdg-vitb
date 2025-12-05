@@ -1,47 +1,159 @@
-import { Mail, Phone, MapPin } from "lucide-react";
+"use client";
+
+import { motion } from "framer-motion";
+import { Mail, MapPin, Clock, Phone } from "lucide-react";
+
+const cardVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
 
 export function EmailCard() {
   return (
-    <div className="bg-stone-950 rounded-xl p-6 shadow-sm border border-gray-100">
+    <motion.div
+      variants={cardVariants}
+      whileHover={{
+        y: -5,
+        transition: { duration: 0.2, ease: "easeInOut" },
+      }}
+      whileTap={{ scale: 0.98 }}
+      className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 shadow-xl border border-gray-800 hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+    >
       <div className="flex items-start gap-4">
-        <div className="p-3 bg-blue-100 rounded-lg">
-          <Mail className="w-6 h-6 text-blue-600" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-gray-100 mb-1">Email Us</h3>
-          <p className="text-gray-400 text-sm mb-2">Send us an email anytime</p>
-          <a
+        <motion.div
+          className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg"
+          whileHover={{
+            scale: 1.1,
+            rotate: 5,
+            transition: { duration: 0.2 },
+          }}
+        >
+          <Mail className="w-6 h-6 text-white" />
+        </motion.div>
+        <div className="flex-1">
+          <h3 className="font-bold text-white mb-2 text-lg group-hover:text-blue-400 transition-colors">
+            Email Us
+          </h3>
+          <p className="text-gray-300 text-sm mb-3 leading-relaxed">
+            Send us an email anytime - we typically respond within 24 hours
+          </p>
+          <motion.a
             href="mailto:gdg@vishnu.edu.in"
-            className="text-blue-600 hover:underline font-medium"
+            className="text-blue-400 hover:text-blue-300 font-medium text-sm flex items-center gap-2 group/link"
+            whileHover={{ x: 5 }}
+            transition={{ duration: 0.2 }}
           >
-            gdg@vishnu.edu.in
-          </a>
+            <span>gdg@vishnu.edu.in</span>
+            <motion.span
+              className="opacity-0 group-hover/link:opacity-100 transition-opacity"
+              initial={{ x: -5 }}
+              whileHover={{ x: 0 }}
+            >
+              →
+            </motion.span>
+          </motion.a>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-
-
 export function LocationCard() {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-stone-900">
+    <motion.div
+      variants={cardVariants}
+      whileHover={{
+        y: -5,
+        transition: { duration: 0.2, ease: "easeInOut" },
+      }}
+      whileTap={{ scale: 0.98 }}
+      className="bg-white rounded-2xl p-6 shadow-xl border-2 border-gray-900 hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+    >
       <div className="flex items-start gap-4">
-        <div className="p-3 bg-red-100 rounded-lg">
-          <MapPin className="w-6 h-6 text-red-600" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-gray-900 mb-1">Visit Us</h3>
-          <p className="text-gray-600 text-sm">
-            Vishnu Institute of Technology
+        <motion.div
+          className="p-4 bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg"
+          whileHover={{
+            scale: 1.1,
+            rotate: -5,
+            transition: { duration: 0.2 },
+          }}
+        >
+          <MapPin className="w-6 h-6 text-white" />
+        </motion.div>
+        <div className="flex-1">
+          <h3 className="font-bold text-gray-900 mb-2 text-lg group-hover:text-red-600 transition-colors">
+            Visit Us
+          </h3>
+          <p className="text-gray-700 text-sm leading-relaxed mb-3">
+            <span className="font-semibold">
+              Vishnu Institute of Technology
+            </span>
             <br />
             Bhimavaram, Andhra Pradesh
             <br />
             India - 534202
           </p>
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <Clock className="w-4 h-4" />
+            <span>Open to visitors during college hours</span>
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
+  );
+}
+
+export function PhoneCard() {
+  return (
+    <motion.div
+      variants={cardVariants}
+      whileHover={{
+        y: -5,
+        transition: { duration: 0.2, ease: "easeInOut" },
+      }}
+      whileTap={{ scale: 0.98 }}
+      className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+    >
+      <div className="flex items-start gap-4">
+        <motion.div
+          className="p-4 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg"
+          whileHover={{
+            scale: 1.1,
+            rotate: 10,
+            transition: { duration: 0.2 },
+          }}
+        >
+          <Phone className="w-6 h-6 text-white" />
+        </motion.div>
+        <div className="flex-1">
+          <h3 className="font-bold text-white mb-2 text-lg">Call Us</h3>
+          <p className="text-green-100 text-sm mb-3 leading-relaxed">
+            Reach us directly for urgent inquiries
+          </p>
+          <motion.a
+            href="tel:+918867334455"
+            className="text-white hover:text-green-200 font-medium text-sm flex items-center gap-2 group/link"
+            whileHover={{ x: 5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <span>+91 88673 34455</span>
+            <motion.span
+              className="opacity-0 group-hover/link:opacity-100 transition-opacity"
+              initial={{ x: -5 }}
+              whileHover={{ x: 0 }}
+            >
+              📞
+            </motion.span>
+          </motion.a>
+        </div>
+      </div>
+    </motion.div>
   );
 }

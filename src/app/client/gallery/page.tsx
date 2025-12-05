@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Navbar from "../client/Home/navbar";
+import Navbar from "../Home/navbar";
 import Footer from "@/components/footer/Footer";
 
 // Sample gallery images - replace with actual Cloudinary URLs
@@ -79,85 +79,83 @@ function Gallery() {
       <Navbar />
 
       {/* Header Section */}
-         <div className="my-8 flex  justify-center items-center w-full ">
-         
-          <div className="flex *:flex-1 justify-center items-center space-x-4">
-            <img
-              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
-              alt=""
-              className="hidden md:block"
-            />
-            <img
-              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
-              alt=""
-            />
-            <h2
-              className="text-6xl font-semibold text-stone-950"
-              style={{
-                fontFamily:
-                  '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-                fontWeight: 400,
-                fontStyle: "normal",
-                // Use a responsive clamp so the heading can scale and stay on one line across viewports
+      <div className="my-8 flex  justify-center items-center w-full ">
+        <div className="flex *:flex-1 justify-center items-center space-x-4">
+          <img
+            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
+            alt=""
+            className="hidden md:block"
+          />
+          <img
+            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
+            alt=""
+          />
+          <h2
+            className="text-6xl font-semibold text-stone-950"
+            style={{
+              fontFamily:
+                '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+              fontWeight: 400,
+              fontStyle: "normal",
+              // Use a responsive clamp so the heading can scale and stay on one line across viewports
 
-                lineHeight: "146%",
-                letterSpacing: "0",
-                textTransform: "capitalize",
-                // leading-trim is not a standard CSS property in browsers; omitted
-              }}
-            >
-              Events{" "}
-            </h2>
-            <img
-              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
-              alt=""
-            />
-            <img
-              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
-              alt=""
-              className="hidden md:block"
-            />
-          </div>
+              lineHeight: "146%",
+              letterSpacing: "0",
+              textTransform: "capitalize",
+              // leading-trim is not a standard CSS property in browsers; omitted
+            }}
+          >
+            Events{" "}
+          </h2>
+          <img
+            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
+            alt=""
+          />
+          <img
+            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
+            alt=""
+            className="hidden md:block"
+          />
         </div>
-        
+      </div>
 
-        <p className="text-center text-stone-600 text-lg max-w-2xl mx-auto">
-          Explore moments from our events, workshops, and community gatherings
-        </p>
-     
+      <p className="text-center text-stone-600 text-lg max-w-2xl mx-auto">
+        Explore moments from our events, workshops, and community gatherings
+      </p>
 
       {/* Bento Grid Gallery */}
       <div className="flex-1 px-4 md:px-8 lg:px-16 pb-20">
         <div className="w-full mx-auto flex flex-col gap-4 ">
           {/* Row 1: Full width large image */}
-     
-       <div
-  className="relative group cursor-pointer overflow-hidden rounded-3xl bg-gray-200 
+
+          <div
+            className="relative group cursor-pointer overflow-hidden rounded-3xl bg-gray-200 
              h-[450px] md:h-[280px] w-full max-w-[1400px] mx-auto px-4"
-  onClick={() =>
-    galleryImages[0].src && setSelectedImage(galleryImages[0])
-  }
->
-  {galleryImages[0].src ? (
-    <>
-      <div className="w-full h-full flex text-center">
-        <img
-          src={galleryImages[0].src}
-          alt={galleryImages[0].alt}
-          className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-        />
-      </div>
+            onClick={() =>
+              galleryImages[0].src && setSelectedImage(galleryImages[0])
+            }
+          >
+            {galleryImages[0].src ? (
+              <>
+                <div className="w-full h-full flex text-center">
+                  <img
+                    src={galleryImages[0].src}
+                    alt={galleryImages[0].alt}
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
 
-      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 
-                      transition-opacity duration-300 flex items-end p-6">
-        <h3 className="text-white font-semibold text-xl">
-          {galleryImages[0].title}
-        </h3>
-      </div>
-    </>
-  ) : null}
-</div>
-
+                <div
+                  className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 
+                      transition-opacity duration-300 flex items-end p-6"
+                >
+                  <h3 className="text-white font-semibold text-xl">
+                    {galleryImages[0].title}
+                  </h3>
+                </div>
+              </>
+            ) : null}
+          </div>
 
           {/* Row 2: 3 equal columns */}
           <div className="grid grid-cols-3 gap-4">
