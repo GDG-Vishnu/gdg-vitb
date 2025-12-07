@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Cloud } from "lucide-react";
 
 type NavItem = {
   label: string;
@@ -40,7 +41,7 @@ export default function Navbar({ className }: { className?: string }) {
   function renderDesktop() {
     return (
       <>
-        <motion.div 
+        <motion.div
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.6 }}
@@ -61,7 +62,7 @@ export default function Navbar({ className }: { className?: string }) {
           </div>
         </motion.div>
 
-        <motion.ul 
+        <motion.ul
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -70,7 +71,7 @@ export default function Navbar({ className }: { className?: string }) {
           {navItems.map((item, index) => {
             const active = item.href && pathname === item.href;
             return (
-              <motion.li 
+              <motion.li
                 key={item.label}
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -88,6 +89,7 @@ export default function Navbar({ className }: { className?: string }) {
                   <motion.span
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    className="font-productSans"
                   >
                     {item.label}
                   </motion.span>
@@ -96,6 +98,29 @@ export default function Navbar({ className }: { className?: string }) {
             );
           })}
         </motion.ul>
+
+        {/* TIER-1 Study Jams Badge */}
+        <motion.div
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="flex items-center"
+        >
+          <Link
+            href="https://study-jams-dashboard-ecru.vercel.app/achieved-tier-1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-stone-900 text-white font-bold text-sm rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-productSans"
+          >
+            <motion.span
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-2 font-productSans"
+            >
+               TIER-1 IN Study Jams <Cloud className="w-4 h-4" />
+            </motion.span>
+          </Link>
+        </motion.div>
       </>
     );
   }
@@ -103,7 +128,7 @@ export default function Navbar({ className }: { className?: string }) {
   function renderMobile() {
     return (
       <>
-        <motion.div 
+        <motion.div
           initial={{ x: -30, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -122,9 +147,9 @@ export default function Navbar({ className }: { className?: string }) {
               />
             </Link>
           </div>
-        </motion.div>  {/* Added proper closing tag here */}
-
-        <motion.div 
+        </motion.div>{" "}
+        {/* Added proper closing tag here */}
+        <motion.div
           initial={{ x: 30, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -164,7 +189,7 @@ export default function Navbar({ className }: { className?: string }) {
     );
   }
   return (
-    <motion.header 
+    <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
@@ -184,7 +209,7 @@ export default function Navbar({ className }: { className?: string }) {
 
         <AnimatePresence>
           {isMobile && mobileOpen && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0, y: -10 }}
               animate={{ opacity: 1, height: "auto", y: 0 }}
               exit={{ opacity: 0, height: 0, y: -10 }}
@@ -192,7 +217,7 @@ export default function Navbar({ className }: { className?: string }) {
               className="absolute left-0 right-0 top-full mt-2 z-30"
             >
               <div className="mx-4 rounded-lg bg-white border shadow-lg overflow-hidden">
-                <motion.ul 
+                <motion.ul
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.1 }}
@@ -201,8 +226,8 @@ export default function Navbar({ className }: { className?: string }) {
                   {navItems.map((item, index) => {
                     const active = item.href && pathname === item.href;
                     return (
-                      <motion.li 
-                        key={item.label} 
+                      <motion.li
+                        key={item.label}
                         initial={{ x: -20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: index * 0.1, duration: 0.3 }}

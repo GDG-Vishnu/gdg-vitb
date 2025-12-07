@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
-import { User } from "lucide-react";
+import { Camera, User } from "lucide-react";
 import {
   Calendar,
   MapPin,
@@ -16,7 +16,6 @@ import {
   Star,
 } from "lucide-react";
 import { is } from "date-fns/locale";
-import BentoGrid from "@/components/BentoGrid";
 
 type Event = {
   id: number;
@@ -32,7 +31,8 @@ type Event = {
   status: string | null;
   imageUrl: string | null;
   rank: number;
-  coverUrl: string | null;  
+  eventImgCard: string | null;
+  coverUrl: string | null;
   Theme: string[] | null;
   isDone: boolean;
   MembersParticipated: number;
@@ -55,7 +55,6 @@ function formatDate(dateStr: string | null): string {
   if (!dateStr) return "TBA";
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-IN", {
-    
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -75,20 +74,51 @@ const EVENT_CACHE_TIMESTAMP_PREFIX = "gdg_event_timestamp_";
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const tiles = [
   // Try to match the "bento" look by mixing spans
-  { src: "https://www.shutterstock.com/search/website-hero-banner", alt: "Big hero", cols: 2, rows: 1 },
-  { src: "https://www.shutterstock.com/search/square-thumbnail-image", alt: "Small", cols: 1, rows: 1 },
-  { src: "https://www.shutterstock.com/search/wide-landscape-image", alt: "Square", cols: 1, rows: 1 },
-  { src: "https://www.shutterstock.com/search/portrait-vertical-image", alt: "Wide", cols: 2, rows: 1 },
-  { src: "https://www.shutterstock.com/search/medium-size-image", alt: "Tall", cols: 1, rows: 2 },
-  { src: "https://www.shutterstock.com/search/curved-bottom-banner", alt: "Medium", cols: 1, rows: 1 },
+  {
+    src: "https://www.shutterstock.com/search/website-hero-banner",
+    alt: "Big hero",
+    cols: 2,
+    rows: 1,
+  },
+  {
+    src: "https://www.shutterstock.com/search/square-thumbnail-image",
+    alt: "Small",
+    cols: 1,
+    rows: 1,
+  },
+  {
+    src: "https://www.shutterstock.com/search/wide-landscape-image",
+    alt: "Square",
+    cols: 1,
+    rows: 1,
+  },
+  {
+    src: "https://www.shutterstock.com/search/portrait-vertical-image",
+    alt: "Wide",
+    cols: 2,
+    rows: 1,
+  },
+  {
+    src: "https://www.shutterstock.com/search/medium-size-image",
+    alt: "Tall",
+    cols: 1,
+    rows: 2,
+  },
+  {
+    src: "https://www.shutterstock.com/search/curved-bottom-banner",
+    alt: "Medium",
+    cols: 1,
+    rows: 1,
+  },
   { src: "/images/bento7.jpg", alt: "Wide bottom", cols: 2, rows: 1 },
-  
 ];
 function getEventFromCache(eventId: string): Event | null {
   if (typeof window === "undefined") return null;
   try {
     const cached = localStorage.getItem(`${EVENT_CACHE_KEY_PREFIX}${eventId}`);
-    const timestamp = localStorage.getItem(`${EVENT_CACHE_TIMESTAMP_PREFIX}${eventId}`);
+    const timestamp = localStorage.getItem(
+      `${EVENT_CACHE_TIMESTAMP_PREFIX}${eventId}`
+    );
     if (cached && timestamp) {
       const age = Date.now() - parseInt(timestamp, 10);
       if (age < CACHE_DURATION) {
@@ -104,8 +134,14 @@ function getEventFromCache(eventId: string): Event | null {
 function setEventToCache(eventId: string, event: Event): void {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(`${EVENT_CACHE_KEY_PREFIX}${eventId}`, JSON.stringify(event));
-    localStorage.setItem(`${EVENT_CACHE_TIMESTAMP_PREFIX}${eventId}`, Date.now().toString());
+    localStorage.setItem(
+      `${EVENT_CACHE_KEY_PREFIX}${eventId}`,
+      JSON.stringify(event)
+    );
+    localStorage.setItem(
+      `${EVENT_CACHE_TIMESTAMP_PREFIX}${eventId}`,
+      Date.now().toString()
+    );
   } catch (e) {
     console.error("Error saving event to cache:", e);
   }
@@ -216,59 +252,60 @@ export default function EventDetailPage() {
             href="/client/events"
             className="inline-flex items-center gap-2 text-gray-100 hover:text-gray-200 transition mb-6 bg-stone-900 p-2 rounded-4xl "
           >
-            <ArrowLeft className="w-6 h-6 *: text-stone-950 rounded-full hover:rotate-2" style={{ backgroundColor: theme.primary }} />
-           <p className="hidden lg:block">Back to all events</p>
-
+            <ArrowLeft
+              className="w-6 h-6 *: text-stone-950 rounded-full hover:rotate-2"
+              style={{ backgroundColor: theme.primary }}
+            />
+            <p className="hidden lg:block">Back to all events</p>
           </Link>
 
           {/* Event Image Banner */}
-       {(event.coverUrl || event.imageUrl) && (
-  <div
-    className="w-full mb-6 rounded-2xl overflow-hidden shadow-lg"
-    style={{ maxWidth: 1394, height: 315 }}
-  >
-    <picture>
-      {/* Desktop image (≥1024px) */}
-      <source
-        media="(min-width: 1024px)"
-        srcSet={event.coverUrl}
-      />
+          {(event.coverUrl || event.imageUrl) && (
+            <div
+              className="w-full mb-6 rounded-2xl overflow-hidden shadow-lg"
+              style={{ maxWidth: 1394, height: 315 }}
+            >
+              <picture>
+                {/* Desktop image (≥1024px) */}
+                <source media="(min-width: 1024px)" srcSet={event.coverUrl} />
 
-      {/* Mobile image (<1024px) */}
-      <img
-        src={event.imageUrl}
-        alt={event.title}
-        className="w-full h-full object-cover"
-        style={{ width: "100%", height: 315 }}
-      />
-    </picture>
-  </div>
-)}
-        <div className="flex flex-col sm:flex-row sm:justify-start sm:items-start justify-start items-start w-full">
-  <div className="w-[300px] hidden lg:block"></div>
+                {/* Mobile image (<1024px) */}
+                <img
+                  src={event.imageUrl}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                  style={{ width: "100%", height: 315 }}
+                />
+              </picture>
+            </div>
+          )}
+          <div className="flex flex-col sm:flex-row sm:justify-start sm:items-start justify-start items-start w-full">
+            <div className="w-[300px] hidden lg:block"></div>
 
-  <ParticipantBadge
-    text={`${event.MembersParticipated}+`}
-    icon={<User className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
-    bgColor={theme.primary}
-  />
+            <ParticipantBadge
+              text={`${event.MembersParticipated}+`}
+              icon={<User className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
+              bgColor={theme.primary}
+            />
 
-  <ParticipantBadge
-    text={formatDate(event.Date)}
-    className="mt-3 sm:mt-0 sm:ml-4"
-    icon={<Calendar className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
-    bgColor={theme.secondary}
-  />
+            <ParticipantBadge
+              text={formatDate(event.Date)}
+              className="mt-3 sm:mt-0 sm:ml-4"
+              icon={
+                <Calendar className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />
+              }
+              bgColor={theme.secondary}
+            />
 
-  <ParticipantBadge
-    text={event.venue || "TBA"}
-    className="mt-3 sm:mt-0 sm:ml-4"
-    icon={<MapPin className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
-    bgColor={theme.accent}
-  />
-</div>
-
-         
+            <ParticipantBadge
+              text={event.venue || "TBA"}
+              className="mt-3 sm:mt-0 sm:ml-4"
+              icon={
+                <MapPin className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />
+              }
+              bgColor={theme.accent}
+            />
+          </div>
         </div>
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
           <div className="relative rounded-[32px]">
@@ -286,17 +323,7 @@ export default function EventDetailPage() {
             />
 
             <div className="relative z-10 flex flex-col items-center gap-6">
-              <div className="flex text-center ">
-                <div className="" style={{ width: 96 }}>
-                  <img
-                    src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852197/Group_88_inuttu.png"
-                    alt="decorative"
-                  />
-                </div>
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 ml-6">
-                  About the Event
-                </h2>
-              </div>
+              <h1 className="text-3xl font-bold text-white font-productSans">About the Event </h1>
               <div>
                 <p className="text-base md:text-lg text-stone-300 md:max-w-4xl max-w-3xl mx-auto">
                   {event.description}
@@ -311,7 +338,40 @@ export default function EventDetailPage() {
             </div>
           </div>
         </div>
-           {/*     <BentoGrid tiles={tiles} />
+        {event.eventImgCard && (
+          <div className="relative z-10 flex justify-center mb-8 flex-col items-center mt-8">
+            <div
+              style={{ background: theme.primary }}
+              className="px-6 py-3 rounded-full mb-2 flex items-center gap-3 transform -rotate-3 hover:rotate-0 transition-transform duration-300 shadow-lg border-2 border-stone-900 relative"
+            >
+              <h1 className="text-2xl md:text-3xl font-bold text-stone-900 font-productSans">
+                Event Gallery
+              </h1>
+              <Camera className="w-7 h-7 text-stone-900" />
+
+              {/* Connection line to next section */}
+              <div
+                className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-1 h-6 rounded-full"
+                style={{ background: theme.primary }}
+              />
+            </div>
+
+            <img
+              src={event.eventImgCard}
+              alt={`${event.title} Event Card`}
+              className="rounded-2xl shadow-lg border border-stone-700"
+              style={{
+                // A4 proportions (210:297 = 1:1.414)
+                // Desktop: A4-like dimensions
+                width: "100%",
+                maxWidth: "600px", // ~A4 width scaled
+                height: "auto",
+                aspectRatio: "210/297", // A4 ratio
+              }}
+            />
+          </div>
+        )}
+        {/*     <BentoGrid tiles={tiles} />
        Key Highlights + Organizers + Tags Combined Section */}
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
           <div className="relative rounded-[32px]">
@@ -506,19 +566,18 @@ function ParticipantBadge({
   bgColor = "#f75590",
 }: ParticipantBadgeProps) {
   return (
-      <div
-  role="group"
-  aria-label={text ? `badge ${text}` : "badge"}
-  className={`inline-flex items-center bg-[#1a1a1a] rounded-full pr-3 md:pr-6 mb-4 ${className}`}
-  style={{ height: "48px" }}
->
-
+    <div
+      role="group"
+      aria-label={text ? `badge ${text}` : "badge"}
+      className={`inline-flex items-center bg-[#1a1a1a] rounded-full pr-3 md:pr-6 mb-4 ${className}`}
+      style={{ height: "48px" }}
+    >
       {/* Colored circle with icon */}
       <div
         className="flex-shrink-0 flex justify-center items-center rounded-full m-2"
         // responsive sizes: w-10 h-10 on mobile, w-11 h-11 on md+
         style={{
-          width: 40,   // keeps exact pixel width if you prefer; could replace with className "w-10 h-10 md:w-11 md:h-11"
+          width: 40, // keeps exact pixel width if you prefer; could replace with className "w-10 h-10 md:w-11 md:h-11"
           height: 40,
           backgroundColor: bgColor,
         }}
@@ -526,7 +585,10 @@ function ParticipantBadge({
         {icon ? (
           icon
         ) : (
-          <User className="w-6 h-6 md:w-8 md:h-8 text-[#1a1a1a]" strokeWidth={2} />
+          <User
+            className="w-6 h-6 md:w-8 md:h-8 text-[#1a1a1a]"
+            strokeWidth={2}
+          />
         )}
       </div>
 

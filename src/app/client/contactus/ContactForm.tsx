@@ -84,27 +84,30 @@ export function ContactForm() {
     setSubmitStatus("idle");
 
     try {
+      // Create form data for better compatibility with Google Apps Script
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("subject", formData.subject);
+      formDataToSend.append("message", formData.message);
+
       const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbyMwelbxZpyj8-LcR4VMoUum4OxDvQmgKi1xRt7eOFdKCVYALHZNveSKO1nH02149eZ/exec",
+        "https://script.google.com/macros/s/AKfycbyuwiXZV8fcoO8M2qdH3-Rt7ik9BgTjsix9LMEbjop0rFAhYX1MvukmrPMHapY7ry3geg/exec",
         {
           method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            subject: formData.subject,
-            message: formData.message,
-          }),
+          body: formDataToSend,
         }
       );
 
-      // With no-cors mode, we can't read the response, so we assume success
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      // Check if the request was successful
+      if (response.ok) {
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setSubmitStatus("error");
+      }
     } catch (error) {
+      console.error("Form submission error:", error);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);

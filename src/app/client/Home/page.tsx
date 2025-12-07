@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "./navbar";
 import Events from "./events";
@@ -14,11 +14,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Footer from "@/components/footer/Footer";
 import { url } from "inspector";
 import ExtensionSection from "./extension_section";
+import CursorSpark from "../CursorSpark";
 
 const HomePage = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const isLoggedIn = !!session;
+
+  // Email subscription state
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleLogout = async () => {
     try {
@@ -29,6 +35,48 @@ const HomePage = () => {
     } catch (error) {
       console.error("Logout error:", error);
       router.push("/");
+    }
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes("@")) {
+      setMessage("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setMessage("");
+
+    try {
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbzCY5rnwcp6QLt5rutfUtMY_UyEby9uBmchm4SxmhTYRsFJoItFlMOW6_H2InwQHv7t/exec", // Replace with NEW URL from step 1
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain", // Changed to avoid CORS preflight
+          },
+          body: JSON.stringify({
+            email: email,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        setMessage(
+          "Successfully subscribed! Check your inbox for a confirmation email."
+        );
+        setEmail("");
+      } else {
+        setMessage(result.message || "Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      setMessage("Something went wrong. Please try again later.");
+      console.error("Subscription error:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -43,6 +91,164 @@ const HomePage = () => {
         backgroundSize: "20px 20px",
       }}
     >
+      {/* Enhanced floating background elements */}
+      <motion.div
+        className="absolute top-20 -left-20 w-96 h-96 bg-gradient-to-r from-blue-200/30 via-purple-200/20 to-indigo-200/30 rounded-full mix-blend-multiply filter blur-3xl"
+        animate={{
+          x: [0, 60, -20, 40, 0],
+          y: [0, -40, 20, -30, 0],
+          scale: [1, 1.2, 0.8, 1.1, 1],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute top-60 -right-32 w-80 h-80 bg-gradient-to-l from-yellow-200/25 via-orange-200/20 to-red-200/30 rounded-full mix-blend-multiply filter blur-2xl"
+        animate={{
+          x: [0, -70, 30, -50, 0],
+          y: [0, 50, -25, 40, 0],
+          scale: [1, 0.9, 1.3, 1, 1],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
+      />
+      <motion.div
+        className="absolute bottom-40 left-1/4 w-72 h-72 bg-gradient-to-r from-green-200/20 via-emerald-200/25 to-teal-200/30 rounded-full mix-blend-multiply filter blur-2xl"
+        animate={{
+          x: [0, 40, -30, 20, 0],
+          y: [0, -30, 25, -20, 0],
+          scale: [1, 1.1, 0.9, 1.2, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2,
+        }}
+      />
+      <motion.div
+        className="absolute top-1/3 right-1/4 w-64 h-64 bg-gradient-to-r from-pink-200/20 via-rose-200/25 to-purple-200/20 rounded-full mix-blend-multiply filter blur-xl"
+        animate={{
+          x: [0, -25, 35, -15, 0],
+          y: [0, 35, -20, 30, 0],
+          scale: [1, 0.8, 1.1, 0.9, 1],
+        }}
+        transition={{
+          duration: 14,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 3,
+        }}
+      />
+
+      {/* Geometric floating shapes */}
+      <motion.div
+        className="absolute top-32 left-1/3 w-8 h-8 bg-blue-400/20 rotate-45"
+        animate={{
+          rotate: [45, 135, 225, 315, 45],
+          scale: [1, 1.2, 0.8, 1.1, 1],
+          x: [0, 20, -10, 15, 0],
+          y: [0, -15, 10, -5, 0],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute top-1/2 left-16 w-6 h-6 bg-red-400/25 rounded-full"
+        animate={{
+          scale: [1, 1.5, 0.5, 1.2, 1],
+          x: [0, 25, -20, 30, 0],
+          y: [0, -30, 15, -25, 0],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.5,
+        }}
+      />
+      <motion.div
+        className="absolute bottom-1/3 right-20 w-10 h-10 border-2 border-green-400/30 rounded-full"
+        animate={{
+          rotate: [0, 360],
+          scale: [1, 0.7, 1.3, 1],
+          x: [0, -30, 20, -15, 0],
+          y: [0, 20, -25, 10, 0],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "linear",
+          delay: 1.5,
+        }}
+      />
+      <motion.div
+        className="absolute top-2/3 left-2/3 w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-yellow-400/30"
+        animate={{
+          rotate: [0, 120, 240, 360],
+          scale: [1, 1.3, 0.8, 1],
+          x: [0, -20, 25, -10, 0],
+          y: [0, 15, -20, 25, 0],
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2,
+        }}
+      />
+
+      {/* Additional smaller decorative elements */}
+      <motion.div
+        className="absolute top-1/4 right-1/3 w-3 h-3 bg-purple-400/40 rounded-full"
+        animate={{
+          scale: [0.5, 1.2, 0.8, 1],
+          opacity: [0.4, 0.8, 0.3, 0.6],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute bottom-1/4 left-1/2 w-4 h-4 bg-indigo-400/30 rotate-12"
+        animate={{
+          rotate: [12, 72, 132, 192, 12],
+          x: [0, 10, -15, 5, 0],
+          y: [0, -10, 8, -12, 0],
+        }}
+        transition={{
+          duration: 7,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
+      />
+      <motion.div
+        className="absolute top-3/4 right-1/4 w-5 h-5 border border-orange-400/40 rotate-45"
+        animate={{
+          rotate: [45, 225, 405],
+          scale: [1, 0.6, 1.1, 1],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.8,
+        }}
+      />
+
       {/* Site navbar */}
       <Navbar />
       {/* Top right user info and logout button - responsive design 
@@ -364,11 +570,11 @@ const HomePage = () => {
             ></motion.div>
           </motion.div>
           <motion.div
-            initial={{ y: 30, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex justify-center items-center space-x-2 sm:space-x-4 lg:space-x-6 relative z-10"
+            className="flex justify-center items-center space-x-2 sm:space-x-4 lg:space-x-6 relative"
           >
             <motion.img
               initial={{ x: -20, opacity: 0, rotate: -10 }}
@@ -442,15 +648,9 @@ const HomePage = () => {
           </motion.div>
         </motion.div>
         {/* Events carousel component insertion */}
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="w-full px-2 sm:px-4 lg:px-8 max-w-7xl mx-auto"
-        >
+       
           <Events />
-        </motion.div>
+       
         {/* Admin button n check if the user is logged in */}
         ``
       </motion.div>
@@ -463,6 +663,108 @@ const HomePage = () => {
         transition={{ duration: 0.8 }}
       >
         <FAQs />
+      </motion.div>
+
+      {/* Newsletter Subscription Section */}
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.8 }}
+        className="my-16 sm:my-20 lg:my-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"
+      >
+        <div className="bg-gradient-to-br from-blue-50 via-white to-green-50 rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-100 relative overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-l from-blue-100/30 to-green-100/20 rounded-full blur-3xl -translate-y-32 translate-x-32" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-r from-yellow-100/20 to-red-100/20 rounded-full blur-2xl translate-y-24 -translate-x-24" />
+
+          <div className="relative z-10 text-center">
+            {/* Heading */}
+            <motion.h2
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4"
+              style={{
+                fontFamily:
+                  '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+              }}
+            >
+              Don't Miss One Event or Update
+            </motion.h2>
+
+            {/* Subtext */}
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-gray-600 text-lg sm:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
+            >
+              Stay in the loop with our latest events, workshops, and tech
+              updates. Join our community of developers and never miss out on
+              exciting opportunities!
+            </motion.p>
+
+            {/* Email subscription form */}
+            <motion.form
+              initial={{ y: 30, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto"
+              onSubmit={handleEmailSubmit}
+            >
+              <motion.input
+                type="email"
+                name="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isSubmitting}
+                className="flex-1 px-6 py-4 rounded-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 text-gray-700 bg-white shadow-sm disabled:opacity-50"
+                whileFocus={{ scale: 1.02 }}
+              />
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-8 py-4 bg-stone-900 text-white font-semibold rounded-full hover:bg-stone-800   transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={{ scale: isSubmitting ? 1 : 1.0 }}
+                whileTap={{ scale: isSubmitting ? 1 : 1.0 }}
+              >
+                {isSubmitting ? "Subscribing..." : "Subscribe"}
+              </motion.button>
+            </motion.form>
+
+            {/* Message display */}
+            {message && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`mt-4 p-3 rounded-lg text-sm font-medium ${
+                  message.includes("Successfully")
+                    ? "bg-green-100 text-green-700 border border-green-200"
+                    : "bg-red-100 text-red-700 border border-red-200"
+                }`}
+              >
+                {message}
+              </motion.div>
+            )}
+
+            {/* Trust indicators */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="mt-6 text-sm text-gray-500"
+            >
+              <p>🔒 We respect your privacy. Unsubscribe at any time.</p>
+            </motion.div>
+          </div>
+        </div>
       </motion.div>
 
       {/* Floating elements - hidden on mobile for better UX */}
@@ -513,6 +815,9 @@ const HomePage = () => {
       >
         <Footer />
       </motion.div>
+
+      {/* Cursor Sparkle Effect */}
+      <CursorSpark />
     </motion.div>
   );
 };

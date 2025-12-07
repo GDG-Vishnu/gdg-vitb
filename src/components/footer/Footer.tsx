@@ -46,7 +46,7 @@ export default function Footer() {
                     Home
                   </a>
                   <a
-                    href="/gallery"
+                    href="/client/gallery"
                     className="hover:underline font-productSans text-center md:text-left"
                   >
                     Gallery

@@ -59,9 +59,11 @@ export default function EventsCarousel() {
         className="no-scrollbar flex overflow-x-auto px-4 py-3 snap-x snap-mandatory"
         style={{ scrollPadding: "1.5rem", gap: "14px" }}
       >
-        {events.map((ev) => (
-          <EventCard key={ev.id} event={ev} />
-        ))}
+        {events
+          .sort((a, b) => a.id - b.id)
+          .map((ev) => (
+            <EventCard key={ev.id} event={ev} />
+          ))}
       </div>
     );
   }
@@ -73,9 +75,11 @@ export default function EventsCarousel() {
         className="no-scrollbar flex overflow-x-auto px-4 snap-x snap-mandatory"
         style={{ scrollPadding: "1rem", gap: "12px" }}
       >
-        {events.map((ev) => (
-          <EventCardMobile key={ev.id} event={ev} />
-        ))}
+        {events
+          .sort((a, b) => b.id - a.id)
+          .map((ev) => (
+            <EventCardMobile key={ev.id} event={ev} />
+          ))}
       </div>
     );
   }
@@ -149,15 +153,15 @@ function EventCard({ event }: { event: EventItem }) {
         backgroundColor: "transparent",
       }}
     >
-    {event.imageUrl && (
-  <div
-    className="flex items-center justify-center overflow-hidden bg-transparent w-full"
-    style={{ flex: 1 }}
-  >
-    <img
-      src={event.imageUrl}
-      alt={event.title}
-      className="
+      {event.imageUrl && (
+        <div
+          className="flex items-center justify-center overflow-hidden bg-transparent w-full"
+          style={{ flex: 1 }}
+        >
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="
         w-full max-w-xs         /* mobile */
         sm:max-w-sm
         md:max-w-md
@@ -166,10 +170,9 @@ function EventCard({ event }: { event: EventItem }) {
             
         h-auto object-contain
       "
-    />
-  </div>
-)}
-
+          />
+        </div>
+      )}
 
       <div style={{ padding: 30 }}>
         <div

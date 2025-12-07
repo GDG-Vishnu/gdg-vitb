@@ -130,7 +130,7 @@ model Events {
   keyHighlights String[]
   tags         String[]
   status       String
- 
+  eventImgCard String?
   imageUrl     String?
   coverUrl     String?
   isDone      Boolean  @default(false)

@@ -28,14 +28,14 @@ export function EmailCard() {
     >
       <div className="flex items-start gap-4">
         <motion.div
-          className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg"
+          className="p-4 hover:bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg"
           whileHover={{
             scale: 1.1,
             rotate: 5,
             transition: { duration: 0.2 },
           }}
         >
-          <Mail className="w-6 h-6 text-white" />
+          <Mail className="w-6 h-6 text-white " />
         </motion.div>
         <div className="flex-1">
           <h3 className="font-bold text-white mb-2 text-lg group-hover:text-blue-400 transition-colors">

@@ -27,6 +27,8 @@ export default function EventsCarousel() {
   const [isMobile, setIsMobile] = useState(false);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [scrollDirection, setScrollDirection] = useState(1); // 1 for right, -1 for left
 
   // Fetch events from database
   useEffect(() => {
@@ -55,15 +57,71 @@ export default function EventsCarousel() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (!isAutoScrolling || events.length === 0) return;
+
+    const autoScroll = () => {
+      if (scrollerRef.current) {
+        const container = scrollerRef.current;
+        const scrollAmount = 2; // pixels per frame
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+        if (scrollDirection === 1) {
+          // Scrolling right
+          if (container.scrollLeft >= maxScrollLeft - 1) {
+            setScrollDirection(-1); // Change direction to left
+          } else {
+            container.scrollLeft += scrollAmount;
+          }
+        } else {
+          // Scrolling left
+          if (container.scrollLeft <= 1) {
+            setScrollDirection(1); // Change direction to right
+          } else {
+            container.scrollLeft -= scrollAmount;
+          }
+        }
+      }
+    };
+
+    const intervalId = setInterval(autoScroll, 30); // Smooth 30ms interval
+
+    return () => clearInterval(intervalId);
+  }, [isAutoScrolling, events.length, scrollDirection]);
+
+  // Pause auto-scroll on hover/interaction
+  const handleMouseEnter = () => setIsAutoScrolling(false);
+  const handleMouseLeave = () => setIsAutoScrolling(true);
+  const handleTouchStart = () => setIsAutoScrolling(false);
+  const handleTouchEnd = () => setTimeout(() => setIsAutoScrolling(true), 2000); // Resume after 2s
+
   function renderDesktop() {
     return (
       <div
         ref={scrollerRef}
-        className="no-scrollbar flex overflow-x-auto px-4 py-3 snap-x snap-mandatory"
-        style={{ scrollPadding: "1.5rem", gap: "14px" }}
+        className="flex overflow-x-auto space-x-4 px-4 py-3 events-scrollbar"
+        style={{
+          scrollBehavior: "auto", // Changed to auto for smoother auto-scroll
+          WebkitOverflowScrolling: "touch",
+        }}
+        onWheel={(e) => {
+          if (scrollerRef.current) {
+            e.preventDefault();
+            setIsAutoScrolling(false); // Pause auto-scroll on manual interaction
+            scrollerRef.current.scrollLeft += e.deltaY;
+            setTimeout(() => setIsAutoScrolling(true), 3000); // Resume after 3s
+          }
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {events.map((ev) => (
-          <EventCard key={ev.id} event={ev} />
+          <div key={ev.id} className="flex-shrink-0">
+            <EventCard event={ev} />
+          </div>
         ))}
       </div>
     );
@@ -73,8 +131,27 @@ export default function EventsCarousel() {
     return (
       <div
         ref={scrollerRef}
-        className="no-scrollbar flex overflow-x-auto px-4 snap-x snap-mandatory"
-        style={{ scrollPadding: "1rem", gap: "12px" }}
+        className="flex overflow-x-auto px-4 events-scrollbar"
+        style={{
+          scrollPadding: "1rem",
+          gap: "12px",
+          scrollBehavior: "auto", // Changed to auto for smoother auto-scroll
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "thin",
+          scrollbarColor: "#4285F4 #f1f1f1",
+        }}
+        onWheel={(e) => {
+          if (scrollerRef.current) {
+            e.preventDefault();
+            setIsAutoScrolling(false);
+            scrollerRef.current.scrollLeft += e.deltaY;
+            setTimeout(() => setIsAutoScrolling(true), 3000);
+          }
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {events.map((ev) => (
           <EventCardMobile key={ev.id} event={ev} />

@@ -9,33 +9,51 @@ const PALETTE = [
   ["#A142F4", "#9334E6"], // purple
 ];
 
+const PARTICLE_TYPES = ["circle", "star", "dot", "diamond", "triangle", "plus"];
+
 export default function CursorSpark() {
   useEffect(() => {
     let last = 0;
+    let isMoving = false;
+    let moveTimeout: NodeJS.Timeout;
 
     const handleMove = (e: MouseEvent) => {
       const now = performance.now();
-      if (now - last < 10) return;
+      if (now - last < 50) return; // Reduced frequency for better performance
       last = now;
 
-      createParticles(e.clientX, e.clientY, 3);
+      // Only create particles when actively moving
+      if (!isMoving) {
+        isMoving = true;
+        createParticles(e.clientX, e.clientY, 1); // Reduced particle count
+      }
+
+      clearTimeout(moveTimeout);
+      moveTimeout = setTimeout(() => {
+        isMoving = false;
+      }, 100);
     };
 
     window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      clearTimeout(moveTimeout);
+    };
   }, []);
 
   function createParticles(x: number, y: number, count = 1) {
     for (let i = 0; i < count; i++) {
       const el = document.createElement("div");
-      el.className = "cursor-spark";
+      const particleType =
+        PARTICLE_TYPES[Math.floor(Math.random() * PARTICLE_TYPES.length)];
+      el.className = `cursor-spark spark-${particleType}`;
 
       const pal = PALETTE[Math.floor(Math.random() * PALETTE.length)];
-      const size = Math.round(6 + Math.random() * 16);
-      const duration = 500 + Math.random() * 600;
+      const size = Math.round(6 + Math.random() * 12); // Larger, more visible particles
+      const duration = 800 + Math.random() * 400; // Longer, smoother animation
 
       const angle = Math.random() * Math.PI * 2;
-      const distance = 20 + Math.random() * 70;
+      const distance = 15 + Math.random() * 40; // Reduced spread for subtlety
       const dx = Math.cos(angle) * distance;
       const dy = Math.sin(angle) * distance * -1;
 
@@ -48,10 +66,23 @@ export default function CursorSpark() {
       el.style.setProperty("--c1", pal[0]);
       el.style.setProperty("--c2", pal[1]);
 
-      el.innerHTML = `<div class="spark-core"></div>`;
+      // Different particle shapes
+      if (particleType === "star") {
+        el.innerHTML = `<div class="spark-star">★</div>`;
+      } else if (particleType === "dot") {
+        el.innerHTML = `<div class="spark-dot"></div>`;
+      } else if (particleType === "diamond") {
+        el.innerHTML = `<div class="spark-diamond">◆</div>`;
+      } else if (particleType === "triangle") {
+        el.innerHTML = `<div class="spark-triangle">▲</div>`;
+      } else if (particleType === "plus") {
+        el.innerHTML = `<div class="spark-plus">✚</div>`;
+      } else {
+        el.innerHTML = `<div class="spark-core"></div>`;
+      }
 
       document.body.appendChild(el);
-      setTimeout(() => el.remove(), duration + 100);
+      setTimeout(() => el.remove(), duration + 200);
     }
   }
 
