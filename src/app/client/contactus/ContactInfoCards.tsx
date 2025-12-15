@@ -38,15 +38,15 @@ export function EmailCard() {
           <Mail className="w-6 h-6 text-white " />
         </motion.div>
         <div className="flex-1">
-          <h3 className="font-bold text-white mb-2 text-lg group-hover:text-blue-400 transition-colors">
+          <h3 className="font-bold text-white mb-2 text-lg group-hover:text-blue-400 transition-colors font-productSans">
             Email Us
           </h3>
-          <p className="text-gray-300 text-sm mb-3 leading-relaxed">
+          <p className="text-gray-300 text-sm mb-3 leading-relaxed font-productSans">
             Send us an email anytime - we typically respond within 24 hours
           </p>
           <motion.a
             href="mailto:gdg@vishnu.edu.in"
-            className="text-blue-400 hover:text-blue-300 font-medium text-sm flex items-center gap-2 group/link"
+            className="text-blue-400 hover:text-blue-300 font-medium text-sm flex items-center gap-2 group/link font-productSans"
             whileHover={{ x: 5 }}
             transition={{ duration: 0.2 }}
           >
@@ -88,10 +88,10 @@ export function LocationCard() {
           <MapPin className="w-6 h-6 text-white" />
         </motion.div>
         <div className="flex-1">
-          <h3 className="font-bold text-gray-900 mb-2 text-lg group-hover:text-red-600 transition-colors">
+          <h3 className="font-bold text-gray-900 mb-2 text-lg group-hover:text-red-600 transition-colors font-productSans">
             Visit Us
           </h3>
-          <p className="text-gray-700 text-sm leading-relaxed mb-3">
+          <p className="text-gray-700 text-sm leading-relaxed mb-3 font-productSans">
             <span className="font-semibold">
               Vishnu Institute of Technology
             </span>
@@ -100,7 +100,7 @@ export function LocationCard() {
             <br />
             India - 534202
           </p>
-          <div className="flex items-center gap-2 text-xs text-gray-500">
+          <div className="flex items-center gap-2 text-xs text-gray-500 font-productSans">
             <Clock className="w-4 h-4" />
             <span>Open to visitors during college hours</span>
           </div>
@@ -133,13 +133,15 @@ export function PhoneCard() {
           <Phone className="w-6 h-6 text-white" />
         </motion.div>
         <div className="flex-1">
-          <h3 className="font-bold text-white mb-2 text-lg">Call Us</h3>
-          <p className="text-green-100 text-sm mb-3 leading-relaxed">
+          <h3 className="font-bold text-white mb-2 text-lg font-productSans">
+            Call Us
+          </h3>
+          <p className="text-green-100 text-sm mb-3 leading-relaxed font-productSans">
             Reach us directly for urgent inquiries
           </p>
           <motion.a
             href="tel:+918867334455"
-            className="text-white hover:text-green-200 font-medium text-sm flex items-center gap-2 group/link"
+            className="text-white hover:text-green-200 font-medium text-sm flex items-center gap-2 group/link font-productSans"
             whileHover={{ x: 5 }}
             transition={{ duration: 0.2 }}
           >

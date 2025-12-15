@@ -36,7 +36,7 @@ export function PageHeader() {
         variants={titleVariants}
         className="relative"
       >
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 relative">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 relative font-productSans">
           <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
             Contact Us
           </span>
@@ -53,7 +53,7 @@ export function PageHeader() {
         initial="hidden"
         animate="visible"
         variants={subtitleVariants}
-        className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+        className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-productSans"
       >
         Have questions or want to collaborate? We&apos;d love to hear from you.
         <br className="hidden sm:block" />

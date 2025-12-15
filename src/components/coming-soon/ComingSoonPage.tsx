@@ -49,7 +49,7 @@ const ComingSoonPage = () => {
               </AvatarFallback>
             </Avatar>
             <div className="text-xs sm:text-sm flex-1 min-w-0">
-              <p className="font-medium text-gray-900 truncate">
+              <p className="font-medium text-gray-900 truncate font-productSans">
                 {session.user?.name || "User"}
               </p>
               {/* <p className="text-xs text-gray-500 hidden sm:block">
@@ -127,7 +127,7 @@ const ComingSoonPage = () => {
 
         {/* Main heading with Google colors */}
         <div className="text-center mb-8">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 font-mono leading-tight">
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 font-mono leading-tight font-productSans">
             <div className="mb-2">
               <span className="text-black">Google </span>
               <span className="text-black relative">
@@ -137,7 +137,7 @@ const ComingSoonPage = () => {
               </span>
             </div>
             <div className="text-black">Groups</div>
-            <div className="text-2xl md:text-3xl font-semibold text-gray-600 font-mono tracking-wider mt-2">
+            <div className="text-2xl md:text-3xl font-semibold text-gray-600 font-mono tracking-wider mt-2 font-productSans">
               On Campus
             </div>
           </h1>

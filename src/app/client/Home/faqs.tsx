@@ -26,7 +26,7 @@ export default function FAQs() {
 
   return (
     <section className="w-full py-12 px-4">
-      <div className="max-w-[1500px] mx-auto flex items-center gap-8 border-2 border-gray-900 rounded-3xl p-6 md:p-12 bg-gray-50 rounded-[58px]">
+      <div className="max-w-[1500px] mx-auto flex items-center gap-8 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] rounded-none p-6 md:p-12 bg-pink-200">
         {/* Left keyboard image */}
         <div className="flex-shrink-0 w-1.5/3 hidden md:flex items-center justify-center">
           <img
@@ -50,7 +50,9 @@ export default function FAQs() {
                 <div
                   key={i}
                   onClick={() => setOpenIndex(open ? null : i)}
-                  className="cursor-pointer rounded-xl p-4 bg-white shadow-sm text-stone-950 border-2 border-stone-950 transition-shadow hover:shadow-md"
+                  className={`cursor-pointer rounded-none p-4 bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-stone-950 border-3 border-black transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${
+                    open ? "bg-yellow-200 border-4" : "bg-white border-3"
+                  }`}
                 >
                   {/* Question Row */}
                   <div className="flex items-center justify-between">
@@ -61,7 +63,7 @@ export default function FAQs() {
                     {/* Animated Arrow */}
                     <div
                       className={cn(
-                        "text-xl font-productSans transform transition-transform duration-300",
+                        "text-2xl font-black font-productSans transform transition-transform duration-200 bg-black text-white w-8 h-8 flex items-center justify-center border-2 border-black",
                         open ? "rotate-90" : "rotate-0"
                       )}
                     >

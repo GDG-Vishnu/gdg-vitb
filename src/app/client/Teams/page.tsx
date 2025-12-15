@@ -25,24 +25,8 @@ export default function TeamsPage() {
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     let mounted = true;
-    const storageKey = "gdg_team_members_v1";
 
-    // Try to load cached team members from localStorage first
-    try {
-      const raw = localStorage.getItem(storageKey);
-      console.log("Cached team members:", raw);
-      if (raw) {
-        const parsed = JSON.parse(raw) as TeamMember[];
-        if (mounted) {
-          setTeam(parsed || []);
-          setLoading(false);
-        }
-      }
-    } catch (e) {
-      console.error("Failed to read team from localStorage", e);
-    }
-
-    // Fetch fresh data and update cache
+    // Fetch team data directly from API
     (async () => {
       try {
         const res = await fetch("/api/teams/list");
@@ -50,13 +34,8 @@ export default function TeamsPage() {
         const data = await res.json();
         if (!mounted) return;
         setTeam(data || []);
-        try {
-          localStorage.setItem(storageKey, JSON.stringify(data || []));
-        } catch (e) {
-          console.error("Failed to save team to localStorage", e);
-        }
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch team members:", err);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -96,7 +75,7 @@ export default function TeamsPage() {
           <span
             className="
         text-lg sm:text-2xl md:text-3xl lg:text-4xl
-        font-semibold tracking-wider text-center
+        font-semibold tracking-wider text-center font-productSans
       "
           >
             MEET THE TEAM
@@ -125,16 +104,18 @@ export default function TeamsPage() {
 
       {/* Main content area - leave remaining content for later */}
       <div className="relative z-10 flex flex-col items-center justify-start pt-6 px-4">
-        <h1 className="text-lg text-center md:text-2xl font-bold mb-4 text-stone-950 ">
+        <h1 className="text-lg text-center md:text-2xl font-bold mb-4 text-stone-950 font-productSans">
           {" "}
           Bringing ideas to life through technology and community.
         </h1>
         {/* Add Teams content here */}
 
         <div className="mt-8 w-full">
-          {loading && <div>Loading team members...</div>}
+          {loading && (
+            <div className="font-productSans">Loading team members...</div>
+          )}
           {!loading && team.length === 0 && (
-            <div className="col-span-full text-center">
+            <div className="col-span-full text-center font-productSans">
               No team members found.
             </div>
           )}
@@ -177,7 +158,7 @@ export default function TeamsPage() {
                       backgroundColor: members[0]?.bgColor || undefined,
                     }}
                     className="
-  w-[370px]            /* mobile default */
+  w-[330px]            /* mobile default */
   h-[54px]
   sm:w-[370px]         /* optional - keeps 370px on small screens */
   lg:w-[800px]         /* large screen width */
@@ -192,7 +173,7 @@ export default function TeamsPage() {
                   >
                     <h2
                       id={`pos-${position}`}
-                      className="text-xl font-semibold  sm:m-1 p-2 text-center text-stone-950"
+                      className="text-xl font-semibold  sm:m-1 p-2 text-center text-stone-950 font-productSans"
                     >
                       {position}
                     </h2>

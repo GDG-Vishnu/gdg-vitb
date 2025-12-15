@@ -4,7 +4,7 @@ import React from "react";
 import { Mail, Linkedin } from "lucide-react";
 
 export type MemberCardProps = {
- bgColor?: string | null;
+  bgColor?: string | null;
   logo?: string | null;
   id: string;
   imageUrl?: string | null;
@@ -39,7 +39,7 @@ export default function MemberCard({
           <div className="w-3 h-3 rounded-full bg-green-100" />
           <div className="w-3 h-3 rounded-full bg-yellow-100" />
         </div>
-      
+
         {/*  {position && <div className="text-lg text-stone-950 font-medium">{position}</div>}*/}
       </div>
 
@@ -61,10 +61,12 @@ export default function MemberCard({
       {/* Footer / details */}
       <div className="px-4 py-3 flex flex-col justify-between">
         <div>
-          <h3 className="font-medium text-stone-800 w-full text-lg">{name}</h3>
+          <h3 className="font-medium text-stone-800 w-full text-lg font-productSans">
+            {name}
+          </h3>
         </div>
         <div className="flex justify-between items-center ">
-          <h1 className="text-lg text-green-600 font-semibold mt-1">
+          <h1 className="text-lg text-green-600 font-semibold mt-1 font-productSans">
             {designation}
           </h1>
 

@@ -137,7 +137,11 @@ model Events {
   MembersParticipated Int      @default(0)
   Theme String[]
 }
-
+model Gallery{
+    id           Int      @id @default(autoincrement())
+    imageUrl     String
+    uploadedAt   DateTime @default(now())
+}
 
 
 // NextAuth.js Verification Token model

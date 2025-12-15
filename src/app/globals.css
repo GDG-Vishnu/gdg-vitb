@@ -147,7 +147,7 @@
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {
   background-color: #9ca3af;
 }
-  
+
 /* Events horizontal scrollbar */
 .events-scrollbar {
   scrollbar-width: thin;
@@ -178,6 +178,16 @@
   animation: none;
   mix-blend-mode: normal;
 }
+/* Set Product Sans as the global default font */
+* {
+  font-family: var(--font-product-sans);
+}
+
+html,
+body {
+  font-family: var(--font-product-sans);
+}
+
 .font-productSans {
   font-family: var(--font-product-sans);
 }

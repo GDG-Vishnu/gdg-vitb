@@ -376,23 +376,18 @@ const HomePage = () => {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-2 font-productSans leading-tight relative z-10"
             style={{
-              fontFamily:
-                '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
               fontWeight: 400,
-
-              // Use a responsive clamp so the heading can scale and stay on one line across viewports
               fontSize: "clamp(24px, 6vw, 80px)",
               lineHeight: "1.2",
               letterSpacing: "0",
               textTransform: "capitalize",
-              // leading-trim is not a standard CSS property in browsers; omitted
             }}
           >
             <motion.span
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="text-black mr-3"
+              className="text-black mr-3 "
             >
               Google
             </motion.span>
@@ -400,7 +395,7 @@ const HomePage = () => {
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="text-black relative mr-3"
+              className="text-black relative mr-3 font-productSans"
             >
               Developer
               {/* Yellow highlight circle */}
@@ -409,7 +404,7 @@ const HomePage = () => {
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.2 }}
-              className="text-black"
+              className="text-black font-productSans"
             >
               Group
             </motion.span>
@@ -460,10 +455,8 @@ const HomePage = () => {
               ></motion.div>
             </motion.div>
             <h3
-              className="text-black text-center px-2 sm:px-4"
+              className="text-black text-center px-2 sm:px-4 font-productSans"
               style={{
-                fontFamily:
-                  '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
                 fontWeight: 400,
                 lineHeight: "1.3",
                 fontSize: "clamp(16px, 4vw, 48px)",
@@ -528,7 +521,7 @@ const HomePage = () => {
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="my-6 sm:my-8 lg:my-12 flex justify-center items-center w-full px-4 relative"
+          className="my-6 sm:my-8 lg:my-12 flex justify-center items-center w-full px-4 relative bg-pink-200 py-8 rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200"
         >
           {/* Background decoration for Events section */}
           <div
@@ -606,11 +599,9 @@ const HomePage = () => {
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-stone-950 whitespace-nowrap"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-black whitespace-nowrap font-productSans"
               style={{
-                fontFamily:
-                  '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-                fontWeight: 400,
+                fontWeight: 900,
                 fontStyle: "normal",
                 fontSize: "clamp(24px, 5vw, 64px)",
                 lineHeight: "1.2",
@@ -648,9 +639,7 @@ const HomePage = () => {
           </motion.div>
         </motion.div>
         {/* Events carousel component insertion */}
-       
-          <Events />
-       
+        <Events />
         {/* Admin button n check if the user is logged in */}
         ``
       </motion.div>
@@ -673,7 +662,7 @@ const HomePage = () => {
         transition={{ duration: 0.8 }}
         className="my-16 sm:my-20 lg:my-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"
       >
-        <div className="bg-gradient-to-br from-blue-50 via-white to-green-50 rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-100 relative overflow-hidden">
+        <div className="bg-lime-200 rounded-none p-8 sm:p-12 shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] border-4 border-black relative overflow-hidden">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-l from-blue-100/30 to-green-100/20 rounded-full blur-3xl -translate-y-32 translate-x-32" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-r from-yellow-100/20 to-red-100/20 rounded-full blur-2xl translate-y-24 -translate-x-24" />
@@ -685,11 +674,7 @@ const HomePage = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4"
-              style={{
-                fontFamily:
-                  '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-              }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 font-productSans"
             >
               Don't Miss One Event or Update
             </motion.h2>
@@ -700,7 +685,7 @@ const HomePage = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-gray-600 text-lg sm:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="text-gray-600 text-lg sm:text-xl mb-8 max-w-2xl mx-auto leading-relaxed font-productSans"
             >
               Stay in the loop with our latest events, workshops, and tech
               updates. Join our community of developers and never miss out on
@@ -724,15 +709,15 @@ const HomePage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-4 rounded-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 text-gray-700 bg-white shadow-sm disabled:opacity-50"
+                className="flex-1 px-6 py-4 rounded-none border-4 border-black focus:border-black focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 text-black bg-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 font-productSans font-bold"
                 whileFocus={{ scale: 1.02 }}
               />
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-4 bg-stone-900 text-white font-semibold rounded-full hover:bg-stone-800   transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: isSubmitting ? 1 : 1.0 }}
-                whileTap={{ scale: isSubmitting ? 1 : 1.0 }}
+                className="px-8 py-4 bg-black text-white font-black rounded-none hover:bg-gray-800 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-4 border-black disabled:opacity-50 disabled:cursor-not-allowed font-productSans"
+                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               >
                 {isSubmitting ? "Subscribing..." : "Subscribe"}
               </motion.button>
@@ -743,10 +728,10 @@ const HomePage = () => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`mt-4 p-3 rounded-lg text-sm font-medium ${
+                className={`mt-4 p-3 rounded-none text-sm font-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-4 border-black ${
                   message.includes("Successfully")
-                    ? "bg-green-100 text-green-700 border border-green-200"
-                    : "bg-red-100 text-red-700 border border-red-200"
+                    ? "bg-green-300 text-black"
+                    : "bg-red-300 text-black"
                 }`}
               >
                 {message}
@@ -759,9 +744,11 @@ const HomePage = () => {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-6 text-sm text-gray-500"
+              className="mt-6 text-sm text-gray-500 font-productSans"
             >
-              <p>🔒 We respect your privacy. Unsubscribe at any time.</p>
+              <p className="font-productSans">
+                🔒 We respect your privacy. Unsubscribe at any time.
+              </p>
             </motion.div>
           </div>
         </div>

@@ -99,7 +99,9 @@ export function SignupForm() {
       {/* Signup Section */}
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Sign up</h1>
+          <h1 className="text-3xl font-bold text-gray-900 font-productSans">
+            Sign up
+          </h1>
         </div>
 
         {error && (
@@ -117,7 +119,10 @@ export function SignupForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name Field */}
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-700 font-medium">
+            <Label
+              htmlFor="name"
+              className="text-gray-700 font-medium font-productSans"
+            >
               Full Name
             </Label>
             <Input
@@ -129,13 +134,18 @@ export function SignupForm() {
               className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.name && (
-              <p className="text-sm text-red-600">{errors.name.message}</p>
+              <p className="text-sm text-red-600 font-productSans">
+                {errors.name.message}
+              </p>
             )}
           </div>
 
           {/* Email Field */}
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-700 font-medium">
+            <Label
+              htmlFor="email"
+              className="text-gray-700 font-medium font-productSans"
+            >
               Address email
             </Label>
             <Input
@@ -147,13 +157,18 @@ export function SignupForm() {
               className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.email && (
-              <p className="text-sm text-red-600">{errors.email.message}</p>
+              <p className="text-sm text-red-600 font-productSans">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-gray-700 font-medium">
+            <Label
+              htmlFor="password"
+              className="text-gray-700 font-medium font-productSans"
+            >
               Password
             </Label>
             <div className="relative">
@@ -178,7 +193,9 @@ export function SignupForm() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
+              <p className="text-sm text-red-600 font-productSans">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -186,7 +203,7 @@ export function SignupForm() {
           <div className="space-y-2">
             <Label
               htmlFor="confirmPassword"
-              className="text-gray-700 font-medium"
+              className="text-gray-700 font-medium font-productSans"
             >
               Confirm Password
             </Label>
@@ -212,7 +229,7 @@ export function SignupForm() {
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="text-sm text-red-600">
+              <p className="text-sm text-red-600 font-productSans">
                 {errors.confirmPassword.message}
               </p>
             )}
@@ -236,11 +253,11 @@ export function SignupForm() {
         </form>
 
         {/* Sign in link */}
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-gray-600 font-productSans">
           Already have an account?{" "}
           <button
             type="button"
-            className="text-blue-600 hover:text-blue-500 font-medium underline"
+            className="text-blue-600 hover:text-blue-500 font-medium underline font-productSans"
             onClick={() => router.push("/auth/login")}
           >
             Sign in
@@ -248,7 +265,7 @@ export function SignupForm() {
         </div>
 
         {/* Terms and Privacy */}
-        <div className="text-center text-xs text-gray-500">
+        <div className="text-center text-xs text-gray-500 font-productSans">
           By creating account you agree to our{" "}
           <a href="#" className="text-blue-600 hover:text-blue-500 underline">
             Terms of Service

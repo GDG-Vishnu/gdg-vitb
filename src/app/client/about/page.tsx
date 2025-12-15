@@ -324,25 +324,25 @@ const StatisticsSection = () => {
 
   const statistics = [
     {
-      value: "300+",
+      value: "1979+",
       label: "Active Members",
       icon: Users,
       color: "text-blue-600",
     },
     {
-      value: "35+",
+      value: "10+",
       label: "Events Conducted",
       icon: Calendar,
       color: "text-red-600",
     },
     {
-      value: "15+",
+      value: "50+",
       label: "Projects Completed",
       icon: Award,
       color: "text-green-600",
     },
     {
-      value: "40+",
+      value: "10+",
       label: "Workshops Held",
       icon: BookOpen,
       color: "text-yellow-600",

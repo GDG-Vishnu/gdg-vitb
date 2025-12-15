@@ -1,266 +1,180 @@
 "use client";
 
-import React, { useState } from "react";
-import Navbar from "../Home/navbar";
+import React, { useEffect, useState } from "react";
+import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
+import { Camera, ArrowLeft, Image as ImageIcon } from "lucide-react";
+import Link from "next/link";
+import { ParallaxScroll } from "@/components/ui/parallax-scroll";
 
-// Sample gallery images - replace with actual Cloudinary URLs
-const galleryImages = [
+type GalleryItem = {
+  id: number;
+  imageUrl: string;
+  uploadedAt: string;
+};
+
+// Sample gallery items with curated images
+const sampleGalleryItems: GalleryItem[] = [
   {
     id: 1,
-    src: "https://res.cloudinary.com/duvr3z2z0/image/upload/v1764914753/20250918_163601_1_gcbdyj.png",
-    alt: "GDG Team Photo",
-    title: "GDG Team",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/ikjbkdsqwcgf4bwbqv3m",
+    uploadedAt: "2024-01-15T10:30:00Z"
   },
   {
     id: 2,
-    src: "",
-    alt: "GDG Event 2",
-    title: "Workshop Session",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/mqtjtemmd5xrnimqb053",
+    uploadedAt: "2024-01-16T14:45:00Z"
   },
   {
     id: 3,
-    src: "",
-    alt: "GDG Event 3",
-    title: "Tech Talk",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/zveegnqhtdzwcr1xpoyz",
+    uploadedAt: "2024-01-17T09:15:00Z"
   },
   {
     id: 4,
-    src: "",
-    alt: "GDG Event 4",
-    title: "Hackathon",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/f3nvhejvprgqocfh3w2i",
+    uploadedAt: "2024-01-18T16:20:00Z"
   },
   {
     id: 5,
-    src: "",
-    alt: "GDG Event 5",
-    title: "Coding Session",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/oykhw6xytohke2in6j96",
+    uploadedAt: "2024-01-19T11:30:00Z"
   },
   {
     id: 6,
-    src: "",
-    alt: "GDG Event 6",
-    title: "Community Meetup",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/ooyji7eajkyjvjkiuy6k",
+    uploadedAt: "2024-01-20T08:45:00Z"
   },
   {
     id: 7,
-    src: "",
-    alt: "GDG Event 7",
-    title: "Team Collaboration",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/omaqtjgvhiyuiu0jxnxp",
+    uploadedAt: "2024-01-21T13:10:00Z"
   },
   {
     id: 8,
-    src: "",
-    alt: "GDG Event 8",
-    title: "Event Highlights",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/zgucxpwzajjx9itwsons",
+    uploadedAt: "2024-01-22T15:25:00Z"
   },
   {
     id: 9,
-    src: "",
-    alt: "GDG Event 9",
-    title: "Workshop Day",
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/knpv42zoexevpfgl7vcp",
+    uploadedAt: "2024-01-23T12:40:00Z"
   },
+  {
+    id: 10,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v0grrxy5ahd8kyb2kxzv",
+    uploadedAt: "2024-01-24T17:55:00Z"
+  },
+  {
+    id: 11,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/uynaqaqygb5pned9otsp",
+    uploadedAt: "2024-01-25T10:20:00Z"
+  },
+  {
+    id: 12,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644911/sv8r7than899likaob4d.jpg",
+    uploadedAt: "2024-01-26T14:35:00Z"
+  },
+  {
+    id: 13,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644894/omjmymgm0ilfjof32h8g.jpg",
+    uploadedAt: "2024-01-27T09:50:00Z"
+  },
+  {
+    id: 14,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644891/bglnju9ouvgwuyjyoxuh.jpg",
+    uploadedAt: "2024-01-28T16:05:00Z"
+  },
+  {
+    id: 15,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644890/bdiewilbgzee4odot1fk.jpg",
+    uploadedAt: "2024-01-29T11:20:00Z"
+  },
+  {
+    id: 16,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644887/qfpitj6fxngwmk2bcvgi.jpg",
+    uploadedAt: "2024-01-30T08:35:00Z"
+  },
+  {
+    id: 17,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644886/zrdhk0lmbf2zpqwwriwm.jpg",
+    uploadedAt: "2024-02-01T13:50:00Z"
+  },
+  {
+    id: 18,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644878/qurgwgqfjhvujays1uhh.jpg",
+    uploadedAt: "2024-02-02T15:05:00Z"
+  },
+  {
+    id: 19,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644876/ziv04siuykktlwldxnhq.jpg",
+    uploadedAt: "2024-02-03T12:20:00Z"
+  },
+  {
+    id: 20,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644872/r9xqol14s4rtgtugai7x.jpg",
+    uploadedAt: "2024-02-04T17:35:00Z"
+  },
+  {
+    id: 21,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644869/wzmpmfypcpd0mn5ggzhg.jpg",
+    uploadedAt: "2024-02-05T10:50:00Z"
+  },
+  {
+    id: 22,
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644864/d8sz7fn2m8r4r8cyuad9.jpg",
+    uploadedAt: "2024-02-06T14:05:00Z"
+  }
 ];
 
 function Gallery() {
-  const [selectedImage, setSelectedImage] = useState<
-    (typeof galleryImages)[0] | null
-  >(null);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(sampleGalleryItems);
+
 
   return (
-    <div
-      className="min-h-screen bg-white relative overflow-hidden flex flex-col"
-      style={{
-        backgroundColor: "white",
-        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
-        backgroundSize: "20px 20px",
-      }}
-    >
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      {/* Header Section */}
-      <div className="my-8 flex  justify-center items-center w-full ">
-        <div className="flex *:flex-1 justify-center items-center space-x-4">
-          <img
-            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
-            alt=""
-            className="hidden md:block"
-          />
-          <img
-            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
-            alt=""
-          />
-          <h2
-            className="text-6xl font-semibold text-stone-950"
-            style={{
-              fontFamily:
-                '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-              fontWeight: 400,
-              fontStyle: "normal",
-              // Use a responsive clamp so the heading can scale and stay on one line across viewports
-
-              lineHeight: "146%",
-              letterSpacing: "0",
-              textTransform: "capitalize",
-              // leading-trim is not a standard CSS property in browsers; omitted
-            }}
+      <main className="py-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Back Button */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-gray-100 hover:text-gray-200 transition mb-6 bg-stone-900 p-2 rounded-4xl"
           >
-            Events{" "}
-          </h2>
-          <img
-            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851996/Events_Star_eubbt3.png"
-            alt=""
-          />
-          <img
-            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760852060/Frame_60_soyopr.png"
-            alt=""
-            className="hidden md:block"
-          />
-        </div>
-      </div>
+            <ArrowLeft className="w-6 h-6 text-stone-950 rounded-full hover:rotate-2 bg-blue-500" />
+            <p className="hidden lg:block font-productSans">Back to Home</p>
+          </Link>
 
-      <p className="text-center text-stone-600 text-lg max-w-2xl mx-auto">
-        Explore moments from our events, workshops, and community gatherings
-      </p>
-
-      {/* Bento Grid Gallery */}
-      <div className="flex-1 px-4 md:px-8 lg:px-16 pb-20">
-        <div className="w-full mx-auto flex flex-col gap-4 ">
-          {/* Row 1: Full width large image */}
-
-          <div
-            className="relative group cursor-pointer overflow-hidden rounded-3xl bg-gray-200 
-             h-[450px] md:h-[280px] w-full max-w-[1400px] mx-auto px-4"
-            onClick={() =>
-              galleryImages[0].src && setSelectedImage(galleryImages[0])
-            }
-          >
-            {galleryImages[0].src ? (
-              <>
-                <div className="w-full h-full flex text-center">
-                  <img
-                    src={galleryImages[0].src}
-                    alt={galleryImages[0].alt}
-                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-
-                <div
-                  className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 
-                      transition-opacity duration-300 flex items-end p-6"
-                >
-                  <h3 className="text-white font-semibold text-xl">
-                    {galleryImages[0].title}
-                  </h3>
-                </div>
-              </>
-            ) : null}
+          {/* Gallery Header */}
+          <div className="text-center mb-12">
+            <div className="flex justify-center items-center gap-4 mb-4">
+              <Camera className="w-12 h-12 text-blue-600" />
+              <h1 className="text-4xl md:text-6xl font-bold text-stone-900 font-productSans">
+                Gallery
+              </h1>
+            </div>
+            <p className="text-stone-600 text-lg md:text-xl max-w-2xl mx-auto font-productSans">
+              Explore our collection of memorable moments and experiences
+            </p>
           </div>
 
-          {/* Row 2: 3 equal columns */}
-          <div className="grid grid-cols-3 gap-4">
-            {galleryImages.slice(1, 4).map((image) => (
-              <div
-                key={image.id}
-                className="relative group cursor-pointer overflow-hidden rounded-3xl bg-gray-200 h-[160px] md:h-[200px]"
-                onClick={() => image.src && setSelectedImage(image)}
-              >
-                {image.src ? (
-                  <>
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-full transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                      <h3 className="text-white font-semibold text-lg">
-                        {image.title}
-                      </h3>
-                    </div>
-                  </>
-                ) : null}
-              </div>
-            ))}
-          </div>
-
-          {/* Row 3: 3 equal columns */}
-          <div className="grid grid-cols-3 gap-4">
-            {galleryImages.slice(4, 7).map((image) => (
-              <div
-                key={image.id}
-                className="relative group cursor-pointer overflow-hidden rounded-3xl bg-gray-200 h-[160px] md:h-[200px]"
-                onClick={() => image.src && setSelectedImage(image)}
-              >
-                {image.src ? (
-                  <>
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                      <h3 className="text-white font-semibold text-lg">
-                        {image.title}
-                      </h3>
-                    </div>
-                  </>
-                ) : null}
-              </div>
-            ))}
-          </div>
-
-          {/* Row 4: 2 equal columns */}
-          <div className="grid grid-cols-2 gap-4">
-            {galleryImages.slice(7, 9).map((image) => (
-              <div
-                key={image.id}
-                className="relative group cursor-pointer overflow-hidden rounded-3xl bg-gray-200 h-[160px] md:h-[200px]"
-                onClick={() => image.src && setSelectedImage(image)}
-              >
-                {image.src ? (
-                  <>
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                      <h3 className="text-white font-semibold text-lg">
-                        {image.title}
-                      </h3>
-                    </div>
-                  </>
-                ) : null}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Lightbox Modal */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-4xl max-h-[90vh] w-full">
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-12 right-0 text-white text-4xl hover:text-gray-300 transition-colors"
-            >
-              ×
-            </button>
-            <img
-              src={selectedImage.src}
-              alt={selectedImage.alt}
-              className="w-full h-full object-contain rounded-lg"
+          {/* Gallery Images */}
+          {galleryItems.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <ImageIcon className="w-24 h-24 text-gray-400 mb-4" />
+              <p className="text-gray-500 text-lg font-productSans">
+                No images available in the gallery
+              </p>
+            </div>
+          ) : (
+            // Parallax scroll layout for all images
+            <ParallaxScroll
+              images={galleryItems.map((item) => item.imageUrl)}
             />
-            <h3 className="text-white text-center mt-4 text-xl font-semibold">
-              {selectedImage.title}
-            </h3>
-          </div>
+          )}
         </div>
-      )}
+      </main>
 
       <Footer />
     </div>

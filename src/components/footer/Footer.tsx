@@ -66,7 +66,7 @@ export default function Footer() {
                 </div>
               </div>
 
-              <div className="border w-full border-[#FFE7A5] p-3 md:p-4 rounded-lg md:rounded-none">
+              <div className="border w-full border-[#FFE7A5] p-3 md:p-4 rounded-lg md:rounded-none ">
                 <div className="font-semibold text-[#FFE7A5] text-base md:text-xl font-productSans mb-2 text-center md:text-left">
                   Connect
                 </div>
@@ -116,7 +116,7 @@ export default function Footer() {
           {/* Right: small locale */}
         </div>
 
-        <div className="text-center mt-4 md:mt-6 text-sm md:text-base text-gray-400 font-productSans px-2">
+        <div className="text-center mt-8 md:mt-[50px] text-sm md:text-base text-gray-400 font-productSans px-2">
           Designed With <span className="text-red-500">♥</span> By GDG VITB
           Team.
         </div>

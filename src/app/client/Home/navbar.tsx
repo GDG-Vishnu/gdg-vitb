@@ -47,7 +47,7 @@ export default function Navbar({ className }: { className?: string }) {
           transition={{ duration: 0.6 }}
           className="flex items-center space-x-4"
         >
-          <div className="flex items-center justify-center w-[300px] h-[60px]">
+          <div className="flex items-center justify-center w-[250px] h-[60px]">
             <Link href="/client">
               <motion.img
                 initial={{ scale: 0.8, opacity: 0 }}

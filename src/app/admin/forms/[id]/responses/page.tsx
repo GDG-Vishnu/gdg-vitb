@@ -302,14 +302,14 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                 className="text-black hover:text-black"
               >
                 <ArrowLeft className="w-4 h-4 mr-2 text-black" />
-                Back to Form Builder
+                <span className="font-productSans">Back to Form Builder</span>
               </Button>
               <div className="h-6 w-px bg-gray-300" />
               {isLoading ? (
                 <Skeleton className="h-8 w-64" />
               ) : (
                 <div className="flex items-center space-x-3">
-                  <h1 className="text-2xl font-semibold text-black">
+                  <h1 className="text-2xl font-semibold text-black font-productSans">
                     {formData?.name} - Responses
                   </h1>
                   <Badge
@@ -330,7 +330,7 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
                 className="gap-2 text-black"
               >
                 <Download className="w-4 h-4 text-black" />
-                Export CSV
+                <span className="font-productSans">Export CSV</span>
               </Button>
             )}
           </div>
@@ -346,21 +346,21 @@ const FormResponsesPage: React.FC<FormResponsesPageProps> = () => {
               className="flex items-center gap-2 text-black"
             >
               <FileText className="w-4 h-4 text-black" />
-              Individual Responses
+              <span className="font-productSans">Individual Responses</span>
             </TabsTrigger>
             <TabsTrigger
               value="fieldwise"
               className="flex items-center gap-2 text-black"
             >
               <Grid3X3 className="w-4 h-4 text-black" />
-              Field-wise Responses
+              <span className="font-productSans">Field-wise Responses</span>
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
               className="flex items-center gap-2 text-black"
             >
               <BarChart3 className="w-4 h-4 text-black" />
-              Analytics
+              <span className="font-productSans">Analytics</span>
             </TabsTrigger>
           </TabsList>
 

@@ -56,8 +56,12 @@ const FormsPage = () => {
     <div className="p-6">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Form Builder</h1>
-          <p>Create, manage, and analyze your forms</p>
+          <h1 className="text-3xl font-bold mb-2 font-productSans">
+            Form Builder
+          </h1>
+          <p className="font-productSans">
+            Create, manage, and analyze your forms
+          </p>
         </div>
 
         <CreateFormSheet>
@@ -73,7 +77,7 @@ const FormsPage = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-500" />
-            <p className="text-gray-600">Loading forms...</p>
+            <p className="text-gray-600 font-productSans">Loading forms...</p>
           </div>
         </div>
       )}
@@ -83,10 +87,10 @@ const FormsPage = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center max-w-md">
             <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 font-productSans">
               {isAuthError ? "Access Denied" : "Error Loading Forms"}
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 font-productSans">
               {isAuthError
                 ? "Participants cannot access the form builder. Please contact your administrator if you need access."
                 : error instanceof Error
@@ -133,10 +137,10 @@ const FormsPage = () => {
                   <Plus className="w-16 h-16 text-blue-500" />
                 </div>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3 font-productSans">
                 No forms yet
               </h3>
-              <p className="text-gray-600 mb-8 max-w-md mx-auto">
+              <p className="text-gray-600 mb-8 max-w-md mx-auto font-productSans">
                 Start building beautiful forms to collect data, feedback,
                 registrations, and more. Your first form is just a click away!
               </p>

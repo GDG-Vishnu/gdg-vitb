@@ -160,7 +160,9 @@ export function LoginForm() {
       {/* Login Section */}
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Login</h1>
+          <h1 className="text-3xl font-bold text-gray-900 font-productSans">
+            Login
+          </h1>
         </div>
 
         {error && (
@@ -174,7 +176,7 @@ export function LoginForm() {
           <div className="space-y-2">
             <Label
               htmlFor="email"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 font-productSans"
             >
               Address email
             </Label>
@@ -187,7 +189,9 @@ export function LoginForm() {
               className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.email && (
-              <p className="text-sm text-red-600">{errors.email.message}</p>
+              <p className="text-sm text-red-600 font-productSans">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -195,7 +199,7 @@ export function LoginForm() {
           <div className="space-y-2">
             <Label
               htmlFor="password"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 font-productSans"
             >
               Password
             </Label>
@@ -221,7 +225,9 @@ export function LoginForm() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
+              <p className="text-sm text-red-600 font-productSans">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -229,7 +235,7 @@ export function LoginForm() {
           <div className="text-right">
             <button
               type="button"
-              className="text-sm text-blue-600 hover:text-blue-500"
+              className="text-sm text-blue-600 hover:text-blue-500 font-productSans"
               onClick={() => router.push("/auth/forgot-password")}
             >
               Forgot password?
@@ -254,7 +260,9 @@ export function LoginForm() {
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">OR</span>
+            <span className="px-2 bg-white text-gray-500 font-productSans">
+              OR
+            </span>
           </div>
         </div>
 
@@ -280,11 +288,11 @@ export function LoginForm() {
         </Button>
 
         {/* Sign up link */}
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-gray-600 font-productSans">
           You don&apos;t have an account yet?{" "}
           <button
             type="button"
-            className="text-blue-600 hover:text-blue-500 font-medium underline"
+            className="text-blue-600 hover:text-blue-500 font-medium underline font-productSans"
             onClick={() => router.push("/auth/signup")}
           >
             Sign up
@@ -292,7 +300,7 @@ export function LoginForm() {
         </div>
 
         {/* Terms and Privacy */}
-        <div className="text-center text-xs text-gray-500">
+        <div className="text-center text-xs text-gray-500 font-productSans">
           By creating account you agree to our{" "}
           <a href="#" className="text-blue-600 hover:text-blue-500 underline">
             Terms of Service

@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
-
 type EventItem = {
   id: number;
   title: string;
@@ -29,7 +28,6 @@ export default function EventsCarousel() {
   const [loading, setLoading] = useState(true);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [scrollDirection, setScrollDirection] = useState(1); // 1 for right, -1 for left
-
   // Fetch events from database
   useEffect(() => {
     async function fetchEvents() {
@@ -84,9 +82,7 @@ export default function EventsCarousel() {
         }
       }
     };
-
     const intervalId = setInterval(autoScroll, 30); // Smooth 30ms interval
-
     return () => clearInterval(intervalId);
   }, [isAutoScrolling, events.length, scrollDirection]);
 
@@ -110,7 +106,7 @@ export default function EventsCarousel() {
             e.preventDefault();
             setIsAutoScrolling(false); // Pause auto-scroll on manual interaction
             scrollerRef.current.scrollLeft += e.deltaY;
-            setTimeout(() => setIsAutoScrolling(true), 3000); // Resume after 3s
+            setTimeout(() => setIsAutoScrolling(true), 2000); // Resume after 3s
           }
         }}
         onMouseEnter={handleMouseEnter}

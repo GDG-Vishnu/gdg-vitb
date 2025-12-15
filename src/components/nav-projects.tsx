@@ -81,7 +81,7 @@ export function NavProjects({
                   className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all ${styles.className}`}
                 >
                   <item.icon className={`h-4 w-4 ${styles.iconClassName}`} />
-                  <span className="group-data-[collapsible=icon]:hidden">
+                  <span className="group-data-[collapsible=icon]:hidden font-productSans">
                     {item.name}
                   </span>
                 </a>

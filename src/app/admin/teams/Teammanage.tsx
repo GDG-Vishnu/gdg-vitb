@@ -402,7 +402,9 @@ export default function Teammanage() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Manage Team Members</h2>
+      <h2 className="text-2xl font-bold mb-4 font-productSans">
+        Manage Team Members
+      </h2>
       {/* Action cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
         {(["ADD", "UPDATE", "DELETE", "READ"] as const).map((a) => {
@@ -429,7 +431,10 @@ export default function Teammanage() {
               }}
               aria-pressed={isActive}
             >
-              <span className="font-semibold text-sm" style={{ color }}>
+              <span
+                className="font-semibold text-sm font-productSans"
+                style={{ color }}
+              >
                 {a}
               </span>
             </button>
@@ -439,7 +444,9 @@ export default function Teammanage() {
 
       {/* Input to lookup member by name */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Member name</label>
+        <label className="block text-sm font-medium mb-1 font-productSans">
+          Member name
+        </label>
         <input
           type="text"
           value={memberNameInput}
@@ -458,9 +465,11 @@ export default function Teammanage() {
       </div>
       {selectedAction && (
         <div className="mb-6">
-          <p className="text-sm">
+          <p className="text-sm font-productSans">
             Selected action:{" "}
-            <strong className="text-red-600">{selectedAction}</strong>
+            <strong className="text-red-600 font-productSans">
+              {selectedAction}
+            </strong>
           </p>
         </div>
       )}
@@ -501,7 +510,9 @@ export default function Teammanage() {
         </button>
 
         {statusMessage && (
-          <p className="mt-2 text-sm text-muted-foreground">{statusMessage}</p>
+          <p className="mt-2 text-sm text-muted-foreground font-productSans">
+            {statusMessage}
+          </p>
         )}
       </div>
       {/* Member form */}
@@ -509,26 +520,34 @@ export default function Teammanage() {
       <div className="flex justify-between">
         {previewMember && (
           <div className="mb-6 w-full mr-8">
-            <h3 className="text-lg font-semibold mb-4">Member Data</h3>
+            <h3 className="text-lg font-semibold mb-4 font-productSans">
+              Member Data
+            </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
-                <div className="text-xs text-gray-500">Member ID</div>
-                <div className="mt-1 text-lg font-semibold text-gray-900">
+                <div className="text-xs text-gray-500 font-productSans">
+                  Member ID
+                </div>
+                <div className="mt-1 text-lg font-semibold text-gray-900 font-productSans">
                   {previewMember?.id ?? "-"}
                 </div>
               </div>
 
               <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
-                <div className="text-xs text-gray-500">Name</div>
-                <div className="mt-1 text-lg font-semibold text-gray-900">
+                <div className="text-xs text-gray-500 font-productSans">
+                  Name
+                </div>
+                <div className="mt-1 text-lg font-semibold text-gray-900 font-productSans">
                   {memberFormData.name ?? previewMember?.name ?? "-"}
                 </div>
               </div>
 
               <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
-                <div className="text-xs text-gray-500">Designation</div>
-                <div className="mt-1 text-base text-gray-800">
+                <div className="text-xs text-gray-500 font-productSans">
+                  Designation
+                </div>
+                <div className="mt-1 text-base text-gray-800 font-productSans">
                   {memberFormData.designation ??
                     previewMember?.designation ??
                     "-"}
@@ -536,16 +555,18 @@ export default function Teammanage() {
               </div>
 
               <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-500 font-productSans">
                   Position / Department
                 </div>
-                <div className="mt-1 text-base text-gray-800">
+                <div className="mt-1 text-base text-gray-800 font-productSans">
                   {memberFormData.position ?? previewMember?.position ?? "-"}
                 </div>
               </div>
 
               <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
-                <div className="text-xs text-gray-500">LinkedIn</div>
+                <div className="text-xs text-gray-500 font-productSans">
+                  LinkedIn
+                </div>
                 <div className="mt-1 text-sm">
                   {memberFormData.linkedinUrl ?? previewMember?.linkedinUrl ? (
                     <a

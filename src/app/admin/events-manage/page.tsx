@@ -64,15 +64,17 @@ export default async function EventsManagePage() {
   return (
     <div className="p-6 space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Events Management</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-3xl font-bold font-productSans">
+          Events Management
+        </h1>
+        <p className="text-muted-foreground mt-1 font-productSans">
           Manage and view all GDG events
         </p>
       </div>
 
       {/* Current/Upcoming Events Section */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 font-productSans">
           <span className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></span>
           Current & Upcoming Events
         </h2>
@@ -85,7 +87,9 @@ export default async function EventsManagePage() {
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <CardTitle className="text-lg">{event.title}</CardTitle>
+                    <CardTitle className="text-lg font-productSans">
+                      {event.title}
+                    </CardTitle>
                     <Badge
                       className={`${getStatusColor(event.status)} text-white`}
                     >
@@ -134,7 +138,7 @@ export default async function EventsManagePage() {
                   )}
                   {event.keyHighlights && event.keyHighlights.length > 0 && (
                     <div className="pt-2 border-t">
-                      <p className="text-xs font-medium mb-1">
+                      <p className="text-xs font-medium mb-1 font-productSans">
                         Key Highlights:
                       </p>
                       <ul className="text-xs text-muted-foreground space-y-1">
@@ -155,7 +159,7 @@ export default async function EventsManagePage() {
           </div>
         ) : (
           <Card className="p-8 text-center">
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground font-productSans">
               No upcoming events scheduled
             </p>
           </Card>
@@ -164,7 +168,9 @@ export default async function EventsManagePage() {
 
       {/* Past Events Section */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">Past Events</h2>
+        <h2 className="text-2xl font-semibold mb-4 font-productSans">
+          Past Events
+        </h2>
         {pastEvents && pastEvents.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {pastEvents.map((event: Event) => (
@@ -174,7 +180,9 @@ export default async function EventsManagePage() {
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <CardTitle className="text-lg">{event.title}</CardTitle>
+                    <CardTitle className="text-lg font-productSans">
+                      {event.title}
+                    </CardTitle>
                     <Badge variant="secondary">{event.status}</Badge>
                   </div>
                   <CardDescription className="line-clamp-2">
@@ -209,7 +217,9 @@ export default async function EventsManagePage() {
           </div>
         ) : (
           <Card className="p-8 text-center">
-            <p className="text-muted-foreground">No past events found</p>
+            <p className="text-muted-foreground font-productSans">
+              No past events found
+            </p>
           </Card>
         )}
       </section>

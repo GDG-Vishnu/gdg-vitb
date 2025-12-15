@@ -156,7 +156,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             {isLoading ? (
               <Skeleton className="h-8 w-48" />
             ) : (
-              <h1 className="text-2xl font-semibold text-foreground">
+              <h1 className="text-2xl font-semibold text-foreground font-productSans">
                 {formTitle || "Untitled Form"}
               </h1>
             )}
@@ -185,7 +185,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <span>View Responses</span>
+            <span className="font-productSans">View Responses</span>
           </Button>
           <Button
             variant="outline"
@@ -194,7 +194,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             className="gap-2"
           >
             <Eye className="h-4 w-4" />
-            <span>View Form</span>
+            <span className="font-productSans">View Form</span>
           </Button>
           <Button3D
             variant="destructive"
@@ -279,8 +279,10 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Form</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="font-productSans">
+              Delete Form
+            </AlertDialogTitle>
+            <AlertDialogDescription className="font-productSans">
               Are you sure you want to delete "{formTitle || "this form"}"? This
               action cannot be undone. All form data, sections, fields, and
               submissions will be permanently removed.

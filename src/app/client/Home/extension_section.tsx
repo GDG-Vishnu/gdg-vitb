@@ -64,7 +64,7 @@ function ExtensionSection() {
         <div className="w-7 h-7 border-2 border-current rounded-full transform rotate-45"></div>
       </div>
 
-      <h1 className="text-center text-stone-950 text-4xl font-semibold relative z-10">
+      <h1 className="text-center text-stone-950 text-4xl font-semibold relative z-10 font-productSans">
         Why Join GDG VITB?
       </h1>
 
@@ -123,17 +123,17 @@ function Card({
   return (
     <div
       ref={ref}
-      className={`flex flex-col justify-around items-center space-y-2 md:space-y-4 border-2 border-black shadow-2xl rounded-2xl p-3 md:p-6 w-full max-w-[160px] md:max-w-[313px] h-[200px] md:h-[414px] bg-white 
-        transform transition-all duration-700 ease-out
+      className={`flex flex-col justify-around items-center space-y-2 md:space-y-4 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-3 md:p-6 w-full max-w-[160px] md:max-w-[313px] h-[200px] md:h-[414px] bg-white 
+        transform transition-all duration-300 ease-out
         ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
-        hover:scale-105 hover:shadow-2xl`}
+        hover:-translate-x-2 hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]`}
       style={{ willChange: "transform, opacity" }}
     >
-      <div className="w-16 h-16 md:w-40 md:h-40 flex items-center justify-center overflow-hidden ">
+      <div className="w-16 h-16 md:w-40 md:h-40 flex items-center justify-center overflow-hidden border-2    border-black bg-yellow-200">
         <img
           src={imgUrl}
           alt={title}
-          className="w-full h-full object-contain transform transition-transform duration-500 ease-out hover:scale-110"
+          className="w-full h-full object-contain transform transition-transform duration-200 ease-out hover:scale-105 filter contrast-125"
         />
       </div>
 

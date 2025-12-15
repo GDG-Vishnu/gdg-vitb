@@ -246,7 +246,7 @@ function EventCard({ event }: { event: Event }) {
           }}
         >
           <div>
-            <h3 className="text-2xl font-semibold text-stone-950">
+            <h3 className="text-2xl font-semibold text-stone-950 font-productSans">
               {event.title}
             </h3>
           </div>
@@ -275,37 +275,6 @@ function EventCard({ event }: { event: Event }) {
   );
 }
 
-const EVENTS_CACHE_KEY = "gdg_events_cache";
-const EVENTS_CACHE_TIMESTAMP_KEY = "gdg_events_cache_timestamp";
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-function getEventsFromCache(): Event[] | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const cached = localStorage.getItem(EVENTS_CACHE_KEY);
-    const timestamp = localStorage.getItem(EVENTS_CACHE_TIMESTAMP_KEY);
-    if (cached && timestamp) {
-      const age = Date.now() - parseInt(timestamp, 10);
-      if (age < CACHE_DURATION) {
-        return JSON.parse(cached);
-      }
-    }
-  } catch (e) {
-    console.error("Error reading events from cache:", e);
-  }
-  return null;
-}
-
-function setEventsToCache(events: Event[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(EVENTS_CACHE_KEY, JSON.stringify(events));
-    localStorage.setItem(EVENTS_CACHE_TIMESTAMP_KEY, Date.now().toString());
-  } catch (e) {
-    console.error("Error saving events to cache:", e);
-  }
-}
-
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -314,14 +283,7 @@ export default function EventsPage() {
   useEffect(() => {
     let mounted = true;
 
-    // First, try to load from cache for instant display
-    const cachedEvents = getEventsFromCache();
-    if (cachedEvents && cachedEvents.length > 0) {
-      setEvents(cachedEvents);
-      setLoading(false);
-    }
-
-    // Then fetch fresh data from API
+    // Fetch fresh data from API
     (async () => {
       try {
         const res = await fetch("/api/events/list");
@@ -330,11 +292,9 @@ export default function EventsPage() {
         if (!mounted) return;
         const eventsList = Array.isArray(data) ? data : [];
         setEvents(eventsList);
-        setEventsToCache(eventsList); // Save to localStorage
       } catch (err: any) {
         console.error(err);
-        // Only show error if we don't have cached data
-        if (mounted && (!cachedEvents || cachedEvents.length === 0)) {
+        if (mounted) {
           setError(err?.message || "Unknown error");
         }
       } finally {

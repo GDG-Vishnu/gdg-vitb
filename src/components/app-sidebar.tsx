@@ -194,7 +194,7 @@ const data = {
 
     // cloudinary icon and path
     { name: "Cloudinary", url: "/admin/cloudinary", icon: Cloud },
-    {name:"Events",url:"/admin/events",icon:Calendar,},
+    { name: "Events", url: "/admin/events", icon: Calendar },
   ],
 };
 
@@ -280,7 +280,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </div>
 
               {/* Google Developer Groups Text */}
-              <h1 className="text-sm font-medium tracking-wide text-foreground mb-2">
+              <h1 className="text-sm font-medium tracking-wide text-foreground mb-2 font-productSans">
                 Google Developer Groups
               </h1>
             </>
@@ -353,14 +353,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="px-2 py-1 space-y-1">
             <button className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
               <Settings className="h-4 w-4" />
-              <span>Settings</span>
+              <span className="font-productSans">Settings</span>
             </button>
             <button
               onClick={handleLogout}
               className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
             >
               <LogOut className="h-4 w-4" />
-              <span>Log Out</span>
+              <span className="font-productSans">Log Out</span>
             </button>
           </div>
         )}
@@ -395,8 +395,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{userData.name}</p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-sm font-medium truncate font-productSans">
+                  {userData.name}
+                </p>
+                <p className="text-xs text-muted-foreground truncate font-productSans">
                   {userData.email}
                 </p>
               </div>

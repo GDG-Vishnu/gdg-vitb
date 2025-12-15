@@ -155,7 +155,7 @@ export function ContactForm() {
 
       <motion.h2
         variants={itemVariants}
-        className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3"
+        className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3 font-productSans"
       >
         <MessageSquare className="w-8 h-8 text-blue-600" />
         Send us a Message
@@ -184,10 +184,10 @@ export function ContactForm() {
               </svg>
             </div>
             <div>
-              <p className="font-bold text-green-900">
+              <p className="font-bold text-green-900 font-productSans">
                 Message sent successfully!
               </p>
-              <p className="text-sm text-green-700">
+              <p className="text-sm text-green-700 font-productSans">
                 We&apos;ll get back to you within 24 hours.
               </p>
             </div>
@@ -218,8 +218,10 @@ export function ContactForm() {
               </svg>
             </div>
             <div>
-              <p className="font-bold text-red-900">Failed to send message</p>
-              <p className="text-sm text-red-700">
+              <p className="font-bold text-red-900 font-productSans">
+                Failed to send message
+              </p>
+              <p className="text-sm text-red-700 font-productSans">
                 Please try again later or contact us directly.
               </p>
             </div>
@@ -249,7 +251,7 @@ export function ContactForm() {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="name"
-              className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
             >
               <User className="w-4 h-4 text-blue-600" />
               Your Name <span className="text-red-500">*</span>
@@ -270,7 +272,7 @@ export function ContactForm() {
             />
             {errors.name && (
               <motion.p
-                className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                className="mt-2 text-sm text-red-600 flex items-center gap-1 font-productSans"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -294,7 +296,7 @@ export function ContactForm() {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="email"
-              className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
             >
               <Mail className="w-4 h-4 text-blue-600" />
               Email Address <span className="text-red-500">*</span>
@@ -315,7 +317,7 @@ export function ContactForm() {
             />
             {errors.email && (
               <motion.p
-                className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                className="mt-2 text-sm text-red-600 flex items-center gap-1 font-productSans"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -340,7 +342,7 @@ export function ContactForm() {
         <motion.div variants={itemVariants}>
           <label
             htmlFor="subject"
-            className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
+            className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
           >
             <Type className="w-4 h-4 text-blue-600" />
             Subject <span className="text-red-500">*</span>
@@ -361,7 +363,7 @@ export function ContactForm() {
           />
           {errors.subject && (
             <motion.p
-              className="mt-2 text-sm text-red-600 flex items-center gap-1"
+              className="mt-2 text-sm text-red-600 flex items-center gap-1 font-productSans"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
             >
@@ -376,12 +378,12 @@ export function ContactForm() {
             </motion.p>
           )}
         </motion.div>
-
+          
         {/* Message Field */}
         <motion.div variants={itemVariants}>
           <label
             htmlFor="message"
-            className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3"
+            className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
           >
             <MessageSquare className="w-4 h-4 text-blue-600" />
             Message <span className="text-red-500">*</span>
@@ -403,7 +405,7 @@ export function ContactForm() {
           <div className="mt-2 flex justify-between items-center">
             {errors.message && (
               <motion.p
-                className="text-sm text-red-600 flex items-center gap-1"
+                className="text-sm text-red-600 flex items-center gap-1 font-productSans"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -421,7 +423,7 @@ export function ContactForm() {
                 {errors.message}
               </motion.p>
             )}
-            <span className="text-xs text-gray-500 ml-auto">
+            <span className="text-xs text-gray-500 ml-auto font-productSans">
               {formData.message.length}/500
             </span>
           </div>
@@ -432,7 +434,7 @@ export function ContactForm() {
           <motion.button
             type="submit"
             disabled={isSubmitting}
-            className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-productSans"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -452,7 +454,7 @@ export function ContactForm() {
             )}
           </motion.button>
 
-          <p className="mt-4 text-sm text-gray-500 text-center">
+          <p className="mt-4 text-sm text-gray-500 text-center font-productSans">
             We typically respond within 24 hours. Your information is kept
             confidential.
           </p>

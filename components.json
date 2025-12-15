@@ -18,5 +18,8 @@
     "hooks": "@/hooks",
     "extension": "@/components/ui/extension"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "lucide",
+  "registries": {
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json"
+  }
 }
