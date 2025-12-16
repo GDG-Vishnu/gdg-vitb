@@ -17,113 +17,83 @@ type GalleryItem = {
 const sampleGalleryItems: GalleryItem[] = [
   {
     id: 1,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/ikjbkdsqwcgf4bwbqv3m",
-    uploadedAt: "2024-01-15T10:30:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644843/tiina4na7p09shhclzgl.jpg",
+    uploadedAt: new Date(2024, 0, 1, 10, 0, 0).toISOString()
   },
   {
     id: 2,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/mqtjtemmd5xrnimqb053",
-    uploadedAt: "2024-01-16T14:45:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644848/abwizyefk9rzir2pobbf.jpg",
+    uploadedAt: new Date(2024, 0, 2, 11, 0, 0).toISOString()
   },
   {
     id: 3,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/zveegnqhtdzwcr1xpoyz",
-    uploadedAt: "2024-01-17T09:15:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644856/yg4p8a6xhfm92rwoxdqa.jpg",
+    uploadedAt: new Date(2024, 0, 3, 12, 0, 0).toISOString()
   },
   {
     id: 4,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/f3nvhejvprgqocfh3w2i",
-    uploadedAt: "2024-01-18T16:20:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644890/bdiewilbgzee4odot1fk.jpg",
+    uploadedAt: new Date(2024, 0, 4, 13, 0, 0).toISOString()
   },
   {
     id: 5,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/oykhw6xytohke2in6j96",
-    uploadedAt: "2024-01-19T11:30:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644897/evcruet79ibseuz7nwah.jpg",
+    uploadedAt: new Date(2024, 0, 5, 14, 0, 0).toISOString()
   },
   {
     id: 6,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/ooyji7eajkyjvjkiuy6k",
-    uploadedAt: "2024-01-20T08:45:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644911/sv8r7than899likaob4d.jpg",
+    uploadedAt: new Date(2024, 0, 6, 15, 0, 0).toISOString()
   },
   {
     id: 7,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/omaqtjgvhiyuiu0jxnxp",
-    uploadedAt: "2024-01-21T13:10:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644924/oykhw6xytohke2in6j96.jpg",
+    uploadedAt: new Date(2024, 0, 7, 16, 0, 0).toISOString()
   },
   {
     id: 8,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/zgucxpwzajjx9itwsons",
-    uploadedAt: "2024-01-22T15:25:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644926/f3nvhejvprgqocfh3w2i.jpg",
+    uploadedAt: new Date(2024, 0, 8, 17, 0, 0).toISOString()
   },
   {
     id: 9,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/knpv42zoexevpfgl7vcp",
-    uploadedAt: "2024-01-23T12:40:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644920/zgucxpwzajjx9itwsons.jpg",
+    uploadedAt: new Date(2024, 0, 9, 18, 0, 0).toISOString()
   },
   {
     id: 10,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v0grrxy5ahd8kyb2kxzv",
-    uploadedAt: "2024-01-24T17:55:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765884378/r3z8gswnm71c7j4az9jd.jpg",
+    uploadedAt: new Date(2024, 0, 10, 10, 0, 0).toISOString()
   },
   {
     id: 11,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/uynaqaqygb5pned9otsp",
-    uploadedAt: "2024-01-25T10:20:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765884378/rj5cygcm9ibcfjov83dr.jpg",
+    uploadedAt: new Date(2024, 0, 11, 11, 0, 0).toISOString()
   },
   {
     id: 12,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644911/sv8r7than899likaob4d.jpg",
-    uploadedAt: "2024-01-26T14:35:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765884378/zwka8pdngbkqcxtmzega.jpg",
+    uploadedAt: new Date(2024, 0, 12, 12, 0, 0).toISOString()
   },
   {
     id: 13,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644894/omjmymgm0ilfjof32h8g.jpg",
-    uploadedAt: "2024-01-27T09:50:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765884643/fwpxk1hoyqeimzjepbpu.jpg",
+    uploadedAt: new Date(2024, 0, 13, 13, 0, 0).toISOString()
   },
   {
     id: 14,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644891/bglnju9ouvgwuyjyoxuh.jpg",
-    uploadedAt: "2024-01-28T16:05:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765884643/erhimwqvyuc7hr2w1jfs.jpg",
+    uploadedAt: new Date(2024, 0, 14, 14, 0, 0).toISOString()
   },
   {
     id: 15,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644890/bdiewilbgzee4odot1fk.jpg",
-    uploadedAt: "2024-01-29T11:20:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765885175/pkahrrz6o2foywtdkzvc.jpg",
+    uploadedAt: new Date(2024, 0, 15, 15, 0, 0).toISOString()
   },
   {
     id: 16,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644887/qfpitj6fxngwmk2bcvgi.jpg",
-    uploadedAt: "2024-01-30T08:35:00Z"
-  },
-  {
-    id: 17,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644886/zrdhk0lmbf2zpqwwriwm.jpg",
-    uploadedAt: "2024-02-01T13:50:00Z"
-  },
-  {
-    id: 18,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644878/qurgwgqfjhvujays1uhh.jpg",
-    uploadedAt: "2024-02-02T15:05:00Z"
-  },
-  {
-    id: 19,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644876/ziv04siuykktlwldxnhq.jpg",
-    uploadedAt: "2024-02-03T12:20:00Z"
-  },
-  {
-    id: 20,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644872/r9xqol14s4rtgtugai7x.jpg",
-    uploadedAt: "2024-02-04T17:35:00Z"
-  },
-  {
-    id: 21,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644869/wzmpmfypcpd0mn5ggzhg.jpg",
-    uploadedAt: "2024-02-05T10:50:00Z"
-  },
-  {
-    id: 22,
-    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644864/d8sz7fn2m8r4r8cyuad9.jpg",
-    uploadedAt: "2024-02-06T14:05:00Z"
+    imageUrl: "https://res.cloudinary.com/dlupkibvq/image/upload/v1765885219/lttvpt2caqx16yhzhrot.jpg",
+    uploadedAt: new Date(2024, 0, 16, 16, 0, 0).toISOString()
   }
 ];
 
