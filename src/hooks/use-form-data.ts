@@ -2,7 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getFormById } from "@/actions/forms";
 import { updateSection, createSection } from "@/actions/sections";
 import { createField, deleteField } from "@/actions/fields";
-import type { FormData, CreateSectionInput } from "@/types/form-builder";
+import type {
+  FormData,
+  CreateSectionInput,
+  FieldType,
+} from "@/types/form-builder";
 
 // Query keys for React Query
 export const FORM_QUERY_KEYS = {
@@ -159,7 +163,7 @@ export function useCreateField() {
     mutationFn: async (fieldData: {
       sectionId: string;
       label: string;
-      type: string;
+      type: FieldType;
       placeholder?: string;
       required?: boolean;
       order?: number;

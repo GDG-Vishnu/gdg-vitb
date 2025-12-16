@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, easeInOut } from "framer-motion";
 import { Mail, MapPin, Clock, Phone } from "lucide-react";
 
 const cardVariants = {
@@ -10,7 +10,7 @@ const cardVariants = {
     opacity: 1,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: easeInOut,
     },
   },
 };

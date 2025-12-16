@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, easeOut } from "framer-motion";
 
 const titleVariants = {
   hidden: { y: 50, opacity: 0 },
@@ -9,7 +9,7 @@ const titleVariants = {
     opacity: 1,
     transition: {
       duration: 0.8,
-      ease: "easeOut",
+      ease: easeOut,
     },
   },
 };
@@ -21,7 +21,7 @@ const subtitleVariants = {
     opacity: 1,
     transition: {
       duration: 0.8,
-      ease: "easeOut",
+      ease: easeOut,
       delay: 0.2,
     },
   },
@@ -44,7 +44,7 @@ export function PageHeader() {
             className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 96, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 0.5, ease: easeOut }}
           />
         </h1>
       </motion.div>

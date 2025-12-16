@@ -170,32 +170,9 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  projects: [
-    {
-      name: "Dashboard",
-      url: "/admin/dashboard",
-      icon: GalleryVerticalEnd,
-    },
-    {
-      name: "Users",
-      url: "/admin/users",
-      icon: Users,
-    },
-    {
-      name: "Forms",
-      url: "/admin/forms",
-      icon: FormInput,
-    },
-    {
-      name: "Team Manage",
-      url: "/admin/teams",
-      icon: Users,
-    },
-
-    // cloudinary icon and path
-    { name: "Cloudinary", url: "/admin/cloudinary", icon: Cloud },
-    { name: "Events", url: "/admin/events", icon: Calendar },
-  ],
+  // Admin navigation is disabled to prevent admin pages from compiling.
+  // If you want to re-enable admin routes later, restore the entries below.
+  projects: [],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

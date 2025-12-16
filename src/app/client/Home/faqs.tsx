@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 
 const keyboardImg =
   "https://res.cloudinary.com/dlupkibvq/image/upload/v1760852227/Group_69_smmnyr.png";
@@ -29,9 +30,11 @@ export default function FAQs() {
       <div className="max-w-[1500px] mx-auto flex items-center gap-8 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] rounded-none p-6 md:p-12 bg-pink-200">
         {/* Left keyboard image */}
         <div className="flex-shrink-0 w-1.5/3 hidden md:flex items-center justify-center">
-          <img
+          <Image
             src={keyboardImg}
             alt="FAQ keyboard"
+            width={400}
+            height={240}
             className="max-w-full h-auto"
           />
         </div>
@@ -40,7 +43,7 @@ export default function FAQs() {
         <div className="flex-1">
           <div className="space-y-4">
             <h2 className="text-stone-950 font-productSans text-3xl mb-4">
-              FAQ'S
+              FAQs
             </h2>
 
             {faqs.map((q, i) => {
@@ -93,6 +96,6 @@ export default function FAQs() {
 }
 
 // Utility used above (copy this or import from your utils)
-function cn(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
+function cn(...classes: unknown[]) {
+  return classes.filter(Boolean).join(" ") as unknown as string;
 }

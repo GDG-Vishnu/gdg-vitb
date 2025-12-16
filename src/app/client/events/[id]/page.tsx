@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
 import { Camera, User } from "lucide-react";
@@ -177,11 +178,11 @@ export default function EventDetailPage() {
         if (!mounted) return;
         setEvent(data);
         setEventToCache(eventId, data); // Save to localStorage
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
         // Only show error if we don't have cached data
         if (mounted && !cachedEvent) {
-          setError(err?.message || "Unknown error");
+          setError((err as Error)?.message || "Unknown error");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -267,11 +268,13 @@ export default function EventDetailPage() {
             >
               <picture>
                 {/* Desktop image (≥1024px) */}
-                <source media="(min-width: 1024px)" srcSet={event.coverUrl} />
+                {event.coverUrl && (
+                  <source media="(min-width: 1024px)" srcSet={event.coverUrl} />
+                )}
 
                 {/* Mobile image (<1024px) */}
                 <img
-                  src={event.imageUrl}
+                  src={event.imageUrl || event.coverUrl || ""}
                   alt={event.title}
                   className="w-full h-full object-cover"
                   style={{ width: "100%", height: 315 }}
@@ -356,17 +359,16 @@ export default function EventDetailPage() {
               />
             </div>
 
-            <img
+            <Image
               src={event.eventImgCard}
               alt={`${event.title} Event Card`}
               className="rounded-2xl shadow-lg border border-stone-700"
+              width={600}
+              height={848}
               style={{
-                // A4 proportions (210:297 = 1:1.414)
-                // Desktop: A4-like dimensions
                 width: "100%",
-                maxWidth: "600px", // ~A4 width scaled
+                maxWidth: "600px",
                 height: "auto",
-                aspectRatio: "210/297", // A4 ratio
               }}
             />
           </div>

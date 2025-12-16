@@ -22,21 +22,7 @@
     "/auth/forgot-password": "src/app/auth/forgot-password/page.tsx",
     "/auth/error": "src/app/auth/error/page.tsx"
   },
-  "admin": {
-    "/admin": "src/app/admin/page.tsx",
-    "/admin/dashboard": "src/app/admin/dashboard/page.tsx",
-    "/admin/users": "src/app/admin/users/page.tsx",
-    "/admin/forms": "src/app/admin/forms/page.tsx",
-    "/admin/forms/:id/responses": "src/app/admin/forms/[id]/responses/page.tsx",
-    "/admin/form-preview/:id": "src/app/admin/form-preview/[id]/page.tsx",
-    "/admin/form-builder": "src/app/admin/form-builder/page.tsx",
-    "/admin/form-builder/:id": "src/app/admin/form-builder/[id]/page.tsx",
-    "/admin/form-builder/:id/preview": "src/app/admin/form-builder/[id]/preview/page.tsx",
-    "/admin/cloudinary": "src/app/admin/cloudinary/page.tsx",
-    "/admin/teams": "src/app/admin/teams/page.tsx",
-    "/admin/events": "src/app/admin/events/page.tsx",
-    "/admin/events-manage": "src/app/admin/events-manage/page.tsx"
-  },
+
   "api": {
     "/api/auth/[...nextauth]": "src/app/api/auth/[...nextauth]/route.ts",
     "/api/email/validate": "src/app/api/email/validate/route.ts",

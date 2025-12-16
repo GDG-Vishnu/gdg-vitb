@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
@@ -158,19 +159,21 @@ function EventCard({ event }: { event: EventItem }) {
           className="flex items-center justify-center overflow-hidden bg-transparent w-full"
           style={{ flex: 1 }}
         >
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="
-        w-full max-w-xs         /* mobile */
-        sm:max-w-sm
-        md:max-w-md
-        lg:max-w-lg
-        xl:max-w-xl
-            
-        h-auto object-contain
-      "
-          />
+         <Image
+  src={event.imageUrl}
+  alt={event.title}
+  width={600}   // required: set width
+  height={400}  // required: set height
+  className="
+    w-full max-w-xs        /* mobile */
+    sm:max-w-sm
+    md:max-w-md
+    lg:max-w-lg
+    xl:max-w-xl
+    h-auto object-contain
+  "
+/>
+
         </div>
       )}
 
@@ -203,9 +206,11 @@ function EventCard({ event }: { event: EventItem }) {
                 display: "inline-flex",
               }}
             >
-              <img
+              <Image
                 src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                 alt=""
+                width={24}
+                height={24}
               />
             </Link>
           </div>
@@ -268,7 +273,7 @@ function EventCardMobile({ event }: { event: EventItem }) {
             overflow: "hidden",
           }}
         >
-          <img
+          <Image
             src={event.imageUrl}
             alt={event.title}
             style={{
@@ -309,7 +314,7 @@ function EventCardMobile({ event }: { event: EventItem }) {
                 display: "inline-flex",
               }}
             >
-              <img
+              <Image
                 src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                 alt=""
               />

@@ -133,7 +133,7 @@ export function ContactForm() {
       y: 0,
       transition: {
         duration: 0.4,
-        ease: "easeOut",
+        ease: "easeInOut" as unknown,
       },
     },
   };
@@ -378,7 +378,7 @@ export function ContactForm() {
             </motion.p>
           )}
         </motion.div>
-          
+
         {/* Message Field */}
         <motion.div variants={itemVariants}>
           <label

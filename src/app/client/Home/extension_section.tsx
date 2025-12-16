@@ -133,12 +133,12 @@ function Card({
         <img
           src={imgUrl}
           alt={title}
-          className="w-full h-full object-contain transform transition-transform duration-200 ease-out hover:scale-105 filter contrast-125"
+          className="w-full h-full object-contain transform transition-transform duration-200 ease-out hover:scale-105 filter contrast-125 e"
         />
       </div>
 
       <div>
-        <h2 className="text-xs md:text-xl font-semibold text-stone-950 text-center font-productSans">
+        <h2 className="text-lg md:text-xl font-semibold text-stone-950 text-center font-productSans">
           {title}
         </h2>
         <p className="text-xs md:text-base text-center text-stone-950 font-productSans hidden md:block">

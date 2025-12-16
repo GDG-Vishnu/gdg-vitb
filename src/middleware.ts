@@ -7,38 +7,18 @@ export default withAuth(
     const { pathname } = req.nextUrl;
 
     // If user is not authenticated and trying to access protected routes
-    if (!token && pathname.startsWith("/admin")) {
+  /*  if (!token && pathname.startsWith("/admin")) {
       return NextResponse.redirect(new URL("/", req.url));
     }
 
-    // If user is authenticated and trying to access auth routes, redirect based on role
+    // If user is authenticated and trying to access auth routes, redirect to home.
+    // Admin routes are currently disabled; avoid redirecting to /admin.
     if (token && pathname.startsWith("/auth")) {
-      const adminRoles = ["ADMIN", "ORGANIZER", "CO_ORGANIZER", "FACILITATOR"];
-
-      if (adminRoles.includes(token.role as string)) {
-        return NextResponse.redirect(new URL("/admin", req.url));
-      } else {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
-    }
-
-    // Check if user has permission to access admin routes
-    if (pathname.startsWith("/admin")) {
-      const adminRoles = [
-        "ADMIN",
-        "ORGANIZER",
-        "CO_ORGANIZER",
-        "FACILITATOR",
-        "TEAM_MEMBER",
-      ];
-
-      if (!token || !adminRoles.includes(token.role as string)) {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
+      return NextResponse.redirect(new URL("/", req.url));
     }
 
     // Client routes are now public - no authentication required
-
+*/
     return NextResponse.next();
   },
   {

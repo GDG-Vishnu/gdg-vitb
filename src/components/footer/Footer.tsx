@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "lucide-react";
 import React from "react";
 import {
   FaLinkedinIn,
@@ -26,25 +27,25 @@ export default function Footer() {
           <div className="flex-1 flex items-center justify-center w-full">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 w-full max-w-[924px] md:h-[156px] px-2 md:px-[56px] py-4 text-sm text-gray-300">
               <div className="border p-3 md:p-4 flex flex-col items-center justify-center border-[#C3ECF6] rounded-lg md:rounded-none">
-                <h2 className="text-[#C3ECF6] text-base md:text-2xl font-medium font-productSans text-center">
+                <h2 className="text-[#C3ECF6] text-3xl md:text-2xl font-medium font-productSans text-center">
                   © 2025 GDG VITB.
                 </h2>
-                <h2 className="text-[#C3ECF6] text-sm md:text-xl font-productSans text-center">
+                <h2 className="text-[#C3ECF6] text-2xl md:text-xl font-productSans text-center">
                   All Rights are reserved
                 </h2>
               </div>
 
               <div className="border p-3 md:p-4 border-[#CCF6C5] rounded-lg md:rounded-none">
-                <div className="font-semibold text-[#CCF6C5] text-base md:text-xl font-productSans mb-2 text-center md:text-left">
+                <div className="font-semibold text-[#CCF6C5]  text-xl  md:text-xl font-productSans mb-2 text-center md:text-left">
                   Quick Links
                 </div>
-                <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4 text-[#CCF6C5] text-sm md:text-lg">
-                  <a
+                <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4 text-[#CCF6C5] text-xl md:text-lg ">
+                  <Link
                     href="/"
                     className="hover:underline font-productSans text-center md:text-left"
                   >
                     Home
-                  </a>
+                  </Link>
                   <a
                     href="/client/gallery"
                     className="hover:underline font-productSans text-center md:text-left"
@@ -67,10 +68,10 @@ export default function Footer() {
               </div>
 
               <div className="border w-full border-[#FFE7A5] p-3 md:p-4 rounded-lg md:rounded-none ">
-                <div className="font-semibold text-[#FFE7A5] text-base md:text-xl font-productSans mb-2 text-center md:text-left">
+                <div className="font-semibold text-[#FFE7A5] text-lg md:text-xl font-productSans mb-2 text-center md:text-left">
                   Connect
                 </div>
-                <div className="mt-2 flex items-center justify-center md:justify-start gap-3 md:gap-3">
+                <div className="mt-2 flex items-center  justify-center md:justify-start gap-3 md:gap-3">
                   <a
                     href="https://www.linkedin.com/company/gdg-vitb/"
                     aria-label="LinkedIn"
@@ -100,7 +101,7 @@ export default function Footer() {
                     <FaEnvelope className="text-black w-4 h-4 md:w-6 md:h-6" />
                   </a>
                 </div>
-                <h2 className="text-[#FFE7A5] mt-3 text-sm md:text-lg font-productSans text-center md:text-left">
+                <h2 className="text-[#FFE7A5] mt-3 text-lg md:text-lg font-productSans text-center md:text-left">
                   Email us at{" "}
                   <a
                     href="mailto:gdg@vishnu.edu.in"

@@ -23,7 +23,7 @@ const redHatDisplay = Red_Hat_Display({
 
 export const metadata: Metadata = {
   title: "GDG Vishnu App",
-  description: "GDG Vishnu University Application",
+  description: "GDG VishnuApplication",
 };
 
 export default function RootLayout({

@@ -6,15 +6,10 @@ import Image from "next/image";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
 import {
-  Calendar,
-  CalendarDays,
-  MapPin,
-  Users,
-  Tag,
+ 
   ChevronLeft,
   ChevronRight,
-  Clock,
-  ArrowRight,
+
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
@@ -38,101 +33,7 @@ const carouselImages = [
   },
 ];
 
-function HeroCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
-  }, []);
-
-  const prevSlide = useCallback(() => {
-    setCurrentIndex(
-      (prev) => (prev - 1 + carouselImages.length) % carouselImages.length
-    );
-  }, []);
-
-  // Auto-advance slides
-  useEffect(() => {
-    const interval = setInterval(nextSlide, 5000);
-    return () => clearInterval(interval);
-  }, [nextSlide]);
-
-  return (
-    <div
-      className="relative bg-white w-full h-[400px] md:h-[500px] lg:h-[550px] overflow-hidden rounded-3xl border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all duration-300"
-      style={{
-        backgroundColor: "white",
-        backgroundImage: `radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px)`,
-        backgroundSize: "20px 20px",
-      }}
-    >
-      {/* Images */}
-      {carouselImages.map((image, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-            index === currentIndex ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <Image
-            src={image.url}
-            alt={image.alt}
-            fill
-            className="object-cover"
-            priority={index === 0}
-          />
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        </div>
-      ))}
-
-      {/* Content Overlay */}
-      <div className="absolute bottom-6 left-6 right-6 z-10">
-        <div className="bg-white border-4 border-black rounded-2xl p-4 md:p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 text-black font-productSans">
-            GDG on Campus Vishnu
-          </h2>
-          <p className="text-base md:text-lg text-gray-700 max-w-2xl font-productSans">
-            Building the future, one event at a time. Join our community of
-            developers!
-          </p>
-        </div>
-      </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-xl bg-yellow-400 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200 z-20"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="w-6 h-6 text-black" />
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-xl bg-yellow-400 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200 z-20"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="w-6 h-6 text-black" />
-      </button>
-
-      {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-        {carouselImages.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-4 h-4 border-2 border-black transition-all duration-200 ${
-              index === currentIndex
-                ? "bg-yellow-400 w-8 rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                : "bg-white rounded-full hover:bg-yellow-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 type Event = {
   id: number;
@@ -292,10 +193,10 @@ export default function EventsPage() {
         if (!mounted) return;
         const eventsList = Array.isArray(data) ? data : [];
         setEvents(eventsList);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
         if (mounted) {
-          setError(err?.message || "Unknown error");
+          setError(err instanceof Error ? err.message : "Unknown error");
         }
       } finally {
         if (mounted) setLoading(false);

@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
-import { Button3D as MagneticButton } from "@/components/ui/3d-button";
 import {
   Users,
   Calendar,
@@ -25,26 +24,27 @@ const useScrollAnimation = (): [
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
+ useEffect(() => {
+  const element = ref.current; // capture once
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+  if (!element) return;
 
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
       }
-    };
-  }, []);
+    },
+    { threshold: 0.1 }
+  );
+
+  observer.observe(element);
+
+  return () => {
+    observer.unobserve(element); // cleanup uses same element
+  };
+}, []);
+
 
   return [ref, isVisible];
 };
@@ -597,7 +597,7 @@ const CTASection = () => {
             Ready to Join GDG VIT Bhimavaram?
           </h3>
           <p className="text-base sm:text-lg text-gray-200 mb-6 sm:mb-8 font-productSans leading-relaxed px-4">
-            Be part of Bhimavaram's most active tech community! Connect with
+            Be part of Bhimavaram most active tech community! Connect with
             fellow developers, learn Google technologies, and build amazing
             projects together.
           </p>

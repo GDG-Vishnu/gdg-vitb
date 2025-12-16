@@ -25,9 +25,10 @@ export async function POST(req: Request) {
       { success: true, deletedCount: result.count },
       { status: 200 }
     );
-  } catch (err: any) {
-    console.error("Failed to delete member:", err?.message ?? err);
-    if (err?.code === "P2025") {
+  } catch (err: unknown) {
+    const e = err as { code?: string; message?: string } | undefined;
+    console.error("Failed to delete member:", e?.message ?? err);
+    if (e?.code === "P2025") {
       // record not found
       return NextResponse.json({ error: "Member not found" }, { status: 404 });
     }

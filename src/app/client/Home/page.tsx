@@ -374,7 +374,7 @@ const HomePage = () => {
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-2 font-productSans leading-tight relative z-10"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-2 font-productSans leading-tight relative z-10"
             style={{
               fontWeight: 400,
               fontSize: "clamp(24px, 6vw, 80px)",
@@ -459,7 +459,7 @@ const HomePage = () => {
               style={{
                 fontWeight: 400,
                 lineHeight: "1.3",
-                fontSize: "clamp(16px, 4vw, 48px)",
+                fontSize: "clamp(25px, 4vw, 48px)",
                 padding: "0.5rem 0.75rem",
                 color: "#0b1220",
               }}
@@ -676,7 +676,7 @@ const HomePage = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 font-productSans"
             >
-              Don't Miss One Event or Update
+              Don&apos;t Miss One Event or Update
             </motion.h2>
 
             {/* Subtext */}

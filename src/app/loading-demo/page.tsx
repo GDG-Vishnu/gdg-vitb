@@ -230,7 +230,7 @@ export default function LoadingDemo() {
                 Simulating form click navigation:
               </label>
               <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-                Sample Form: "Contact Registration Form"
+                Sample Form: Contact Registration Form
               </div>
             </div>
 
@@ -269,7 +269,7 @@ export default function LoadingDemo() {
                 Simulating form deletion:
               </label>
               <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-                Sample Form: "Contact Registration Form"
+                Sample Form: Contact Registration Form
               </div>
             </div>
 
