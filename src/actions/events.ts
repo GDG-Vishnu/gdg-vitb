@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function getAllEvents() {
   try {
-    const events = await prisma.event.findMany({
+    const events = await prisma.events.findMany({
       orderBy: {
         Date: "desc",
       },
@@ -27,7 +27,7 @@ export async function getCurrentEvents() {
   try {
     const now = new Date();
 
-    const events = await prisma.event.findMany({
+    const events = await prisma.events.findMany({
       where: {
         Date: {
           gte: now,
@@ -58,7 +58,7 @@ export async function getPastEvents() {
   try {
     const now = new Date();
 
-    const events = await prisma.event.findMany({
+    const events = await prisma.events.findMany({
       where: {
         Date: {
           lt: now,
@@ -85,7 +85,7 @@ export async function getPastEvents() {
 
 export async function getEventById(id: number) {
   try {
-    const event = await prisma.event.findUnique({
+    const event = await prisma.events.findUnique({
       where: { id },
     });
 

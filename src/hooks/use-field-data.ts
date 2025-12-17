@@ -9,7 +9,29 @@ import {
   moveField,
 } from "@/actions/fields";
 import { FieldType } from "@prisma/client";
-import type { FieldConfiguration } from "@/components/form-builder/FormBuilderContext";
+
+// Minimal field configuration type to replace form-builder UI types
+type FieldConfiguration = {
+  id: string;
+  label?: string | null;
+  placeholder?: string | null;
+  type: FieldType;
+  required?: boolean | null;
+  options?: any;
+  defaultValue?: any;
+  order?: number | null;
+  minLength?: number | null;
+  maxLength?: number | null;
+  pattern?: string | null;
+  min?: number | null;
+  max?: number | null;
+  step?: number | null;
+  minDate?: string | null;
+  maxDate?: string | null;
+  maxFileSize?: number | null;
+  acceptedFormats?: string[] | null;
+  maxFiles?: number | null;
+};
 
 // Query keys for field operations
 export const FIELD_QUERY_KEYS = {

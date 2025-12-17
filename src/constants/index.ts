@@ -1,5 +1,3 @@
-import { FieldType } from "@/types/form-builder";
-
 export interface FieldTypeInfo {
   name: string;
   isNew: boolean;

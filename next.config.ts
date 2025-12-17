@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
-       {
+      {
         protocol: "https",
         hostname: "shutterstock.com",
         port: "",

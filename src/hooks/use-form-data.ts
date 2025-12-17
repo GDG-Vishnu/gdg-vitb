@@ -2,11 +2,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getFormById } from "@/actions/forms";
 import { updateSection, createSection } from "@/actions/sections";
 import { createField, deleteField } from "@/actions/fields";
-import type {
-  FormData,
-  CreateSectionInput,
-  FieldType,
-} from "@/types/form-builder";
+// Minimal local types to avoid depending on the form-builder UI types
+type CreateSectionInput = { formId: string; title: string; order?: number };
+type FormData = any;
+type FieldType = string;
 
 // Query keys for React Query
 export const FORM_QUERY_KEYS = {
@@ -114,7 +113,7 @@ export function useUpdateForm() {
       // Update the specific form in cache
       queryClient.setQueryData(
         FORM_QUERY_KEYS.form(variables.id),
-        (oldData: FormData | undefined) => {
+        (oldData: any | undefined) => {
           if (!oldData) return oldData;
           return { ...oldData, ...variables };
         }
