@@ -520,6 +520,7 @@ function getFieldTypeDescription(type: FieldType): string {
     [FieldType.SIGNATURE]: "Digital signature",
     [FieldType.SLIDER]: "Range slider input",
     [FieldType.TAGS]: "Tag input",
+    EMAIL: ""
   };
 
   return descriptions[type] || "Unknown field type";
@@ -557,6 +558,7 @@ function getFieldTypeValidation(type: FieldType): string[] {
     [FieldType.SIGNATURE]: ["required"],
     [FieldType.SLIDER]: ["required", "min", "max", "step"],
     [FieldType.TAGS]: ["required", "minItems", "maxItems"],
+    EMAIL: []
   };
 
   return validationMap[type] || ["required"];

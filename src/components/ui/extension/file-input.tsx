@@ -299,7 +299,7 @@ export const FileUploaderItem = forwardRef<
     <div
       ref={ref}
       className={cn(
-        buttonVariants({ variant: "ghost" }),
+      
         "h-6 p-1 justify-between cursor-pointer relative",
         className,
         isSelected ? "bg-muted" : ""

@@ -20,7 +20,7 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   captionLayout = "label",
-  buttonVariant = "ghost",
+
   formatters,
   components,
   ...props
@@ -54,12 +54,12 @@ function Calendar({
           defaultClassNames.nav
         ),
         button_previous: cn(
-          buttonVariants({ variant: buttonVariant }),
+      
           "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
           defaultClassNames.button_previous
         ),
         button_next: cn(
-          buttonVariants({ variant: buttonVariant }),
+  
           "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
           defaultClassNames.button_next
         ),
@@ -187,7 +187,7 @@ function CalendarDayButton({
   return (
     <Button
       ref={ref}
-      variant="ghost"
+
       size="icon"
       data-day={day.date.toLocaleDateString()}
       data-selected-single={

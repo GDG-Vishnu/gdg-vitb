@@ -14,6 +14,7 @@ const buttonVariants = cva(
       variant: {
         default:
           "text-white bg-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
+        outline: "bg-white text-black border-2 border-black",
         noShadow: "text-white bg-black border-2 border-black",
         neutral:
           "bg-white text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
@@ -26,6 +27,7 @@ const buttonVariants = cva(
           "text-white bg-green-500 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
         red: "text-white bg-red-500 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
         pink: "text-white bg-pink-500 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
+        ghost: "bg-transparent text-black border-0 shadow-none hover:bg-muted/5",
       },
       size: {
         default: "h-10 px-4 py-2",

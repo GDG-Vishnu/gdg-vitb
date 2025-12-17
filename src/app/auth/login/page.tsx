@@ -1,10 +1,11 @@
-import { Suspense } from "react";
-import { LoginForm } from "@/components/auth/login-form";
+import React from "react";
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LoginForm />
-    </Suspense>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="p-6 bg-white rounded shadow">
+        Login functionality is temporarily unavailable.
+      </div>
+    </div>
   );
 }

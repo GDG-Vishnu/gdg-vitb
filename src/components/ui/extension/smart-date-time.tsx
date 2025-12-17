@@ -433,11 +433,7 @@ const TimePicker = () => {
                   aria-label="currentTime"
                   className={cn(
                     buttonVariants({
-                      variant: isSuggested
-                        ? "secondary"
-                        : isSelected
-                        ? "default"
-                        : "outline",
+                
                     }),
                     "h-8 px-3 w-full text-sm focus-visible:outline-0 outline-0 focus-visible:border-0 cursor-default ring-0 focus:ring-0 focus-within:ring-0"
                   )}

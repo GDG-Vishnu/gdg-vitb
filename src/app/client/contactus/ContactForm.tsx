@@ -114,35 +114,11 @@ export function ContactForm() {
     }
   };
 
-  const formVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: "easeInOut" as unknown,
-      },
-    },
-  };
-
   return (
     <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={formVariants}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
       className="bg-white rounded-2xl p-8 shadow-2xl border-2 border-gray-900 relative overflow-hidden group"
     >
       {/* Animated background decoration */}
@@ -154,7 +130,9 @@ export function ContactForm() {
       />
 
       <motion.h2
-        variants={itemVariants}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
         className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3 font-productSans"
       >
         <MessageSquare className="w-8 h-8 text-blue-600" />
@@ -229,26 +207,10 @@ export function ContactForm() {
         </motion.div>
       )}
 
-      <motion.form
-        onSubmit={handleSubmit}
-        className="space-y-8"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: {
-              staggerChildren: 0.1,
-              delayChildren: 0.3,
-            },
-          },
-        }}
-      >
-        <motion.div
-          className="grid sm:grid-cols-2 gap-6"
-          variants={itemVariants}
-        >
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="grid sm:grid-cols-2 gap-6">
           {/* Name Field */}
-          <motion.div variants={itemVariants}>
+          <div>
             <label
               htmlFor="name"
               className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
@@ -290,10 +252,10 @@ export function ContactForm() {
                 {errors.name}
               </motion.p>
             )}
-          </motion.div>
+          </div>
 
           {/* Email Field */}
-          <motion.div variants={itemVariants}>
+          <div>
             <label
               htmlFor="email"
               className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
@@ -335,11 +297,11 @@ export function ContactForm() {
                 {errors.email}
               </motion.p>
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Subject Field */}
-        <motion.div variants={itemVariants}>
+        <div>
           <label
             htmlFor="subject"
             className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
@@ -377,10 +339,10 @@ export function ContactForm() {
               {errors.subject}
             </motion.p>
           )}
-        </motion.div>
+        </div>
 
         {/* Message Field */}
-        <motion.div variants={itemVariants}>
+        <div>
           <label
             htmlFor="message"
             className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
@@ -427,10 +389,10 @@ export function ContactForm() {
               {formData.message.length}/500
             </span>
           </div>
-        </motion.div>
+        </div>
 
         {/* Submit Button */}
-        <motion.div variants={itemVariants} className="pt-4">
+        <div className="pt-4">
           <motion.button
             type="submit"
             disabled={isSubmitting}
@@ -458,8 +420,8 @@ export function ContactForm() {
             We typically respond within 24 hours. Your information is kept
             confidential.
           </p>
-        </motion.div>
-      </motion.form>
+        </div>
+      </form>
     </motion.div>
   );
 }
