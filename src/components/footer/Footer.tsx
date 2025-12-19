@@ -11,7 +11,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-[#111214] text-gray-300 py-8 md:py-12 w-full">
+    <footer className="bg-[#111214] text-gray-300   w-full">
       <div className="w-full mx-auto px-4 md:px-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-0">
           {/* Left: Logo */}
@@ -126,7 +126,7 @@ export default function Footer() {
         </div>
 
         {/* Footer art full width */}
-        <div className="mt-4 md:mt-6 w-full -mx-4 md:-mx-6">
+        <div className="mt-4 md:mt-6 w-full  md:-mx-6">
           <img
             src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760613984/Footer_Art_yhife5.png"
             alt="Footer decorative art"

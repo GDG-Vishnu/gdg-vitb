@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "@/components/providers";
 import { productSans } from "./font";
 import CursorSpark from "./client/CursorSpark";
+import BackToTop from "@/components/ui/back_to_top";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
           <SpeedInsights />
           <CursorSpark />
           {children}
+          <BackToTop />
         </Providers>
       </body>
     </html>

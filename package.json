@@ -58,6 +58,7 @@
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.23.21",
     "input-otp": "^1.4.2",
+    "lightgallery": "^2.9.0",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.18",
     "nanoid": "^5.1.6",
@@ -80,7 +81,7 @@
     "timescape": "^0.8.0",
     "use-debounce": "^10.0.6",
     "vaul": "^1.1.2",
-    "zod": "^4.1.11",
+    "zod": "^3.25.76",
     "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {

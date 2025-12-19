@@ -459,7 +459,7 @@ const HomePage = () => {
               style={{
                 fontWeight: 400,
                 lineHeight: "1.3",
-                fontSize: "clamp(25px, 4vw, 48px)",
+                fontSize: "clamp(20px, 4vw, 48px)",
                 padding: "0.5rem 0.75rem",
                 color: "#0b1220",
               }}
@@ -481,8 +481,8 @@ const HomePage = () => {
         <motion.div
           initial={{ y: 80, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
+          viewport={{ once: true, margin: "" }}
+          transition={{ duration: 0.8 }} className=" mb-[30px] "
         >
           <AboutSection />
         </motion.div>

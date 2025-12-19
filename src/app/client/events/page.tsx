@@ -124,7 +124,7 @@ function EventCard({ event }: { event: Event }) {
             style={{
               maxWidth: "100%",
               maxHeight: "100%",
-              objectFit: "contain",
+              objectFit: "cover",
               borderRadius: 50,
             }}
           />

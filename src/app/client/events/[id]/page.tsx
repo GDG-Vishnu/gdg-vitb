@@ -571,12 +571,12 @@ function ParticipantBadge({
     <div
       role="group"
       aria-label={text ? `badge ${text}` : "badge"}
-      className={`inline-flex items-center bg-[#1a1a1a] rounded-full pr-3 md:pr-6 mb-4 ${className}`}
+      className={`flex items-center bg-[#1a1a1a] rounded-full pr-3 md:pr-6 mb-4 ${className}`}
       style={{ height: "48px" }}
     >
       {/* Colored circle with icon */}
       <div
-        className="flex-shrink-0 flex justify-center items-center rounded-full m-2"
+        className="flex-shrink-0 flex justify-center items-center rounded-full m-1"
         // responsive sizes: w-10 h-10 on mobile, w-11 h-11 on md+
         style={{
           width: 40, // keeps exact pixel width if you prefer; could replace with className "w-10 h-10 md:w-11 md:h-11"

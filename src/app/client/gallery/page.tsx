@@ -5,8 +5,13 @@ import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
 import { Camera, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
-import { ParallaxScroll } from "@/components/ui/parallax-scroll";
-
+// LightGallery integration
+import LightGallery from "lightgallery/react";
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgZoom from "lightgallery/plugins/zoom";
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-thumbnail.css";
+import "lightgallery/css/lg-zoom.css";
 type GalleryItem = {
   id: number;
   imageUrl: string;
@@ -15,120 +20,28 @@ type GalleryItem = {
 // Sample gallery items with curated images
 const sampleGalleryItems: GalleryItem[] = [
   {
-    id: 3,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/zveegnqhtdzwcr1xpoyz",
-    uploadedAt: "2024-01-17T09:15:00Z",
-  },
-
-  {
-    id: 5,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/oykhw6xytohke2in6j96",
-    uploadedAt: "2024-01-19T11:30:00Z",
-  },
-  {
-    id: 6,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/ooyji7eajkyjvjkiuy6k",
-    uploadedAt: "2024-01-20T08:45:00Z",
-  },
-  {
-    id: 7,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/omaqtjgvhiyuiu0jxnxp",
-    uploadedAt: "2024-01-21T13:10:00Z",
-  },
-  {
-    id: 8,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/zgucxpwzajjx9itwsons",
-    uploadedAt: "2024-01-22T15:25:00Z",
-  },
-  {
-    id: 9,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/knpv42zoexevpfgl7vcp",
-    uploadedAt: "2024-01-23T12:40:00Z",
-  },
-
-  {
-    id: 13,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644894/omjmymgm0ilfjof32h8g.jpg",
-    uploadedAt: "2024-01-27T09:50:00Z",
-  },
-  {
-    id: 14,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644891/bglnju9ouvgwuyjyoxuh.jpg",
-    uploadedAt: "2024-01-28T16:05:00Z",
-  },
-  {
-    id: 15,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644890/bdiewilbgzee4odot1fk.jpg",
-    uploadedAt: "2024-01-29T11:20:00Z",
-  },
-  {
-    id: 16,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644887/qfpitj6fxngwmk2bcvgi.jpg",
-    uploadedAt: "2024-01-30T08:35:00Z",
-  },
-  {
-    id: 17,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644886/zrdhk0lmbf2zpqwwriwm.jpg",
-    uploadedAt: "2024-02-01T13:50:00Z",
-  },
-  {
-    id: 18,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644878/qurgwgqfjhvujays1uhh.jpg",
-    uploadedAt: "2024-02-02T15:05:00Z",
-  },
-  {
-    id: 19,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644876/ziv04siuykktlwldxnhq.jpg",
-    uploadedAt: "2024-02-03T12:20:00Z",
-  },
-  {
-    id: 20,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644872/r9xqol14s4rtgtugai7x.jpg",
-    uploadedAt: "2024-02-04T17:35:00Z",
-  },
-  {
-    id: 21,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644869/wzmpmfypcpd0mn5ggzhg.jpg",
-    uploadedAt: "2024-02-05T10:50:00Z",
-  },
-  {
-    id: 22,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644864/d8sz7fn2m8r4r8cyuad9.jpg",
-    uploadedAt: "2024-02-06T14:05:00Z",
-  },
-  {
-    id: 23,
+    id: 1,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/cdwplwcgzswuzt6dmvyh.jpg",
-    uploadedAt: "2024-02-07T10:00:00Z",
+    uploadedAt: "2025-12-19",
   },
   {
-    id: 24,
+    id: 2,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/jalxke80kptiayk9lfot.jpg",
-    uploadedAt: "2024-02-07T10:05:00Z",
+    uploadedAt: "2025-12-19",
   },
   {
-    id: 25,
+    id: 3,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/hegcgmel1d7ionmjnpg1.jpg",
-    uploadedAt: "2024-02-07T10:10:00Z",
+    uploadedAt: "2025-12-19",
+  },
+  {
+    id: 4,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/xrehxswonqbmlwn3cbg5.jpg",
+    uploadedAt: "2025-12-19",
   },
 ];
 
@@ -147,7 +60,7 @@ function Gallery() {
             href="/"
             className="inline-flex items-center gap-2 text-gray-100 hover:text-gray-200 transition mb-6 bg-stone-900 p-2 rounded-4xl"
           >
-            <ArrowLeft className="w-6 h-6 text-stone-950 rounded-full hover:rotate-2 bg-blue-500" />
+            <ArrowLeft className="w-6 h-6 text-stone-950 rounded-full hover:rotate-2 bg-blue-500 " />
             <p className="hidden lg:block font-productSans">Back to Home</p>
           </Link>
 
@@ -173,12 +86,27 @@ function Gallery() {
               </p>
             </div>
           ) : (
-            // Parallax scroll layout for all images (scrollbar hidden)
             <div className="hide-scrollbar">
-              <ParallaxScroll
-                images={galleryItems.map((item) => item.imageUrl)}
-                className=""
-              />
+              <LightGallery speed={500} plugins={[lgThumbnail, lgZoom]}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {galleryItems.map((item) => (
+                    <a
+                      href={item.imageUrl}
+                      key={item.id}
+                      className="overflow-hidden rounded-lg block lg-trigger"
+                      data-src={item.imageUrl}
+                      data-lg-size="1600-900"
+                      data-sub-html={`<h4>Uploaded: ${item.uploadedAt}</h4>`}
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={`Gallery image ${item.id}`}
+                        className="w-full h-60 object-cover"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </LightGallery>
             </div>
           )}
         </div>
