@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useMemo } from "react";
 import Link from "next/link";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
+import { motion } from "framer-motion";
 import {
   Users,
   Calendar,
@@ -78,108 +79,109 @@ const useCountAnimation = (endValue: number, isVisible: boolean): number => {
   return count;
 };
 
-// Enhanced Typing Animation Component
+// Enhanced Typing Animation Componen
+
 const TypingAnimation = () => {
-  const phrases = [
-    "Building Tomorrow's Developers at VIT Bhimavaram",
-    "Creating Tech Leaders in Andhra Pradesh",
-    "Fostering Innovation with Google Technologies",
-    "Connecting Minds Across Engineering Disciplines",
-    "Empowering Students with Real-World Skills",
-    "Bridging Academia and Industry",
-  ];
+  const phrases = useMemo(
+    () => [
+      "Building Tomorrow's Developers at VIT Bhimavaram",
+      "Creating Tech Leaders in Andhra Pradesh",
+      "Fostering Innovation with Google Technologies",
+      "Connecting Minds Across Engineering Disciplines",
+      "Empowering Students with Real-World Skills",
+      "Bridging Academia and Industry",
+    ],
+    []
+  );
 
-  const [currentPhrase, setCurrentPhrase] = useState(0);
-  const [currentText, setCurrentText] = useState("");
-  const [isTyping, setIsTyping] = useState(true);
+  const TYPING_SPEED = 80;
+  const DELETING_SPEED = 40;
+  const HOLD_AFTER_TYPING = 1600;
+
+  const [text, setText] = useState("");
+  const [index, setIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
 
+  /* Cursor blink */
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const phrase = phrases[currentPhrase];
-
-    if (isTyping) {
-      if (currentText.length < phrase.length) {
-        const timeout = setTimeout(() => {
-          setCurrentText(phrase.substring(0, currentText.length + 1));
-        }, 100);
-        return () => clearTimeout(timeout);
-      } else {
-        const timeout = setTimeout(() => {
-          setIsTyping(false);
-        }, 2000);
-        return () => clearTimeout(timeout);
-      }
-    } else {
-      if (currentText.length > 0) {
-        const timeout = setTimeout(() => {
-          setCurrentText(currentText.substring(0, currentText.length - 1));
-        }, 50);
-        return () => clearTimeout(timeout);
-      } else {
-        setCurrentPhrase((prev) => (prev + 1) % phrases.length);
-        setIsTyping(true);
-      }
-    }
-  }, [currentText, isTyping, currentPhrase, phrases, isVisible]);
-
-  useEffect(() => {
-    const cursorInterval = setInterval(() => {
-      setShowCursor((prev) => !prev);
+    const cursor = setInterval(() => {
+      setShowCursor((v) => !v);
     }, 500);
-    return () => clearInterval(cursorInterval);
+    return () => clearInterval(cursor);
   }, []);
+
+  /* Typing logic */
+  useEffect(() => {
+    const currentPhrase = phrases[index];
+    let timeout: NodeJS.Timeout;
+
+    if (!isDeleting && text.length < currentPhrase.length) {
+      timeout = setTimeout(() => {
+        setText(currentPhrase.slice(0, text.length + 1));
+      }, TYPING_SPEED);
+    } 
+    else if (!isDeleting && text.length === currentPhrase.length) {
+      timeout = setTimeout(() => {
+        setIsDeleting(true);
+      }, HOLD_AFTER_TYPING);
+    } 
+    else if (isDeleting && text.length > 0) {
+      timeout = setTimeout(() => {
+        setText(currentPhrase.slice(0, text.length - 1));
+      }, DELETING_SPEED);
+    } 
+    else if (isDeleting && text.length === 0) {
+      setIsDeleting(false);
+      setIndex((prev) => (prev + 1) % phrases.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [text, isDeleting, index, phrases]);
 
   return (
     <div className="h-24 sm:h-32 flex items-center justify-center px-4">
-      <div
-        className={`transform transition-all duration-1000 ${
-          isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-        }`}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center"
       >
         <h3
-          className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-medium text-gray-600 font-productSans text-center leading-tight"
-          style={{
-            fontFamily:
-              '"Product Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-            minHeight: "1.2em",
-          }}
+          className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-medium font-productSans leading-tight"
+          style={{ minHeight: "1.3em" }}
         >
           <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-            {currentText}
+            {text}
           </span>
           <span
-            className={`${
+            className={`ml-1 ${
               showCursor ? "opacity-100" : "opacity-0"
             } transition-opacity duration-100 text-blue-600`}
           >
             |
           </span>
         </h3>
-        <div className="mt-4 flex justify-center">
-          <div className="flex space-x-2">
-            {phrases.map((_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentPhrase
-                    ? "bg-blue-600 scale-125"
-                    : "bg-gray-300"
-                }`}
-              />
-            ))}
-          </div>
+
+        {/* Indicator dots */}
+        <div className="mt-4 flex justify-center gap-2">
+          {phrases.map((_, i) => (
+            <span
+              key={i}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                i === index
+                  ? "bg-blue-600 scale-125"
+                  : "bg-gray-300"
+              }`}
+            />
+          ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
+
+
 
 // Animated Counter Component
 interface AnimatedCounterProps {
@@ -602,13 +604,17 @@ const CTASection = () => {
             projects together.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-black bg-white border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold">
+            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-black bg-white border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold" 
+            onClick={() => window.location.href = '/events'}
+            >
               <Calendar className="w-4 h-4" />
               Explore Events
             </button>
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-white bg-black border-4 border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold">
+            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-white bg-black border-4 border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold"
+            onClick={() => window.location.href = 'https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/'}
+            >
               <Users className="w-4 h-4" />
-              Join Our Community
+              Join Our Community 
             </button>
           </div>
         </div>

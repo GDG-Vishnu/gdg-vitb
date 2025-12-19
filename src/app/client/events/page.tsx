@@ -5,12 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
-import {
- 
-  ChevronLeft,
-  ChevronRight,
-
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 
@@ -32,8 +27,6 @@ const carouselImages = [
     alt: "Tech Event 4",
   },
 ];
-
-
 
 type Event = {
   id: number;
@@ -132,6 +125,7 @@ function EventCard({ event }: { event: Event }) {
               maxWidth: "100%",
               maxHeight: "100%",
               objectFit: "contain",
+              borderRadius: 50,
             }}
           />
         </div>

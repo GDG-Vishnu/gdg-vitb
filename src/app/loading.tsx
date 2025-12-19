@@ -1,5 +1,5 @@
-import { PageLoading } from "@/components/ui/loading-fallbacks";
+import LoadingGlobal from "@/components/loadingPage/loading_global";
 
 export default function Loading() {
-  return <PageLoading message="Loading application..." />;
+  return <LoadingGlobal message="Loading application..." />;
 }

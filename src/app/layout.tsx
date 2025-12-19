@@ -34,12 +34,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${productSans.variable} antialiased` }
+        className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${productSans.variable} antialiased overflow-y-auto hide-scrollbar`}
         suppressHydrationWarning={true}
       >
-      
         <Providers>
           <SpeedInsights />
+          <CursorSpark />
           {children}
         </Providers>
       </body>

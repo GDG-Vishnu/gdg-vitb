@@ -15,29 +15,12 @@ type GalleryItem = {
 // Sample gallery items with curated images
 const sampleGalleryItems: GalleryItem[] = [
   {
-    id: 1,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/ikjbkdsqwcgf4bwbqv3m",
-    uploadedAt: "2024-01-15T10:30:00Z",
-  },
-  {
-    id: 2,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/mqtjtemmd5xrnimqb053",
-    uploadedAt: "2024-01-16T14:45:00Z",
-  },
-  {
     id: 3,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/zveegnqhtdzwcr1xpoyz",
     uploadedAt: "2024-01-17T09:15:00Z",
   },
-  {
-    id: 4,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/f3nvhejvprgqocfh3w2i",
-    uploadedAt: "2024-01-18T16:20:00Z",
-  },
+
   {
     id: 5,
     imageUrl:
@@ -68,24 +51,7 @@ const sampleGalleryItems: GalleryItem[] = [
       "https://res.cloudinary.com/dlupkibvq/image/upload/knpv42zoexevpfgl7vcp",
     uploadedAt: "2024-01-23T12:40:00Z",
   },
-  {
-    id: 10,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v0grrxy5ahd8kyb2kxzv",
-    uploadedAt: "2024-01-24T17:55:00Z",
-  },
-  {
-    id: 11,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/uynaqaqygb5pned9otsp",
-    uploadedAt: "2024-01-25T10:20:00Z",
-  },
-  {
-    id: 12,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644911/sv8r7than899likaob4d.jpg",
-    uploadedAt: "2024-01-26T14:35:00Z",
-  },
+
   {
     id: 13,
     imageUrl:
@@ -146,6 +112,24 @@ const sampleGalleryItems: GalleryItem[] = [
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644864/d8sz7fn2m8r4r8cyuad9.jpg",
     uploadedAt: "2024-02-06T14:05:00Z",
   },
+  {
+    id: 23,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/cdwplwcgzswuzt6dmvyh.jpg",
+    uploadedAt: "2024-02-07T10:00:00Z",
+  },
+  {
+    id: 24,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/jalxke80kptiayk9lfot.jpg",
+    uploadedAt: "2024-02-07T10:05:00Z",
+  },
+  {
+    id: 25,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/hegcgmel1d7ionmjnpg1.jpg",
+    uploadedAt: "2024-02-07T10:10:00Z",
+  },
 ];
 
 function Gallery() {
@@ -189,10 +173,13 @@ function Gallery() {
               </p>
             </div>
           ) : (
-            // Parallax scroll layout for all images
-            <ParallaxScroll
-              images={galleryItems.map((item) => item.imageUrl)}
-            />
+            // Parallax scroll layout for all images (scrollbar hidden)
+            <div className="hide-scrollbar">
+              <ParallaxScroll
+                images={galleryItems.map((item) => item.imageUrl)}
+                className=""
+              />
+            </div>
           )}
         </div>
       </main>

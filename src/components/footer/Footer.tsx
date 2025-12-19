@@ -40,12 +40,9 @@ export default function Footer() {
                   Quick Links
                 </div>
                 <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4 text-[#CCF6C5] text-xl md:text-lg ">
-                  <Link
-                    href="/"
-                    className="hover:underline font-productSans text-center md:text-left"
-                  >
-                    Home
-                  </Link>
+                 <a href="/client" 
+                    className="hover:underline font-productSans text-center md:text-left">
+                 Home</a>
                   <a
                     href="/client/gallery"
                     className="hover:underline font-productSans text-center md:text-left"
@@ -63,6 +60,12 @@ export default function Footer() {
                     className="hover:underline font-productSans text-center md:text-left"
                   >
                     Contact us
+                  </a>
+                     <a
+                    href="/client/events"
+                    className="hover:underline font-productSans text-center md:text-left"
+                  >
+                    Events
                   </a>
                 </div>
               </div>

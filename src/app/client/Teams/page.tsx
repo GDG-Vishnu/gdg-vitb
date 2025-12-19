@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Navbar from "@/app/client/Home/navbar";
+import LoadingTeam from "@/components/loadingPage/loading_team";
 import Footer from "@/components/footer/Footer";
 import MemberCard from "./MemberCard";
 
@@ -112,7 +113,7 @@ export default function TeamsPage() {
 
         <div className="mt-8 w-full">
           {loading && (
-            <div className="font-productSans">Loading team members...</div>
+            <LoadingTeam variant="section" message="Loading team members..." />
           )}
           {!loading && team.length === 0 && (
             <div className="col-span-full text-center font-productSans">
