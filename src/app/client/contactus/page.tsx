@@ -164,19 +164,7 @@ export default function ContactUsPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                          <Phone className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-white font-productSans font-medium">
-                            Phone
-                          </p>
-                          <p className="text-stone-300 font-productSans text-sm">
-                            +91 98765 43210
-                          </p>
-                        </div>
-                      </div>
+                
                     </div>
                   </div>
 
