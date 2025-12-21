@@ -50,7 +50,7 @@ export function EmailCard() {
             whileHover={{ x: 5 }}
             transition={{ duration: 0.2 }}
           >
-            <span>gdg@vishnu.edu.in</span>
+            <a href="mailto:gdg@vishnu.edu.in">gdg@vishnu.edu.in</a>
             <motion.span
               className="opacity-0 group-hover/link:opacity-100 transition-opacity"
               initial={{ x: -5 }}

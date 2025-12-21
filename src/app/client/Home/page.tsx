@@ -482,7 +482,8 @@ const HomePage = () => {
           initial={{ y: 80, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, margin: "" }}
-          transition={{ duration: 0.8 }} className=" mb-[30px] "
+          transition={{ duration: 0.8 }}
+          className=" mb-[30px] "
         >
           <AboutSection />
         </motion.div>
@@ -493,7 +494,7 @@ const HomePage = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.8 }}
-        className="w-full"
+        className="w-full flex "
         style={{ background: "#F8D8D8" }}
       >
         <ExtensionSection />
@@ -709,13 +710,13 @@ const HomePage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-4 rounded-none border-4 border-black focus:border-black focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 text-black bg-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 font-productSans font-bold"
+                className="flex-1 px-6 py-4 rounded-none border-4 border-black focus:border-black focus:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-all duration-200 text-black bg-white shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] disabled:opacity-50 font-productSans font-bold"
                 whileFocus={{ scale: 1.02 }}
               />
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-4 bg-black text-white font-black rounded-none hover:bg-gray-800 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-4 border-black disabled:opacity-50 disabled:cursor-not-allowed font-productSans"
+                className="px-8 py-4 bg-black text-white font-black rounded-none hover:bg-gray-800 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] transition-all duration-200 shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] border-4 border-black disabled:opacity-50 disabled:cursor-not-allowed font-productSans"
                 whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                 whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               >
@@ -745,11 +746,7 @@ const HomePage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.5 }}
               className="mt-6 text-sm text-gray-500 font-productSans"
-            >
-              <p className="font-productSans">
-                🔒 We respect your privacy. Unsubscribe at any time.
-              </p>
-            </motion.div>
+            ></motion.div>
           </div>
         </div>
       </motion.div>

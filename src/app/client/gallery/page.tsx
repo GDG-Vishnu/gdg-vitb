@@ -50,7 +50,14 @@ function Gallery() {
     useState<GalleryItem[]>(sampleGalleryItems);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div
+      className="min-h-screen bg-white"
+      style={{
+        backgroundColor: "white",
+        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+        backgroundSize: "20px 20px",
+      }}
+    >
       <Navbar />
 
       <main className="py-8 px-4">

@@ -66,18 +66,18 @@ export default function MemberCard({
           </h3>
         </div>
         <div className="flex justify-between items-center ">
-          <h1 className="text-lg text-green-600 font-semibold mt-1 font-productSans">
+          <h1 className="text-lg text-green-600 font-semibold mt-1 font-productSans" style={{color: bgColor || "#38a169"}}>
             {designation}
           </h1>
 
-          <div className=" flex  ">
+          <div className=" flex space-x-3 ">
             {mail && (
               <a
                 href={`mailto:${mail}`}
                 aria-label={`Email ${name}`}
                 className="p-2 rounded-md border"
               >
-                <Mail className="w-7 h-7 text-stone-950 border-2 " />
+                <Mail className="w-7 h-7 text-stone-950  " />
               </a>
             )}
 
@@ -89,7 +89,7 @@ export default function MemberCard({
                 aria-label={`${name} on LinkedIn`}
                 className="p-2 rounded-md border"
               >
-                <Linkedin className="w-7 h-7 text-stone-950 border-2 " />
+                <Linkedin className="w-7 h-7 text-stone-950 " />
               </a>
             )}
           </div>

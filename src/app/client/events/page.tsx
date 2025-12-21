@@ -206,10 +206,9 @@ export default function EventsPage() {
     <div
       className="min-h-screen bg-white relative overflow-hidden"
       style={{
-        backgroundColor: "#f8fafc",
-        backgroundImage: `radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), radial-gradient(rgba(59,130,246,0.03) 1px, transparent 1px)`,
-        backgroundPosition: "0 0, 25px 25px",
-        backgroundSize: "50px 50px",
+        backgroundColor: "white",
+        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+        backgroundSize: "20px 20px",
       }}
     >
       <Navbar />

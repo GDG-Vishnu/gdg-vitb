@@ -34,7 +34,7 @@ function ExtensionSection() {
 
   return (
     <div
-      className="flex flex-col justify-center items-center my-20 mx-4 md:mx-20 lg:mx-40 space-y-10 relative"
+      className="flex flex-col justify-around items-around w-full my-20 mx-4 md:mx-20 lg:mx-40 space-y-10 relative"
       style={{ background: "#F8D8D8" }}
     >
       {/* Background decoration */}
@@ -123,25 +123,25 @@ function Card({
   return (
     <div
       ref={ref}
-      className={`flex flex-col justify-around items-center space-y-2 md:space-y-4 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-3 md:p-6 w-full max-w-[160px] md:max-w-[313px] h-[200px] md:h-[414px] bg-white 
+      className={`flex flex-col justify-between items-center border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-3 md:p-6 w-full md:max-w-[313px] h-[200px] md:h-[414px] bg-white 
         transform transition-all duration-300 ease-out
         ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
         hover:-translate-x-2 hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]`}
       style={{ willChange: "transform, opacity" }}
     >
-      <div className="w-16 h-16 md:w-40 md:h-40 flex items-center justify-center overflow-hidden border-2    border-black bg-yellow-200">
+      <div className="w-16 h-16 md:w-40 md:h-40 flex-shrink-0 flex items-center justify-center overflow-hidden ">
         <img
           src={imgUrl}
           alt={title}
-          className="w-full h-full object-contain transform transition-transform duration-200 ease-out hover:scale-105 filter contrast-125 e"
+          className="w-full h-full object-contain transform transition-transform duration-200 ease-out hover:scale-105 filter contrast-125"
         />
       </div>
 
-      <div>
-        <h2 className="text-lg md:text-xl font-semibold text-stone-950 text-center font-productSans">
+      <div className="flex flex-col items-center justify-center space-y-1 md:space-y-2 flex-grow">
+        <h2 className="text-lg md:text-xl font-semibold text-stone-950 text-center font-productSans leading-tight px-2">
           {title}
         </h2>
-        <p className="text-xs md:text-base text-center text-stone-950 font-productSans hidden md:block">
+        <p className="text-xs md:text-base text-center text-stone-950 font-productSans hidden md:block leading-relaxed px-2">
           {description}
         </p>
       </div>

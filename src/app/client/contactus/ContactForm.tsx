@@ -213,7 +213,7 @@ export function ContactForm() {
           <div>
             <label
               htmlFor="name"
-              className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3 font-productSans"
+              className="flex items-center gap-2 text-sm font-semibold text-white mb-3 font-productSans"
             >
               <User className="w-4 h-4 text-blue-600" />
               Your Name <span className="text-red-500">*</span>
@@ -224,7 +224,7 @@ export function ContactForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
+              className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-white ${
                 errors.name
                   ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
                   : "border-gray-200"
@@ -269,7 +269,7 @@ export function ContactForm() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
+              className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-white ${
                 errors.email
                   ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
                   : "border-gray-200"
@@ -315,7 +315,7 @@ export function ContactForm() {
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 ${
+            className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-white ${
               errors.subject
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
                 : "border-gray-200"
@@ -356,7 +356,7 @@ export function ContactForm() {
             value={formData.message}
             onChange={handleChange}
             rows={6}
-            className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none ${
+            className={`w-full px-4 py-4 border-2 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none text-white ${
               errors.message
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
                 : "border-gray-200"
