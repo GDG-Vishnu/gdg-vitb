@@ -203,7 +203,14 @@ export default function EventDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div
+        className="min-h-screen bg-white relative overflow-hidden"
+        style={{
+          backgroundColor: "white",
+          backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
+      >
         <Navbar />
         <div className="flex items-center justify-center py-40">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
@@ -215,7 +222,15 @@ export default function EventDetailPage() {
 
   if (error || !event) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div
+        className="min-h-screen bg-white relative overflow-hidden"
+        style={{
+          backgroundColor: "white",
+          backgroundImage:
+            "linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+        }}
+      >
         <Navbar />
         <div className="flex flex-col items-center justify-center py-40">
           <div className="text-6xl mb-4">😕</div>
@@ -243,7 +258,15 @@ export default function EventDetailPage() {
   const theme = getThemeColors(event.Theme);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div
+      className="min-h-screen bg-white relative overflow-hidden"
+      style={{
+        backgroundColor: "white",
+        backgroundImage:
+          "linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)",
+        backgroundSize: "20px 20px",
+      }}
+    >
       <Navbar />
 
       <main className="py-8 px-4">
@@ -326,7 +349,9 @@ export default function EventDetailPage() {
             />
 
             <div className="relative z-10 flex flex-col items-center gap-6">
-              <h1 className="text-3xl font-bold text-white font-productSans">About the Event </h1>
+              <h1 className="text-3xl font-bold text-white font-productSans">
+                About the Event{" "}
+              </h1>
               <div>
                 <p className="text-base md:text-lg text-stone-300 md:max-w-4xl max-w-3xl mx-auto">
                   {event.description}

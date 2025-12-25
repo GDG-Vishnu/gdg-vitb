@@ -66,7 +66,7 @@ export default function MemberCard({
           </h3>
         </div>
         <div className="flex justify-between items-center ">
-          <h1 className="text-lg text-green-600 font-semibold mt-1 font-productSans" style={{color: bgColor || "#38a169"}}>
+          <h1 className="text-[20px] text-green-600 font-semibold mt-1 font-productSans text-wrap" style={{color: bgColor || "#38a169"}}>
             {designation}
           </h1>
 

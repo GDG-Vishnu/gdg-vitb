@@ -83,6 +83,7 @@ model TeamMember {
     bgColor     String?
     rank        Int      @default(0)
     dept_rank   Int      @default(0)
+    @@index([name])
     @@map("team_members")
 }
 // NextAuth.js Account model
@@ -136,6 +137,7 @@ model Events {
   isDone      Boolean  @default(false)
   MembersParticipated Int      @default(0)
   Theme String[]
+  @@index([title])
 }
 model Gallery{
     id           Int      @id @default(autoincrement())

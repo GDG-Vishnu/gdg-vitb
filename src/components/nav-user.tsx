@@ -8,7 +8,6 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -43,19 +42,8 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const router = useRouter();
 
-  const handleLogout = async () => {
-    try {
-      await signOut({
-        callbackUrl: "/auth/login", // or "/" if you prefer
-        redirect: true,
-      });
-      // Force a page reload to ensure session is completely cleared
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Fallback redirect
-      router.push("/");
-    }
+  const handleLogout = () => {
+    router.push("/");
   };
 
   return (

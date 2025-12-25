@@ -92,7 +92,7 @@ function EventCard({ event }: { event: Event }) {
 
   return (
     <article
-      className="bg-transparent shadow-md snap-start overflow-hidden"
+      className="bg-white shadow-md snap-start overflow-hidden"
       style={{
         width: 450,
         height: 472,
@@ -104,7 +104,6 @@ function EventCard({ event }: { event: Event }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        backgroundColor: "transparent",
       }}
     >
       {event.imageUrl && (
@@ -155,7 +154,7 @@ function EventCard({ event }: { event: Event }) {
               style={getButtonStyle()}
               className="translate-x-1 translate-y-1 shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:translate-x-0 hover:translate-y-0 hover:shadow-none transition-all"
             >
-              <Link href={`/client/events/${event.id}`}>
+              <Link href={`/events/${event.id}`}>
                 <img
                   src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                   alt=""
@@ -207,7 +206,8 @@ export default function EventsPage() {
       className="min-h-screen bg-white relative overflow-hidden"
       style={{
         backgroundColor: "white",
-        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+        backgroundImage:
+          "linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)",
         backgroundSize: "20px 20px",
       }}
     >

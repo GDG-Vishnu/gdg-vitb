@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Footer from "@/components/footer/Footer";
 import { url } from "inspector";
 import ExtensionSection from "./extension_section";
-import CursorSpark from "../CursorSpark";
+import CursorSpark from "../client/CursorSpark";
 
 const HomePage = () => {
   const session = null as any;

@@ -1,27 +1,18 @@
 "use client";
 
 import React from "react";
-import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button3D as MagneticButton } from "@/components/ui/3d-button";
 import { LogOut, User, LogIn } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ComingSoonPage = () => {
-  const { data: session } = useSession();
+  const session = null as any;
   const router = useRouter();
-  const isLoggedIn = !!session;
+  const isLoggedIn = false;
 
-  const handleLogout = async () => {
-    try {
-      await signOut({
-        callbackUrl: "/",
-        redirect: true,
-      });
-    } catch (error) {
-      console.error("Logout error:", error);
-      router.push("/");
-    }
+  const handleLogout = () => {
+    router.push("/");
   };
   return (
     <div
@@ -33,7 +24,7 @@ const ComingSoonPage = () => {
       }}
     >
       {/* Top right user info and logout button - responsive design */}
-      {session && (
+      {false && (
         <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
           {/* User Avatar and Info */}
           <div className="flex items-center space-x-2 border rounded-full p-1 shadow-xs min-w-0 max-w-48">
@@ -72,7 +63,7 @@ const ComingSoonPage = () => {
       )}
 
       {/* Top right login button when user is not logged in */}
-      {!session && (
+      {false && (
         <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20">
           <MagneticButton
             variant="default"

@@ -100,7 +100,7 @@ export default function AboutSection() {
   }
 
   return (
-    <section className="w-full px-4 py-10">
+    <section className="w-full px-4 py-0">
       {isMobile ? renderMobile() : renderDesktop()}
     </section>
   );

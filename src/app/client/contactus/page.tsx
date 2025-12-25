@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -90,14 +91,12 @@ export default function ContactUsPage() {
 
   function renderDesktop() {
     return (
-      <section
-        className="w-full px-4 py-10 bg-white"
-        style={{
-          backgroundColor: "white",
-          backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
-          backgroundSize: "20px 20px",
-        }}
-      >
+      <section className="relative w-full px-4 py-10 bg-white" style={{
+        backgroundColor: "white",
+        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+        backgroundSize: "20px 20px",
+      }}>
+     
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14">
           <div className="relative rounded-[32px]">
             <div
@@ -165,7 +164,10 @@ export default function ContactUsPage() {
                           <p className="text-white font-productSans font-medium">
                             Email
                           </p>
-                          <a href="mailto:gdg@vishnu.edu.in" className="text-stone-300 font-productSans text-sm">
+                          <a
+                            href="mailto:gdg@vishnu.edu.in"
+                            className="text-stone-300 font-productSans text-sm"
+                          >
                             gdg@vishnu.edu.in
                           </a>
                         </div>
@@ -266,14 +268,12 @@ export default function ContactUsPage() {
 
   function renderMobile() {
     return (
-      <section
-        className="w-full px-4 py-10"
-        style={{
-          backgroundColor: "white",
-          backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
-          backgroundSize: "20px 20px",
-        }}
-      >
+      <section className="relative w-full px-4 py-10" style={{
+        backgroundColor: "white",
+        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+        backgroundSize: "20px 20px",
+      }}> 
+     
         <div className="max-w-3xl mx-auto rounded-[20px] overflow-hidden bg-[#111111] px-4 py-6">
           <div
             aria-hidden
@@ -442,7 +442,12 @@ export default function ContactUsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="relative min-h-screen bg-white" style={{
+        backgroundColor: "white",
+        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+        backgroundSize: "20px 20px",
+      }}>
+      
       <Navbar />
 
       <motion.main

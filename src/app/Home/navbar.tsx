@@ -6,50 +6,27 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Cloud, Sparkles } from "lucide-react";
+import { Cloud } from "lucide-react";
 
 type NavItem = {
   label: string;
   href?: string;
   active?: boolean;
-  special?: boolean;
 };
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Team", href: "/teams" },
-  { label: "Events", href: "/events" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact Us", href: "/contactus" },
-  { label: "Hack-A-Tron 3.0", href: "/hack-a-tron-3.0", special: true },
+  { label: "Home", href: "/client" },
+  { label: "About", href: "/client/about" },
+  { label: "Team", href: "/client/Teams" },
+  { label: "Events", href: "/client/events" },
+  { label: "Gallery", href: "/client/gallery" },
+  { label: "Contact Us", href: "/client/contactus" },
 ];
 
 export default function Navbar({ className }: { className?: string }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
-
-  // Active helper considers both new routes and legacy /client/* during transition
-  const isActive = (href?: string) => {
-    if (!href || !pathname) return false;
-    const legacy = href === "/" ? "/client" : `/client${href}`;
-    const legacyAlt = href === "/teams" ? "/client/Teams" : undefined;
-    const nested = ["/events", "/teams", "/about", "/gallery", "/contactus"];
-    const isNested = nested.includes(href);
-    if (isNested)
-      return (
-        pathname.startsWith(href) ||
-        pathname.startsWith(legacy) ||
-        (legacyAlt ? pathname.startsWith(legacyAlt) : false)
-      );
-    if (href === "/") return pathname === "/" || pathname === legacy;
-    return (
-      pathname === href ||
-      pathname === legacy ||
-      (legacyAlt ? pathname === legacyAlt : false)
-    );
-  };
 
   React.useEffect(() => {
     function handleResize() {
@@ -71,7 +48,7 @@ export default function Navbar({ className }: { className?: string }) {
           className="flex items-center space-x-4"
         >
           <div className="flex items-center justify-center w-[250px] h-[60px]">
-            <Link href="/">
+            <Link href="/client">
               <motion.img
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -92,7 +69,7 @@ export default function Navbar({ className }: { className?: string }) {
           className="flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2 font-productSans whitespace-nowrap"
         >
           {navItems.map((item, index) => {
-            const active = isActive(item.href);
+            const active = item.href && pathname === item.href;
             return (
               <motion.li
                 key={item.label}
@@ -100,46 +77,23 @@ export default function Navbar({ className }: { className?: string }) {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
               >
-                {item.special ? (
-                  <Link href={item.href ?? "#"} className="relative group">
-                    <motion.span
-                      
-                      whileTap={{ scale: 0.95 }}
-                      className={cn(
-                        "flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-sm transition-all duration-300",
-                        "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
-                        "shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_25px_rgba(251,191,36,0.7)]",
-                        "border-2 border-yellow-300",
-                        active && "ring-2 ring-offset-2 ring-amber-400"
-                      )}
-                    >
-                      <Sparkles className="w-4 h-4 animate-pulse" />
-                      {item.label}
-                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                      </span>
-                    </motion.span>
-                  </Link>
-                ) : (
-                  <Link
-                    href={item.href ?? "#"}
-                    className={cn(
-                      "text-base font-medium font-productSans px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105",
-                      active || item.active
-                        ? "text-white font-bold bg-black shadow-md"
-                        : "text-gray-600 hover:text-black hover:bg-gray-100"
-                    )}
+                <Link
+                  href={item.href ?? "#"}
+                  className={cn(
+                    "text-base font-medium font-productSans px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105",
+                    active || item.active
+                      ? "text-white font-bold bg-black shadow-md"
+                      : "text-gray-600 hover:text-black hover:bg-gray-100"
+                  )}
+                >
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="font-productSans"
                   >
-                    <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="font-productSans"
-                    >
-                      {item.label}
-                    </motion.span>
-                  </Link>
-                )}
+                    {item.label}
+                  </motion.span>
+                </Link>
               </motion.li>
             );
           })}
@@ -163,7 +117,7 @@ export default function Navbar({ className }: { className?: string }) {
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 font-productSans"
             >
-              TIER-1 IN Study Jams <Cloud className="w-4 h-4" />
+               TIER-1 IN Study Jams <Cloud className="w-4 h-4" />
             </motion.span>
           </Link>
         </motion.div>
@@ -181,7 +135,7 @@ export default function Navbar({ className }: { className?: string }) {
           className="flex items-center space-x-4"
         >
           <div className="flex items-center justify-between w-[180px] h-[40px]">
-            <Link href="/">
+            <Link href="/client">
               <motion.img
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -270,7 +224,7 @@ export default function Navbar({ className }: { className?: string }) {
                   className="flex flex-col gap-0 font-productSans"
                 >
                   {navItems.map((item, index) => {
-                    const active = isActive(item.href);
+                    const active = item.href && pathname === item.href;
                     return (
                       <motion.li
                         key={item.label}
@@ -283,9 +237,7 @@ export default function Navbar({ className }: { className?: string }) {
                           href={item.href ?? "#"}
                           className={cn(
                             "block px-4 py-3 font-productSans transition-all duration-300 ease-in-out",
-                            item.special
-                              ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 font-bold"
-                              : active || item.active
+                            active || item.active
                               ? "text-white font-bold bg-black"
                               : "text-stone-950 hover:bg-gray-50"
                           )}
@@ -294,16 +246,8 @@ export default function Navbar({ className }: { className?: string }) {
                           <motion.span
                             whileHover={{ x: 5 }}
                             transition={{ type: "spring", stiffness: 300 }}
-                            className="flex items-center gap-2"
                           >
-                            {item.special && <Sparkles className="w-4 h-4" />}
                             {item.label}
-                            {item.special && (
-                              <span className="ml-auto flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                              </span>
-                            )}
                           </motion.span>
                         </Link>
                       </motion.li>

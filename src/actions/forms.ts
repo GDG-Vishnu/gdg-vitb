@@ -6,6 +6,7 @@ import { UserRole } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import type { Session } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -32,7 +33,7 @@ const updateFormSchema = z.object({
 
 // Helper function to check admin permissions
 async function checkAdminPermissions() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions) as Session | null;
 
   if (!session?.user) {
     redirect("/auth/login");
@@ -56,7 +57,7 @@ async function checkAdminPermissions() {
 
 // Helper function to check if user can view forms (everyone except participants)
 async function checkViewPermissions() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions) as Session | null;
 
   if (!session?.user) {
     redirect("/auth/login");

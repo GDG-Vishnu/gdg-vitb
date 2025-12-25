@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cdn-icons-png.flaticon.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "d2u1z1lopyfwlx.cloudfront.net",
         port: "",
         pathname: "/**",
@@ -36,6 +42,24 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "shutterstock.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ai.google.dev",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.simpleicons.org",
         port: "",
         pathname: "/**",
       },

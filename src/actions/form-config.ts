@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { UserRole, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import type { Session } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -26,7 +27,7 @@ const validateFormSchema = z.object({
 
 // Helper function to check admin permissions
 async function checkAdminPermissions() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions) as Session | null;
 
   if (!session?.user) {
     redirect("/auth/login");

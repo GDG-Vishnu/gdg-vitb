@@ -13,7 +13,7 @@ import {
   Cloud,
   Calendar,
 } from "lucide-react";
-import { useSession, signOut } from "next-auth/react";
+// Auth removed: no session or signOut
 import { useRouter } from "next/navigation";
 import Logo from "@/assets/Logo.webp";
 
@@ -177,7 +177,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state, toggleSidebar } = useSidebar();
-  const { data: session } = useSession();
+  const session = null as any;
   const router = useRouter();
   const isCollapsed = state === "collapsed";
   const searchInputRef = React.useRef<HTMLInputElement>(null);
@@ -199,17 +199,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     toggleSidebar();
   };
 
-  const handleLogout = async () => {
-    try {
-      await signOut({
-        callbackUrl: "/auth/login",
-        redirect: true,
-      });
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Logout error:", error);
-      router.push("/");
-    }
+  const handleLogout = () => {
+    router.push("/");
   };
 
   // Fallback user data if session is not available
