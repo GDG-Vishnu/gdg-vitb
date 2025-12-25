@@ -556,10 +556,10 @@ const HackATron3Page = () => {
             <button
               onClick={handleRegistration}
               className="px-8 py-4 text-lg font-semibold rounded-4xl transition-all duration-300 hover:scale-105 flex items-center"
-              style={{
-                backgroundColor: colors.yellowOrange,
-                color: colors.ogre,
-                border: `2px solid ${colors.yellowOrange}`,
+             style={{
+                backgroundColor: `${colors.cornflower}20`,
+                color: colors.cornflower,
+                borderColor: `${colors.cornflower}60`,
               }}
             >
               {isRegistered ? (
