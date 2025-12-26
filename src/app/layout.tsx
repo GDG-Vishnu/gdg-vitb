@@ -23,8 +23,8 @@ const redHatDisplay = Red_Hat_Display({
 });
 
 export const metadata: Metadata = {
-  title: "GDG Vishnu App",
-  description: "GDG VishnuApplication",
+  title: "GDG VITB ",
+  description: "GDG On Campus Vishnu IInstitute of Technology, Bhimavaram",
 };
 
 export default function RootLayout({
