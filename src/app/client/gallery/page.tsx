@@ -22,26 +22,110 @@ const sampleGalleryItems: GalleryItem[] = [
   {
     id: 1,
     imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/cdwplwcgzswuzt6dmvyh.jpg",
-    uploadedAt: "2025-12-19",
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732214/hbudu4fnafntixujeozk.jpg",
+    uploadedAt: "2025-12-26",
   },
   {
     id: 2,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732855/uqnjprkr73n57j1rsnmt.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 3,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/jalxke80kptiayk9lfot.jpg",
     uploadedAt: "2025-12-19",
   },
   {
-    id: 3,
+    id: 4,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732877/pc9yoqajyv3o8of9oj7o.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 5,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732866/rkk466mczmupxfj3ct1t.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 6,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/hegcgmel1d7ionmjnpg1.jpg",
     uploadedAt: "2025-12-19",
   },
   {
-    id: 4,
+    id: 7,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732852/hbrjwld85k359b4gu894.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 8,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732878/rspee4puxidyx1e2i8mw.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 9,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732591/pevnxi9hwhx7j3bzdssu.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 10,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732871/to3qfaitbefngk4zu7b8.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 11,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766731850/jeix8tecdqhy1colnu5i.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 12,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732206/gayyldq0jxepnlgil36r.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 13,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/xrehxswonqbmlwn3cbg5.jpg",
     uploadedAt: "2025-12-19",
+  },
+  {
+    id: 14,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732592/os5brwvk4vaxf98ezlss.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 15,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732877/ztu9zsmmtp0isug5uhk7.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 16,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766121072/cdwplwcgzswuzt6dmvyh.jpg",
+    uploadedAt: "2025-12-19",
+  },
+  {
+    id: 17,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732856/j9zkfmsglel7pkhmr3vp.jpg",
+    uploadedAt: "2025-12-26",
+  },
+  {
+    id: 18,
+    imageUrl:
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732878/rspee4puxidyx1e2i8mw.jpg",
+    uploadedAt: "2025-12-26",
   },
 ];
 
