@@ -633,8 +633,7 @@ const HomePage = () => {
         </motion.div>
         {/* Events carousel component insertion */}
         <Events />
-        {/* Admin button n check if the user is logged in */}
-        ``
+        {/* Admin button n check if the user is logged in - removed stray characters above */}
       </motion.div>
 
       {/* FAQs section */}
@@ -643,6 +642,7 @@ const HomePage = () => {
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
+        className="mt-0"
       >
         <FAQs />
       </motion.div>
