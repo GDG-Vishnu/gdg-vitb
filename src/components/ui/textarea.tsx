@@ -9,8 +9,9 @@ type TextareaProps = React.ComponentProps<"textarea"> & {
 };
 
 function Textarea({ className, style, ...props }: TextareaProps) {
+  // Only apply style properties if provided. Do not force a default color here
+  // so that utility classes like `text-white` can control the textarea text color.
   const mergedStyle: React.CSSProperties = {
-    color: style?.color || "#111827",
     ...(style || {}),
   };
 

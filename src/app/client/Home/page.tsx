@@ -461,10 +461,8 @@ const HomePage = () => {
           </motion.div>
         </motion.div>
         <motion.img
-          initial={{ y: 50, opacity: 0, scale: 0.9 }}
-          animate={{ y: 0, opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          whileHover={{ scale: 1.02 }}
+         
+     
           className="block mb-0  h-auto object-contain px-2 sm:px-4 lg:px-0"
           src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851689/Main_Gate_rlrbwg.png"
           alt="Main Gate"
@@ -475,7 +473,7 @@ const HomePage = () => {
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, margin: "" }}
           transition={{ duration: 0.8 }}
-          className=" mb-[30px] "
+          className="-mt-16 mb-[30px]"
         >
           <AboutSection />
         </motion.div>

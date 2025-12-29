@@ -33,7 +33,7 @@ const updateFormSchema = z.object({
 
 // Helper function to check admin permissions
 async function checkAdminPermissions() {
-  const session = await getServerSession(authOptions) as Session | null;
+  const session = (await getServerSession(authOptions)) as Session | null;
 
   if (!session?.user) {
     redirect("/auth/login");
@@ -57,7 +57,7 @@ async function checkAdminPermissions() {
 
 // Helper function to check if user can view forms (everyone except participants)
 async function checkViewPermissions() {
-  const session = await getServerSession(authOptions) as Session | null;
+  const session = (await getServerSession(authOptions)) as Session | null;
 
   if (!session?.user) {
     redirect("/auth/login");

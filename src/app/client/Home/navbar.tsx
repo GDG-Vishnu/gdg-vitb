@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect, JSX } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -25,13 +24,17 @@ const navItems: NavItem[] = [
   { label: "Hack-A-Tron 3.0", href: "/hack-a-tron-3.0", special: true },
 ];
 
-export default function Navbar({ className }: { className?: string }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+interface NavbarProps {
+  className?: string;
+}
+
+export default function Navbar({ className }: NavbarProps) {
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isTablet, setIsTablet] = useState<boolean>(false);
   const pathname = usePathname();
 
-  // Active helper considers both new routes and legacy /client/* during transition
-  const isActive = (href?: string) => {
+  const isActive = (href?: string): boolean => {
     if (!href || !pathname) return false;
     const legacy = href === "/" ? "/client" : `/client${href}`;
     const legacyAlt = href === "/teams" ? "/client/Teams" : undefined;
@@ -51,90 +54,90 @@ export default function Navbar({ className }: { className?: string }) {
     );
   };
 
-  React.useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) setMobileOpen(false);
+  useEffect(() => {
+    function handleResize(): void {
+      const w = window.innerWidth;
+      setIsMobile(w < 768);
+      setIsTablet(w >= 768 && w < 1024);
+      if (w >= 768) setMobileOpen(false);
     }
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  function renderDesktop() {
-    return (
-      <>
-        <motion.div
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center space-x-4"
-        >
-          <div className="flex items-center justify-center w-[250px] h-[60px]">
-            <Link href="/">
-              <motion.img
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                whileHover={{ scale: 1.05 }}
-                src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1764661579/GDG_Insta_Post_1_1_pungg0.png"
-                alt="GDG VITB"
-                className="h-[60px] w-[300px] object-contain"
-              />
-            </Link>
-          </div>
-        </motion.div>
+  const renderTablet = (): JSX.Element => (
+    <div className="flex items-center w-full gap-3 lg:gap-4">
+      <motion.div
+        initial={{ x: -30, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.45 }}
+        className="flex-shrink-0"
+      >
+        <Link href="/">
+          <motion.img
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.08 }}
+            whileHover={{ scale: 1.03 }}
+            src="https://res.cloudinary.com/dlupkibvq/image/upload/v1766897167/kshzwc2xey0wu6ce5aci.png"
+            alt="GDG VITB"
+            width={140}
+            height={45}
+            className="h-11 lg:h-12 w-auto object-contain"
+          />
+        </Link>
+      </motion.div>
 
+      <div className="flex-1 flex justify-center overflow-x-auto no-scrollbar">
         <motion.ul
-          initial={{ y: -20, opacity: 0 }}
+          initial={{ y: -8, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2 font-productSans whitespace-nowrap"
+          transition={{ duration: 0.45, delay: 0.12 }}
+          className="flex items-center gap-2 lg:gap-3 w-full max-w-[900px] px-3 lg:px-4 font-productSans"
+          style={{ WebkitOverflowScrolling: "touch" }}
         >
           {navItems.map((item, index) => {
             const active = isActive(item.href);
             return (
               <motion.li
                 key={item.label}
-                initial={{ y: -20, opacity: 0 }}
+                initial={{ y: -6, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+                transition={{ duration: 0.32, delay: 0.15 + index * 0.05 }}
+                className="whitespace-nowrap"
               >
                 {item.special ? (
-                  <Link href={item.href ?? "#"} className="relative group">
+                  <Link
+                    href={item.href ?? "#"}
+                    className="relative inline-block"
+                  >
                     <motion.span
-                      
-                      whileTap={{ scale: 0.95 }}
+                      whileTap={{ scale: 0.96 }}
                       className={cn(
-                        "flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-sm transition-all duration-300",
+                        "inline-flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full text-sm lg:text-base font-semibold transition-all duration-200",
                         "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
-                        "shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_25px_rgba(251,191,36,0.7)]",
-                        "border-2 border-yellow-300",
-                        active && "ring-2 ring-offset-2 ring-amber-400"
+                        "shadow-md hover:shadow-lg",
+                        active && "ring-1 ring-amber-300"
                       )}
                     >
-                      <Sparkles className="w-4 h-4 animate-pulse" />
+                      <Sparkles className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                       {item.label}
-                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                      </span>
                     </motion.span>
                   </Link>
                 ) : (
                   <Link
                     href={item.href ?? "#"}
                     className={cn(
-                      "text-base font-medium font-productSans px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105",
+                      "inline-block text-sm lg:text-base font-medium px-3 lg:px-4 py-2 rounded-lg transition-colors duration-200",
                       active || item.active
                         ? "text-white font-bold bg-black shadow-md"
-                        : "text-gray-600 hover:text-black hover:bg-gray-100"
+                        : "text-gray-700 hover:text-black hover:bg-gray-100"
                     )}
                   >
                     <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="font-productSans"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.96 }}
                     >
                       {item.label}
                     </motion.span>
@@ -144,114 +147,201 @@ export default function Navbar({ className }: { className?: string }) {
             );
           })}
         </motion.ul>
+      </div>
 
-        {/* TIER-1 Study Jams Badge */}
-        <motion.div
-          initial={{ x: 50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex items-center"
+      <motion.div
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.45, delay: 0.16 }}
+        className="flex-shrink-0"
+      >
+        <Link
+          href="https://study-jams-dashboard-ecru.vercel.app/achieved-tier-1"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-3 lg:px-4 py-2 bg-stone-900 text-white text-xs lg:text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200"
         >
-          <Link
-            href="https://study-jams-dashboard-ecru.vercel.app/achieved-tier-1"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 bg-stone-900 text-white font-bold text-sm rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-productSans"
-          >
-            <motion.span
+          <span className="flex items-center gap-1.5">
+            <Cloud className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+            TIER-1
+          </span>
+        </Link>
+      </motion.div>
+    </div>
+  );
+
+  const renderDesktop = (): JSX.Element => (
+    <>
+      <motion.div
+        initial={{ x: -50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="flex items-center space-x-4"
+      >
+        <div className="flex items-center justify-center w-[250px] h-[60px]">
+          <Link href="/">
+            <motion.img
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 font-productSans"
-            >
-              TIER-1 IN Study Jams <Cloud className="w-4 h-4" />
-            </motion.span>
+              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1766903285/vqbqthkdildhpgbtocgp.png"
+              alt="GDG VITB"
+              width={300}
+              height={60}
+              className="h-[60px] w-[300px] object-contain"
+            />
           </Link>
-        </motion.div>
-      </>
-    );
-  }
+        </div>
+      </motion.div>
 
-  function renderMobile() {
-    return (
-      <>
-        <motion.div
-          initial={{ x: -30, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center space-x-4"
+      <motion.ul
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2 font-productSans whitespace-nowrap"
+      >
+        {navItems.map((item, index) => {
+          const active = isActive(item.href);
+          return (
+            <motion.li
+              key={item.label}
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+            >
+              {item.special ? (
+                <Link href={item.href ?? "#"} className="relative group">
+                  <motion.span
+                    whileTap={{ scale: 0.95 }}
+                    className={cn(
+                      "flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-sm transition-all duration-300",
+                      "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
+                      "shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_25px_rgba(251,191,36,0.7)]",
+                      "border-2 border-yellow-300",
+                      active && "ring-2 ring-offset-2 ring-amber-400"
+                    )}
+                  >
+                    <Sparkles className="w-4 h-4 animate-pulse" />
+                    {item.label}
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                  </motion.span>
+                </Link>
+              ) : (
+                <Link
+                  href={item.href ?? "#"}
+                  className={cn(
+                    "text-base font-medium font-productSans px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105",
+                    active || item.active
+                      ? "text-white font-bold bg-black shadow-md"
+                      : "text-gray-600 hover:text-black hover:bg-gray-100"
+                  )}
+                >
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="font-productSans"
+                  >
+                    {item.label}
+                  </motion.span>
+                </Link>
+              )}
+            </motion.li>
+          );
+        })}
+      </motion.ul>
+    </>
+  );
+
+  const renderMobile = (): JSX.Element => (
+    <>
+      <motion.div
+        initial={{ x: -30, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center space-x-4"
+      >
+        <div className="flex items-center justify-between w-[180px] h-[40px]">
+          <Link href="/">
+            <motion.img
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              whileHover={{ scale: 1.05 }}
+              src="https://res.cloudinary.com/dlupkibvq/image/upload/v1766919662/Logo_udgpps.png"
+              alt="GDG VITB"
+              width={180}
+              height={40}
+              className="h-6 w-auto object-contain"
+            />
+          </Link>
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ x: 30, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="ml-auto flex items-center gap-2"
+      >
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="p-2 rounded-md border flex items-center justify-center transition-all duration-200 ease-in-out hover:bg-gray-50"
+          aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+          onClick={() => setMobileOpen(!mobileOpen)}
         >
-          <div className="flex items-center justify-between w-[180px] h-[40px]">
-            <Link href="/">
-              <motion.img
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760630856/GDG-Lockup-1Line-White_3_1_ed5gem.png"
-                alt="GDG VITB"
-                className="h-6 w-auto object-contain"
-              />
-            </Link>
-          </div>
-        </motion.div>{" "}
-        {/* Added proper closing tag here */}
-        <motion.div
-          initial={{ x: 30, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="ml-auto flex items-center gap-2"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="p-2 rounded-md border flex items-center justify-center transition-all duration-200 ease-in-out hover:bg-gray-50"
-            aria-label="Toggle menu"
-            aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            <span className="flex flex-col justify-center items-center gap-1">
-              <span
-                className={cn(
-                  "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
-                  mobileOpen ? "translate-y-1 rotate-45" : ""
-                )}
-              />
-              <span
-                className={cn(
-                  "block w-6 h-0.5 bg-stone-950 transition-opacity duration-200",
-                  mobileOpen ? "opacity-0" : "opacity-100"
-                )}
-              />
-              <span
-                className={cn(
-                  "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
-                  mobileOpen ? "-translate-y-1 -rotate-45" : ""
-                )}
-              />
-            </span>
-          </motion.button>
-        </motion.div>
-      </>
-    );
-  }
+          <span className="flex flex-col justify-center items-center gap-1">
+            <span
+              className={cn(
+                "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
+                mobileOpen ? "translate-y-1 rotate-45" : ""
+              )}
+            />
+            <span
+              className={cn(
+                "block w-6 h-0.5 bg-stone-950 transition-opacity duration-200",
+                mobileOpen ? "opacity-0" : "opacity-100"
+              )}
+            />
+            <span
+              className={cn(
+                "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
+                mobileOpen ? "-translate-y-1 -rotate-45" : ""
+              )}
+            />
+          </span>
+        </motion.button>
+      </motion.div>
+    </>
+  );
+
   return (
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-      className={cn("w-full flex justify-center py-6 px-4", className)}
+      className={cn("w-full flex justify-center py-4 px-4", className)}
     >
       <motion.nav
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         whileHover={{ y: -2 }}
-        className="w-full bg-white rounded-[40px] border border-black shadow-md px-6 py-2 md:py-3.5 flex items-center justify-between mx-4 relative font-productSans"
+        className="w-full bg-white rounded-[40px] border border-black shadow-md px-4 py-2 md:py-3 flex items-center justify-between mx-4 relative font-productSans"
         style={{
           boxShadow: "0 8px 0 rgba(0,0,0,0.08), 0 4px 14px rgba(0,0,0,0.06)",
         }}
       >
-        {isMobile ? renderMobile() : renderDesktop()}
+        {isMobile
+          ? renderMobile()
+          : isTablet
+          ? renderTablet()
+          : renderDesktop()}
 
         <AnimatePresence>
           {isMobile && mobileOpen && (

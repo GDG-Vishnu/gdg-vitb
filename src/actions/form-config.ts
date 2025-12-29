@@ -27,7 +27,7 @@ const validateFormSchema = z.object({
 
 // Helper function to check admin permissions
 async function checkAdminPermissions() {
-  const session = await getServerSession(authOptions) as Session | null;
+  const session = (await getServerSession(authOptions)) as Session | null;
 
   if (!session?.user) {
     redirect("/auth/login");

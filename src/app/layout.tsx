@@ -23,8 +23,8 @@ const redHatDisplay = Red_Hat_Display({
 });
 
 export const metadata: Metadata = {
-  title: "GDG VITB ",
-  description: "GDG On Campus Vishnu IInstitute of Technology, Bhimavaram",
+  title: "GDG VITB",
+  description: "GDG On Campus at Vishnu Institute of Technology , Bhimavaram is a  student driven community that incubates student ideas from prototyping to product development with full technical and other support , and conducting hackathons , workshops in different aspects in technical knowledge .It's not just a normal club , it is an student driven and engaged community",
 };
 
 export default function RootLayout({

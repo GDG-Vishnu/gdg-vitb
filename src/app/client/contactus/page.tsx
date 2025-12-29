@@ -103,7 +103,7 @@ export default function ContactUsPage() {
               aria-hidden
               className="absolute inset-0"
               style={{
-                backgroundImage: `radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)`,
+                backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)`,
                 backgroundSize: "20px 20px, 40px 40px",
                 backgroundPosition: "0 0, 10px 10px",
                 opacity: 1,
@@ -185,12 +185,7 @@ export default function ContactUsPage() {
                         href="#"
                         className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                       >
-                        <Github className="w-5 h-5 text-white" />
-                      </a>
-                      <a
-                        href="#"
-                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-                      >
+                        
                         <Linkedin className="w-5 h-5 text-white" />
                       </a>
                       <a
@@ -279,7 +274,7 @@ export default function ContactUsPage() {
             aria-hidden
             className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)`,
+              backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px), radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px)`,
               backgroundSize: "20px 20px, 40px 40px",
               backgroundPosition: "0 0, 10px 10px",
               opacity: 1,

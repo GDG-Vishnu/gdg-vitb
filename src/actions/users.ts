@@ -10,7 +10,7 @@ import type { Session } from "next-auth";
 export async function getAllUsers() {
   try {
     // Check if user is authenticated and has admin privileges
-    const session = await getServerSession(authOptions) as Session | null;
+    const session = (await getServerSession(authOptions)) as Session | null;
 
     if (!session?.user) {
       redirect("/auth/login");
@@ -64,7 +64,7 @@ export async function getAllUsers() {
 
 export async function getUsersCount() {
   try {
-    const session = await getServerSession(authOptions) as Session | null;
+    const session = (await getServerSession(authOptions)) as Session | null;
 
     if (!session?.user) {
       return { success: false, error: "Unauthorized" };
@@ -118,7 +118,7 @@ export async function getUsersCount() {
 
 export async function updateUserRole(userId: string, newRole: UserRole) {
   try {
-    const session = await getServerSession(authOptions) as Session | null;
+    const session = (await getServerSession(authOptions)) as Session | null;
 
     if (!session?.user) {
       return { success: false, error: "Unauthorized" };

@@ -69,7 +69,7 @@ const moveFieldSchema = z.object({
 
 // Helper function to check admin permissions
 async function checkAdminPermissions() {
-  const session = await getServerSession(authOptions) as Session | null;
+  const session = (await getServerSession(authOptions)) as Session | null;
 
   if (!session?.user) {
     redirect("/auth/login");
@@ -521,7 +521,7 @@ function getFieldTypeDescription(type: FieldType): string {
     [FieldType.SIGNATURE]: "Digital signature",
     [FieldType.SLIDER]: "Range slider input",
     [FieldType.TAGS]: "Tag input",
-    EMAIL: ""
+    EMAIL: "",
   };
 
   return descriptions[type] || "Unknown field type";
@@ -559,7 +559,7 @@ function getFieldTypeValidation(type: FieldType): string[] {
     [FieldType.SIGNATURE]: ["required"],
     [FieldType.SLIDER]: ["required", "min", "max", "step"],
     [FieldType.TAGS]: ["required", "minItems", "maxItems"],
-    EMAIL: []
+    EMAIL: [],
   };
 
   return validationMap[type] || ["required"];

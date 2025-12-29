@@ -9,8 +9,9 @@ type InputProps = React.ComponentProps<"input"> & {
 };
 
 function Input({ className, type, style, ...props }: InputProps) {
+  // Only apply style properties if provided. Do not force a default color here
+  // so that utility classes like `text-white` can control the input text color.
   const mergedStyle: React.CSSProperties = {
-    color: style?.color || "#111827",
     ...(style || {}),
   };
 
