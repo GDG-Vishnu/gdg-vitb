@@ -26,7 +26,7 @@ export default function Footer() {
           {/* Center: boxed sections */}
           <div className="flex-1 flex items-center justify-center w-full">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 w-full max-w-[924px] md:h-[156px] px-2 md:px-[56px] py-4 text-sm text-gray-300">
-              <div className="border p-3 md:p-4 flex flex-col items-center justify-center border-[#C3ECF6] rounded-lg md:rounded-none">
+              <div className="border p-3 md:p-4 flex flex-col items-center justify-center border-[#C3ECF6] rounded-lg md:rounded-none mt-2">
                 <h2 className="text-[#C3ECF6] text-3xl md:text-2xl font-medium font-productSans text-center">
                   © 2025 GDG VITB.
                 </h2>

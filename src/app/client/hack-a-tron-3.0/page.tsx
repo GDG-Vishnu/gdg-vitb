@@ -6,8 +6,8 @@ import Image from "next/image";
 import { Cinzel } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { Clock, Star, CheckCircle, ChevronRight } from "lucide-react";
-import RegistrationCard from "./components/RegistrationCard";
-
+import RegistrationCard from "@/components/RegistrationCard";
+import Navbar from "@/app/client/Home/navbar";
 // Harry Potter-esque display font (must be module-scoped for Next.js)
 const hpFont = Cinzel({ subsets: ["latin"], weight: ["700", "900"] });
 
@@ -373,64 +373,7 @@ const HackATron3Content = () => {
           }}
         />
 
-        {/* Magical Navbar */}
-        <motion.nav
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="sticky top-0 left-0 right-0 z-50 flex justify-center"
-        >
-          <div
-            className="mx-4 mt-4 rounded-2xl border shadow-2xl backdrop-blur-md max-w-4xl w-full"
-            style={{
-              backgroundColor: `${colors.ogre}E8`,
-              borderColor: `${colors.yellowOrange}40`,
-              boxShadow: `0 4px 30px ${colors.yellowOrange}20`,
-            }}
-          >
-            <div className="mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between h-16">
-                {/* Logo */}
-                <motion.div
-                  className="flex items-center space-x-3"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="hidden sm:block ">
-                    <p
-                      className={`${hpFont.className} text-lg font-bold tracking-wide`}
-                      style={{ color: colors.yellowOrange }}
-                    >
-                      HACK-A-TRON
-                    </p>
-                    <p
-                      className="text-xs"
-                      style={{ color: colors.spaceStation }}
-                    >
-                      3.0
-                    </p>
-                  </div>
-                </motion.div>
-
-                {/* CTA Button */}
-                <motion.button
-                  onClick={openRegistrationCard}
-                  whileHover={{
-                    scale: 1.03,
-                  }}
-                  whileTap={{ scale: 0.97 }}
-                  className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center space-x-2"
-                  style={{
-                    backgroundColor: colors.yellowOrange,
-                    color: colors.ogre,
-                  }}
-                >
-                  <span>Register</span>
-                  <ChevronRight className="w-4 h-4" />
-                </motion.button>
-              </div>
-            </div>
-          </div>
-        </motion.nav>
+        <Navbar />
 
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 px-4">
