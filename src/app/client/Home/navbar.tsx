@@ -67,7 +67,7 @@ export default function Navbar({ className }: NavbarProps) {
   }, []);
 
   const renderTablet = (): JSX.Element => (
-    <div className="flex items-center w-full gap-3 lg:gap-4">
+    <div className="flex items-center justify-between w-full gap-3 lg:gap-4">
       <motion.div
         initial={{ x: -30, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -176,7 +176,7 @@ export default function Navbar({ className }: NavbarProps) {
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="flex items-center space-x-4"
+        className="flex items-center justify-start flex-shrink-0"
       >
         <div className="flex items-center justify-center w-[250px] h-[60px]">
           <Link href="/">
@@ -199,7 +199,7 @@ export default function Navbar({ className }: NavbarProps) {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2 font-productSans whitespace-nowrap"
+        className="flex items-center gap-6 ml-auto mr-auto font-productSans whitespace-nowrap"
       >
         {navItems.map((item, index) => {
           const active = isActive(item.href);

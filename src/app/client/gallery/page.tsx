@@ -5,13 +5,13 @@ import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
 import { Camera, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
-// LightGallery integration
-import LightGallery from "lightgallery/react";
-import lgThumbnail from "lightgallery/plugins/thumbnail";
-import lgZoom from "lightgallery/plugins/zoom";
-import "lightgallery/css/lightgallery.css";
-import "lightgallery/css/lg-thumbnail.css";
-import "lightgallery/css/lg-zoom.css";
+import Lightbox from "yet-another-react-lightbox";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import NextJsImage from "@/components/NextJsImage";
+import Image from "next/image";
 type GalleryItem = {
   id: number;
   imageUrl: string;
@@ -132,6 +132,8 @@ const sampleGalleryItems: GalleryItem[] = [
 function Gallery() {
   const [galleryItems, setGalleryItems] =
     useState<GalleryItem[]>(sampleGalleryItems);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   return (
     <div
@@ -177,28 +179,41 @@ function Gallery() {
               </p>
             </div>
           ) : (
-            <div className="hide-scrollbar">
-              <LightGallery speed={500} plugins={[lgThumbnail, lgZoom]}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {galleryItems.map((item) => (
-                    <a
-                      href={item.imageUrl}
-                      key={item.id}
-                      className="overflow-hidden rounded-lg block lg-trigger"
-                      data-src={item.imageUrl}
-                      data-lg-size="1600-900"
-                      data-sub-html={`<h4>Uploaded: ${item.uploadedAt}</h4>`}
-                    >
-                      <img
-                        src={item.imageUrl}
-                        alt={`Gallery image ${item.id}`}
-                        className="w-full h-60 object-cover"
-                      />
-                    </a>
-                  ))}
-                </div>
-              </LightGallery>
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {galleryItems.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="overflow-hidden rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => {
+                      setLightboxIndex(index);
+                      setLightboxOpen(true);
+                    }}
+                  >
+                    <Image
+                      src={item.imageUrl}
+                      alt={`Gallery image ${item.id}`}
+                      width={400}
+                      height={300}
+                      className="w-full h-60 object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <Lightbox
+                open={lightboxOpen}
+                close={() => setLightboxOpen(false)}
+                index={lightboxIndex}
+                slides={galleryItems.map((item) => ({
+                  src: item.imageUrl,
+                  width: 1600,
+                  height: 900,
+                }))}
+                plugins={[Thumbnails,]}
+                render={{ slide: NextJsImage }}
+              />
+            </>
           )}
         </div>
       </main>

@@ -82,6 +82,7 @@
     "timescape": "^0.8.0",
     "use-debounce": "^10.0.6",
     "vaul": "^1.1.2",
+    "yet-another-react-lightbox": "^3.28.0",
     "zod": "^3.25.76",
     "zod-to-json-schema": "^3.24.6"
   },
