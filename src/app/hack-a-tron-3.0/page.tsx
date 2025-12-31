@@ -7,6 +7,7 @@ import { Cinzel } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { Clock, Star, CheckCircle, ChevronRight } from "lucide-react";
 import RegistrationCard from "@/components/RegistrationCard";
+import Navbar from "@/app/Home/navbar";
 // Harry Potter-esque display font (must be module-scoped for Next.js)
 const hpFont = Cinzel({ subsets: ["latin"], weight: ["700", "900"] });
 
@@ -255,7 +256,7 @@ const HackATron3Content = () => {
                 <h2
                   className={`${hpFont.className} text-2xl sm:text-3xl md:text-4xl font-extrabold text-yellow-300 drop-shadow-[0_0_6px_rgba(255,184,3,0.5)]`}
                 >
-                  Registration closes by
+                  EVENT COUNTDOWN
                 </h2>
                 <Star className="h-5 w-5 text-yellow-400" />
               </div>
@@ -372,64 +373,8 @@ const HackATron3Content = () => {
           }}
         />
 
-        {/* Magical Navbar */}
-        <motion.nav
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="sticky top-0 left-0 right-0 z-50 flex justify-center"
-        >
-          <div
-            className="mx-4 mt-4 rounded-2xl border shadow-2xl backdrop-blur-md max-w-4xl w-full"
-            style={{
-              backgroundColor: `${colors.ogre}E8`,
-              borderColor: `${colors.yellowOrange}40`,
-              boxShadow: `0 4px 30px ${colors.yellowOrange}20`,
-            }}
-          >
-            <div className="mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between h-16">
-                {/* Logo */}
-                <motion.div
-                  className="flex items-center space-x-3"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="hidden sm:block ">
-                    <p
-                      className={`${hpFont.className} text-lg font-bold tracking-wide`}
-                      style={{ color: colors.yellowOrange }}
-                    >
-                      HACK-A-TRON
-                    </p>
-                    <p
-                      className="text-xs"
-                      style={{ color: colors.spaceStation }}
-                    >
-                      3.0
-                    </p>
-                  </div>
-                </motion.div>
-
-                {/* CTA Button */}
-                <motion.button
-                  onClick={openRegistrationCard}
-                  whileHover={{
-                    scale: 1.03,
-                  }}
-                  whileTap={{ scale: 0.97 }}
-                  className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center space-x-2"
-                  style={{
-                    backgroundColor: colors.yellowOrange,
-                    color: colors.ogre,
-                  }}
-                >
-                  <span>Register</span>
-                  <ChevronRight className="w-4 h-4" />
-                </motion.button>
-              </div>
-            </div>
-          </div>
-        </motion.nav>
+        {/* Navbar */}
+        <Navbar />
 
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 px-4">
@@ -526,53 +471,12 @@ const HackATron3Content = () => {
             </div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 mt-6 justify-center items-center"
-            >
-              <motion.button
-                onClick={openRegistrationCard}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 flex items-center gap-3"
-                style={{
-                  backgroundColor: colors.yellowOrange,
-                  color: colors.ogre,
-                }}
-              >
-                <span>Register Now</span>
-                {isRegistered ? (
-                  <CheckCircle className="w-5 h-5" />
-                ) : (
-                  <ChevronRight className="w-5 h-5" />
-                )}
-              </motion.button>
-            </motion.div>
-
-            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
               className="mt-8 flex flex-wrap justify-center gap-3"
             >
-              <div
-                className="px-4 py-2 rounded-full border"
-                style={{
-                  backgroundColor: `${colors.yellowOrange}20`,
-                  color: colors.yellowOrange,
-                  borderColor: `${colors.yellowOrange}60`,
-                }}
-              >
-                <Image
-                  src="https://cdn-icons-png.flaticon.com/128/2088/2088617.png"
-                  alt="Clock"
-                  width={16}
-                  height={16}
-                  className="inline mr-2"
-                />
-                Register by {hackathonDetails.registrationDeadline}
-              </div>
+         
             </motion.div>
           </div>
         </section>
