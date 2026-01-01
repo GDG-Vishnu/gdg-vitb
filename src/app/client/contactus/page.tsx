@@ -3,12 +3,11 @@
 import { motion } from "framer-motion";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
-import { MapPin, Mail, Phone, Github, Linkedin, Instagram } from "lucide-react";
+import { MapPin, Mail, Linkedin, Instagram } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -91,12 +90,14 @@ export default function ContactUsPage() {
 
   function renderDesktop() {
     return (
-      <section className="relative w-full px-4 py-10 bg-white" style={{
-        backgroundColor: "white",
-        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
-        backgroundSize: "20px 20px",
-      }}>
-     
+      <section
+        className="relative w-full px-4 py-10 bg-white"
+        style={{
+          backgroundColor: "white",
+          backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
+      >
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14">
           <div className="relative rounded-[32px]">
             <div
@@ -185,7 +186,6 @@ export default function ContactUsPage() {
                         href="#"
                         className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                       >
-                        
                         <Linkedin className="w-5 h-5 text-white" />
                       </a>
                       <a
@@ -263,12 +263,14 @@ export default function ContactUsPage() {
 
   function renderMobile() {
     return (
-      <section className="relative w-full px-4 py-10" style={{
-        backgroundColor: "white",
-        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
-        backgroundSize: "20px 20px",
-      }}> 
-     
+      <section
+        className="relative w-full px-4 py-10"
+        style={{
+          backgroundColor: "white",
+          backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
+      >
         <div className="max-w-3xl mx-auto rounded-[20px] overflow-hidden bg-[#111111] px-4 py-6">
           <div
             aria-hidden
@@ -331,20 +333,6 @@ export default function ContactUsPage() {
                     </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-white font-productSans font-medium text-sm">
-                      Phone
-                    </p>
-                    <p className="text-stone-300 font-productSans text-xs">
-                      +91 98765 43210
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* Social Links */}
@@ -353,12 +341,6 @@ export default function ContactUsPage() {
                   Follow Us
                 </h4>
                 <div className="flex gap-3">
-                  <a
-                    href="#"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-                  >
-                    <Github className="w-4 h-4 text-white" />
-                  </a>
                   <a
                     href="#"
                     className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
@@ -437,12 +419,14 @@ export default function ContactUsPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-white" style={{
+    <div
+      className="relative min-h-screen bg-white"
+      style={{
         backgroundColor: "white",
         backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
         backgroundSize: "20px 20px",
-      }}>
-      
+      }}
+    >
       <Navbar />
 
       <motion.main

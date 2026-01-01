@@ -125,6 +125,7 @@ function EventCard({ event }: { event: Event }) {
               maxHeight: "100%",
               objectFit: "cover",
               borderRadius: 50,
+              
             }}
           />
         </div>

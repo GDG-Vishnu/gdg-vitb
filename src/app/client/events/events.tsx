@@ -159,12 +159,12 @@ function EventCard({ event }: { event: EventItem }) {
           className="flex items-center justify-center overflow-hidden bg-transparent w-full"
           style={{ flex: 1 }}
         >
-         <Image
-  src={event.imageUrl}
-  alt={event.title}
-  width={600}   // required: set width
-  height={400}  // required: set height
-  className="
+          <Image
+            src={event.imageUrl}
+            alt={event.title}
+            width={600} // required: set width
+            height={400} // required: set height
+            className="
     w-full max-w-xs        /* mobile */
     sm:max-w-sm
     md:max-w-md
@@ -172,8 +172,7 @@ function EventCard({ event }: { event: EventItem }) {
     xl:max-w-xl
     h-auto object-contain
   "
-/>
-
+          />
         </div>
       )}
 
@@ -271,14 +270,13 @@ function EventCardMobile({ event }: { event: EventItem }) {
             justifyContent: "center",
             backgroundColor: "transparent",
             overflow: "hidden",
+            padding: 10,
           }}
         >
           <Image
             src={event.imageUrl}
             alt={event.title}
             style={{
-              maxWidth: "100%",
-              maxHeight: "100%",
               objectFit: "contain",
             }}
           />

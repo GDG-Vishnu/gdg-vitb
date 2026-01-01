@@ -38,7 +38,14 @@ export default function Navbar({ className }: NavbarProps) {
     if (!href || !pathname) return false;
     const legacy = href === "/" ? "/client" : `/client${href}`;
     const legacyAlt = href === "/teams" ? "/client/Teams" : undefined;
-    const nested = ["/events", "/teams", "/about", "/gallery", "/contactus", "/hack-a-tron-3.0"];
+    const nested = [
+      "/events",
+      "/teams",
+      "/about",
+      "/gallery",
+      "/contactus",
+      "/hack-a-tron-3.0",
+    ];
     const isNested = nested.includes(href);
     if (isNested)
       return (
@@ -57,9 +64,9 @@ export default function Navbar({ className }: NavbarProps) {
   useEffect(() => {
     function handleResize(): void {
       const w = window.innerWidth;
-      setIsMobile(w < 768);
-      setIsTablet(w >= 768 && w < 1024);
-      if (w >= 768) setMobileOpen(false);
+      setIsMobile(w < 1024);
+      setIsTablet(w >= 1024 && w < 1280);
+      if (w >= 1024) setMobileOpen(false);
     }
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -89,13 +96,12 @@ export default function Navbar({ className }: NavbarProps) {
         </Link>
       </motion.div>
 
-      <div className="flex-1 flex justify-center overflow-x-auto no-scrollbar">
+      <div className="flex-1 flex justify-center">
         <motion.ul
           initial={{ y: -8, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.45, delay: 0.12 }}
-          className="flex items-center gap-2 lg:gap-3 w-full max-w-[900px] px-3 lg:px-4 font-productSans"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          className="flex items-center gap-1.5 lg:gap-2 w-full max-w-[900px] px-2 lg:px-3 font-productSans"
         >
           {navItems.map((item, index) => {
             const active = isActive(item.href);
@@ -115,13 +121,13 @@ export default function Navbar({ className }: NavbarProps) {
                     <motion.span
                       whileTap={{ scale: 0.96 }}
                       className={cn(
-                        "inline-flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full text-sm lg:text-base font-semibold transition-all duration-200",
+                        "inline-flex items-center gap-1 px-2.5 lg:px-3 py-1.5 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200",
                         "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
                         "shadow-md hover:shadow-lg",
                         active && "ring-1 ring-amber-300"
                       )}
                     >
-                      <Sparkles className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                      <Sparkles className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
                       {item.label}
                     </motion.span>
                   </Link>
@@ -129,7 +135,7 @@ export default function Navbar({ className }: NavbarProps) {
                   <Link
                     href={item.href ?? "#"}
                     className={cn(
-                      "inline-block text-sm lg:text-base font-medium px-3 lg:px-4 py-2 rounded-lg transition-colors duration-200",
+                      "inline-block text-xs lg:text-sm font-medium px-2.5 lg:px-3 py-1.5 rounded-lg transition-colors duration-200",
                       active || item.active
                         ? "text-white font-bold bg-black shadow-md"
                         : "text-gray-700 hover:text-black hover:bg-gray-100"
