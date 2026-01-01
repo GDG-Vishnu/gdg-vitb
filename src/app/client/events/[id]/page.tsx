@@ -16,6 +16,12 @@ import {
   Clock,
   Star,
 } from "lucide-react";
+import Lightbox from "yet-another-react-lightbox";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import NextJsImage from "@/components/NextJsImage";
 import { is } from "date-fns/locale";
 
 type Event = {
@@ -154,6 +160,8 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -384,17 +392,38 @@ export default function EventDetailPage() {
               />
             </div>
 
-            <Image
-              src={event.eventImgCard}
-              alt={`${event.title} Event Card`}
-              className="rounded-2xl shadow-lg border border-stone-700"
-              width={600}
-              height={848}
-              style={{
-                width: "100%",
-                maxWidth: "600px",
-                height: "auto",
+            <div 
+              className="cursor-pointer hover:opacity-90 transition-opacity"
+              onClick={() => {
+                setLightboxIndex(0);
+                setLightboxOpen(true);
               }}
+            >
+              <Image
+                src={event.eventImgCard}
+                alt={`${event.title} Event Card`}
+                className="rounded-2xl shadow-lg border border-stone-700"
+                width={600}
+                height={848}
+                style={{
+                  width: "100%",
+                  maxWidth: "600px",
+                  height: "auto",
+                }}
+              />
+            </div>
+
+            <Lightbox
+              open={lightboxOpen}
+              close={() => setLightboxOpen(false)}
+              index={lightboxIndex}
+              slides={[{
+                src: event.eventImgCard,
+                width: 1600,
+                height: 900,
+              }]}
+              plugins={[Thumbnails, Zoom]}
+              render={{ slide: NextJsImage }}
             />
           </div>
         )}

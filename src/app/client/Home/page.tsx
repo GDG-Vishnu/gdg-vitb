@@ -26,9 +26,6 @@ const HomePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleLogout = () => {
-    router.push("/");
-  };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -461,8 +458,6 @@ const HomePage = () => {
           </motion.div>
         </motion.div>
         <motion.img
-         
-     
           className="block mb-0  h-auto object-contain px-2 sm:px-4 lg:px-0"
           src="https://res.cloudinary.com/dlupkibvq/image/upload/v1760851689/Main_Gate_rlrbwg.png"
           alt="Main Gate"

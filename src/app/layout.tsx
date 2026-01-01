@@ -23,8 +23,122 @@ const redHatDisplay = Red_Hat_Display({
 });
 
 export const metadata: Metadata = {
-  title: "GDG VITB",
-  description: "GDG On Campus at Vishnu Institute of Technology , Bhimavaram is a  student driven community that incubates student ideas from prototyping to product development with full technical and other support , and conducting hackathons , workshops in different aspects in technical knowledge .It's not just a normal club , it is an student driven and engaged community",
+  title: {
+    default:
+      "GDG VITB - Google Developer Group at Vishnu Institute of Technology",
+    template: "%s | GDG VITB",
+  },
+  description:
+    "GDG On Campus at Vishnu Institute of Technology, Bhimavaram is a student-driven community that incubates student ideas from prototyping to product development with full technical and other support, conducting hackathons, workshops in different aspects of technical knowledge. It's not just a normal club, it is a student-driven and engaged community.",
+
+  // Essential SEO Meta Tags
+  keywords: [
+    "GDG VITB",
+    "Google Developer Group",
+    "Vishnu Institute of Technology",
+    "VITB",
+    "Bhimavaram",
+    "Student Community",
+    "Tech Community",
+    "Hackathons",
+    "Workshops",
+    "Programming",
+    "Development",
+    "Google Technologies",
+    "Android Development",
+    "Web Development",
+    "Machine Learning",
+    "AI",
+    "Cloud Computing",
+    "Flutter",
+    "Firebase",
+    "Google Cloud Platform",
+  ],
+
+  authors: [{ name: "GDG VITB Team" }],
+  creator: "GDG VITB",
+  publisher: "GDG On Campus - Vishnu Institute of Technology",
+
+  // Open Graph (Facebook, LinkedIn)
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://gdg-vitb.vercel.app",
+    title:
+      "GDG VITB - Google Developer Group at Vishnu Institute of Technology",
+    description:
+      "Join GDG VITB, a vibrant student-driven tech community at Vishnu Institute of Technology. Participate in hackathons, workshops, and collaborative projects to enhance your technical skills.",
+    siteName: "GDG VITB",
+    images: [
+      {
+        url: "https://res.cloudinary.com/dlupkibvq/image/upload/v1766903285/vqbqthkdildhpgbtocgp.png",
+        width: 1200,
+        height: 630,
+        alt: "GDG VITB - Google Developer Group Logo",
+      },
+    ],
+  },
+
+  // Twitter Card
+  twitter: {
+    card: "summary_large_image",
+    title: "GDG VITB - Google Developer Group",
+    description:
+      "Student-driven tech community at VITB. Join us for hackathons, workshops, and innovation!",
+    site: "@gdgvitb",
+    creator: "@gdgvitb",
+    images: [
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766903285/vqbqthkdildhpgbtocgp.png",
+    ],
+  },
+
+  // Additional SEO
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  // Verification for search engines
+  verification: {
+    google: process.env.GOOGLE_VERIFICATION_ID,
+    yandex: "ada79044abb1797c",
+  },
+
+  // Canonical URL
+  alternates: {
+    canonical: "https://gdg-vitb.vercel.app",
+  },
+
+  // Icons and manifest
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/manifest.json",
+
+  // Additional metadata
+  category: "Technology",
+  classification: "Educational Technology Community",
+
+  // Structured data for rich snippets
+  other: {
+    "og:region": "Andhra Pradesh, India",
+    "og:country-name": "India",
+    "geo.region": "IN-AP",
+    "geo.placename": "Bhimavaram",
+    "geo.position": "16.5449;81.5212",
+    ICBM: "16.5449, 81.5212",
+  },
 };
 
 export default function RootLayout({

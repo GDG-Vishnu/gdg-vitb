@@ -21,7 +21,6 @@ const navItems: NavItem[] = [
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact Us", href: "/contactus" },
-  { label: "Hack-A-Tron 3.0", href: "/hack-a-tron-3.0", special: true },
 ];
 
 interface NavbarProps {
