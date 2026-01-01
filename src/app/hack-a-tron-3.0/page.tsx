@@ -7,7 +7,7 @@ import { Cinzel } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { Clock, Star, CheckCircle, ChevronRight } from "lucide-react";
 import RegistrationCard from "@/components/RegistrationCard";
-import Navbar from "@/app/Home/navbar";
+import Navbar from "../client/Home/navbar";
 // Harry Potter-esque display font (must be module-scoped for Next.js)
 const hpFont = Cinzel({ subsets: ["latin"], weight: ["700", "900"] });
 
