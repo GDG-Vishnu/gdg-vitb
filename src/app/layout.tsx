@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://gdgvitb.in",
     title:
-      "GDG VITB - Google Developer Group at Vishnu Institute of Technology",
+      "GDG VITB ",
     description:
       "Join GDG VITB, a vibrant student-driven tech community at Vishnu Institute of Technology. Participate in hackathons, workshops, and collaborative projects to enhance your technical skills.",
     siteName: "GDG VITB",
