@@ -877,7 +877,7 @@ const HackATron3Content = () => {
                   >
                     Google
                   </span>{" "}
-                  technology from the list below in their project solution.
+                  technology from the list below or any other in their project solution.
                 </p>
               </div>
 

@@ -38,7 +38,7 @@ export default function Navbar({ className }: NavbarProps) {
     if (!href || !pathname) return false;
     const legacy = href === "/" ? "/client" : `/client${href}`;
     const legacyAlt = href === "/teams" ? "/client/Teams" : undefined;
-    const nested = ["/events", "/teams", "/about", "/gallery", "/contactus"];
+    const nested = ["/events", "/teams", "/about", "/gallery", "/contactus", "/hack-a-tron-3.0"];
     const isNested = nested.includes(href);
     if (isNested)
       return (
