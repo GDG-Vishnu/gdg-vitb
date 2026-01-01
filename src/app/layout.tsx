@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://gdg-vitb.vercel.app",
+    url: "https://gdgvitb.in",
     title:
       "GDG VITB - Google Developer Group at Vishnu Institute of Technology",
     description:
@@ -113,7 +113,7 @@ export const metadata: Metadata = {
 
   // Canonical URL
   alternates: {
-    canonical: "https://gdg-vitb.vercel.app",
+    canonical: "https://gdgvitb.in",
   },
 
   // Icons and manifest

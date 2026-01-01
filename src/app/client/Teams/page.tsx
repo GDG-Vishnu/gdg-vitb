@@ -33,6 +33,7 @@ export default function TeamsPage() {
         const res = await fetch("/api/teams/list");
         if (!res.ok) throw new Error("Failed to fetch team members");
         const data = await res.json();
+        // console.log("team data:", data);
         if (!mounted) return;
         setTeam(data || []);
       } catch (err) {

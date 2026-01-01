@@ -1,0 +1,52 @@
+# Robots.txt for GDG VITB Website
+# https://gdgvitb.in
+
+# Allow all search engines to crawl the site
+User-agent: *
+Allow: /
+
+# Disallow authentication and admin pages
+Disallow: /auth/
+Disallow: /api/
+Disallow: /development/
+
+# Disallow any temporary or test pages
+Disallow: /client/parallax-demo/
+Disallow: /client/*/
+
+# Allow specific important pages
+Allow: /about
+Allow: /teams
+Allow: /events
+Allow: /gallery
+Allow: /contactus
+Allow: /hack-a-tron-3.0
+
+# Sitemap location
+Sitemap: https://gdgvitb.in/sitemap.xml
+
+# Crawl delay (optional, prevents overwhelming the server)
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# Block bad bots (optional)
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

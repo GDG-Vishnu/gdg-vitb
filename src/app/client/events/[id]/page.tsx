@@ -38,7 +38,7 @@ type Event = {
   status: string | null;
   imageUrl: string | null;
   rank: number;
-  eventImgCard: string | null;
+  eventGallery: string[];
   coverUrl: string | null;
   Theme: string[] | null;
   isDone: boolean;
@@ -341,6 +341,64 @@ export default function EventDetailPage() {
             />
           </div>
         </div>
+
+        {/* Event Gallery Section */}
+        {event.eventGallery && event.eventGallery.length > 0 && (
+          <div className="max-w-7xl mx-auto mt-8">
+            <div className="relative z-10 flex justify-center mb-6 flex-col items-center">
+              <div
+                style={{ background: theme.primary }}
+                className="px-6 py-3 rounded-full mb-2 flex items-center gap-3 transform -rotate-3 hover:rotate-0 transition-transform duration-300 shadow-lg border-2 border-stone-900 relative"
+              >
+                <h1 className="text-2xl md:text-3xl font-bold text-stone-900 font-productSans">
+                  Event Gallery
+                </h1>
+                <Camera className="w-7 h-7 text-stone-900" />
+
+                {/* Connection line to next section */}
+                <div
+                  className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-1 h-6 rounded-full"
+                  style={{ background: theme.primary }}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {event.eventGallery.map((imageUrl, index) => (
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-lg cursor-pointer hover:opacity-90 transition-opacity shadow-lg border border-stone-700"
+                  onClick={() => {
+                    setLightboxIndex(index);
+                    setLightboxOpen(true);
+                  }}
+                >
+                  <Image
+                    src={imageUrl}
+                    alt={`${event.title} Gallery ${index + 1}`}
+                    width={400}
+                    height={300}
+                    className="w-full h-60 object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <Lightbox
+              open={lightboxOpen}
+              close={() => setLightboxOpen(false)}
+              index={lightboxIndex}
+              slides={event.eventGallery.map((imageUrl) => ({
+                src: imageUrl,
+                width: 1600,
+                height: 900,
+              }))}
+              plugins={[Thumbnails, Zoom]}
+              render={{ slide: NextJsImage }}
+            />
+          </div>
+        )}
+
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
           <div className="relative rounded-[32px]">
             <div
@@ -374,61 +432,8 @@ export default function EventDetailPage() {
             </div>
           </div>
         </div>
-        {event.eventImgCard && (
-          <div className="relative z-10 flex justify-center mb-8 flex-col items-center mt-8">
-            <div
-              style={{ background: theme.primary }}
-              className="px-6 py-3 rounded-full mb-2 flex items-center gap-3 transform -rotate-3 hover:rotate-0 transition-transform duration-300 shadow-lg border-2 border-stone-900 relative"
-            >
-              <h1 className="text-2xl md:text-3xl font-bold text-stone-900 font-productSans">
-                Event Gallery
-              </h1>
-              <Camera className="w-7 h-7 text-stone-900" />
+        {/*     <BentoGrid tiles={tiles} */}
 
-              {/* Connection line to next section */}
-              <div
-                className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-1 h-6 rounded-full"
-                style={{ background: theme.primary }}
-              />
-            </div>
-
-            <div 
-              className="cursor-pointer hover:opacity-90 transition-opacity"
-              onClick={() => {
-                setLightboxIndex(0);
-                setLightboxOpen(true);
-              }}
-            >
-              <Image
-                src={event.eventImgCard}
-                alt={`${event.title} Event Card`}
-                className="rounded-2xl shadow-lg border border-stone-700"
-                width={600}
-                height={848}
-                style={{
-                  width: "100%",
-                  maxWidth: "600px",
-                  height: "auto",
-                }}
-              />
-            </div>
-
-            <Lightbox
-              open={lightboxOpen}
-              close={() => setLightboxOpen(false)}
-              index={lightboxIndex}
-              slides={[{
-                src: event.eventImgCard,
-                width: 1600,
-                height: 900,
-              }]}
-              plugins={[Thumbnails, Zoom]}
-              render={{ slide: NextJsImage }}
-            />
-          </div>
-        )}
-        {/*     <BentoGrid tiles={tiles} />
-       Key Highlights + Organizers + Tags Combined Section */}
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
           <div className="relative rounded-[32px]">
             <div
