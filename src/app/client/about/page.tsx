@@ -326,7 +326,7 @@ const StatisticsSection = () => {
 
   const statistics = [
     {
-      value: "1979+",
+      value: "2300+",
       label: "Active Members",
       icon: Users,
       color: "text-blue-600",
