@@ -1,5 +1,7 @@
 "use client";
-import {  Users } from "lucide-react";
+import { Users } from "lucide-react";
+import { SOCIAL_LINKS } from "@/constants";
+
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -47,7 +49,7 @@ export function SocialLinks() {
       <div className="grid grid-cols-2 gap-4 mb-6">
         {/* Instagram */}
         <a
-          href="https://www.instagram.com/gdgvitb/"
+          href={SOCIAL_LINKS.instagram}
           target="_blank"
           rel="noopener noreferrer"
           className="group relative p-4 hover:bg-gradient-to-br from-pink-500 to-purple-600 rounded-xl transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col items-center gap-2 border border-white/10"
@@ -68,7 +70,7 @@ export function SocialLinks() {
 
         {/* LinkedIn */}
         <a
-          href="https://www.linkedin.com/company/gdg-vitb/"
+          href={SOCIAL_LINKS.linkedin}
           target="_blank"
           rel="noopener noreferrer"
           className="group relative p-4 hover:bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col items-center gap-2 border border-white/10"
@@ -91,7 +93,7 @@ export function SocialLinks() {
       {/* Second Row - Join Our Community */}
       <div className="relative">
         <a
-          href="https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/"
+          href={SOCIAL_LINKS.community}
           className="group relative p-6 hover:bg-gradient-to-br from-emerald-500 via-blue-600 to-purple-600 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]  flex flex-col items-center gap-3 border-2 border-white/20 overflow-hidden  w-full text-center"
           aria-label="Learn more about our community"
         >
