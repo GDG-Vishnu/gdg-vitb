@@ -15,7 +15,6 @@ import Footer from "@/components/footer/Footer";
 import { url } from "inspector";
 import ExtensionSection from "./extension_section";
 import CursorSpark from "../CursorSpark";
-import HeroCelebration from "@/components/HeroCelebration";
 
 const HomePage = () => {
   const session = null as any;
@@ -80,9 +79,6 @@ const HomePage = () => {
         backgroundSize: "20px 20px",
       }}
     >
-      {/* Celebration crackers animation on page load */}
-      <HeroCelebration show={true} duration={4000} />
-
       {/* Enhanced floating background elements */}
       <motion.div
         className="absolute top-20 -left-20 w-96 h-96 bg-gradient-to-r from-blue-200/30 via-purple-200/20 to-indigo-200/30 rounded-full mix-blend-multiply filter blur-3xl"

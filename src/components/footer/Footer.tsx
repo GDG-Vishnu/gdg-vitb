@@ -8,7 +8,6 @@ import {
   FaEnvelope,
   FaWhatsapp,
 } from "react-icons/fa";
-import { SOCIAL_LINKS, FOOTER_QUICK_LINKS, GDG_INFO } from "@/constants";
 
 export default function Footer() {
   return (
@@ -29,7 +28,7 @@ export default function Footer() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 w-full max-w-[924px] px-0 sm:px-2 md:px-[56px] py-2 md:py-4">
               <div className="border p-4 sm:p-5 md:p-4 flex flex-col items-center justify-center border-[#C3ECF6] rounded-lg md:rounded-none">
                 <h2 className="text-[#C3ECF6] text-xl sm:text-2xl md:text-2xl font-medium font-productSans text-center leading-tight">
-                  {GDG_INFO.copyright.split(".")[0]}.
+                  © 2025 GDG VITB.
                 </h2>
                 <h2 className="text-[#C3ECF6] text-base sm:text-lg md:text-xl font-productSans text-center mt-1 leading-tight">
                   All Rights are reserved
@@ -41,15 +40,36 @@ export default function Footer() {
                   Quick Links
                 </div>
                 <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 text-[#CCF6C5] text-base sm:text-lg md:text-base">
-                  {FOOTER_QUICK_LINKS.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      className="hover:underline font-productSans text-center md:text-left py-1"
-                    >
-                      {link.label}
-                    </a>
-                  ))}
+                  <a
+                    href="/client"
+                    className="hover:underline font-productSans text-center md:text-left py-1"
+                  >
+                    Home
+                  </a>
+                  <a
+                    href="/client/gallery"
+                    className="hover:underline font-productSans text-center md:text-left py-1"
+                  >
+                    Gallery
+                  </a>
+                  <a
+                    href="/client/Teams"
+                    className="hover:underline font-productSans text-center md:text-left py-1"
+                  >
+                    Team
+                  </a>
+                  <a
+                    href="/client/contactus"
+                    className="hover:underline font-productSans text-center md:text-left py-1"
+                  >
+                    Contact us
+                  </a>
+                  <a
+                    href="/client/events"
+                    className="hover:underline font-productSans text-center md:text-left py-1"
+                  >
+                    Events
+                  </a>
                 </div>
               </div>
 
@@ -59,7 +79,7 @@ export default function Footer() {
                 </div>
                 <div className="mt-2 flex items-center justify-center md:justify-start gap-3 sm:gap-4">
                   <a
-                    href={SOCIAL_LINKS.linkedin}
+                    href="https://www.linkedin.com/company/gdg-vitb/"
                     aria-label="LinkedIn"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -69,7 +89,7 @@ export default function Footer() {
                     <FaLinkedinIn className="text-black w-5 h-5 sm:w-6 sm:h-6 md:w-5 md:h-5" />
                   </a>
                   <a
-                    href={SOCIAL_LINKS.instagram}
+                    href="https://www.instagram.com/gdgvitb/"
                     aria-label="Instagram"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -79,7 +99,7 @@ export default function Footer() {
                     <FaInstagram className="text-black w-5 h-5 sm:w-6 sm:h-6 md:w-5 md:h-5" />
                   </a>
                   <a
-                    href={`mailto:${SOCIAL_LINKS.email}`}
+                    href="mailto:gdg@vishnu.edu.in"
                     aria-label="Email"
                     className="w-10 h-10 sm:w-11 sm:h-11 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:scale-105 transition-transform"
                     style={{ backgroundColor: "#FFE7A5" }}
@@ -90,10 +110,10 @@ export default function Footer() {
                 <h2 className="text-[#FFE7A5] mt-3 text-sm sm:text-base md:text-base font-productSans text-center md:text-left leading-snug">
                   Email us at{" "}
                   <a
-                    href={`mailto:${SOCIAL_LINKS.email}`}
+                    href="mailto:gdg@vishnu.edu.in"
                     className="hover:underline break-all"
                   >
-                    {SOCIAL_LINKS.email}
+                    gdg@vishnu.edu.in
                   </a>
                 </h2>
               </div>

@@ -262,39 +262,3 @@ export const defaultFieldConfig: Record<
   //   description: "Enter your credit card details for payment.",
   // },
 };
-
-// ============================================
-// SOCIAL LINKS & NAV LINKS CONSTANTS
-// ============================================
-
-export const SOCIAL_LINKS = {
-  linkedin: "https://www.linkedin.com/company/gdg-vitb/",
-  instagram: "https://www.instagram.com/gdgvitb/",
-  email: "gdg@vishnu.edu.in",
-  community:
-    "https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/",
-} as const;
-
-export const NAV_LINKS = [
-  { label: "Home", href: "/client" },
-  { label: "About", href: "/client/about" },
-  { label: "Team", href: "/client/Teams" },
-  { label: "Events", href: "/client/events" },
-  { label: "Gallery", href: "/client/gallery" },
-  { label: "Contact Us", href: "/client/contactus" },
-] as const;
-
-export const FOOTER_QUICK_LINKS = [
-  { label: "Home", href: "/client" },
-  { label: "Gallery", href: "/client/gallery" },
-  { label: "Team", href: "/client/Teams" },
-  { label: "Contact us", href: "/client/contactus" },
-  { label: "Events", href: "/client/events" },
-] as const;
-
-export const GDG_INFO = {
-  name: "GDG VITB",
-  fullName: "GDG On Campus – Vishnu Institute Of Technology, Bhimavaram",
-  location: "Vishnu Institute of Technology, Bhimavaram, Andhra Pradesh",
-  copyright: "© 2025 GDG VITB. All Rights are reserved",
-} as const;

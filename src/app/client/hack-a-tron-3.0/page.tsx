@@ -283,7 +283,7 @@ const HackATron3Content = () => {
                 style={{ color: colors.spaceStation }}
               >
                 <Clock className="h-4 w-4 mr-2" />
-                {isStarted ? "Event started" : label ?? "Event starts in"}
+                {label ?? "Event starts in"}
               </div>
             </div>
 
@@ -877,8 +877,7 @@ const HackATron3Content = () => {
                   >
                     Google
                   </span>{" "}
-                  technology from the list below or any other in their project
-                  solution.
+                  technology from the list below or any other in their project solution.
                 </p>
               </div>
 
