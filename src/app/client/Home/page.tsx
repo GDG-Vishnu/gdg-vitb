@@ -81,7 +81,7 @@ const HomePage = () => {
       }}
     >
       {/* Celebration crackers animation on page load */}
-      {/* <HeroCelebration show={true} duration={4000} /> */}
+      <HeroCelebration show={true} duration={4000} />
 
       {/* Enhanced floating background elements */}
       <motion.div
