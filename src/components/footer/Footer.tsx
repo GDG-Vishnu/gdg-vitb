@@ -65,7 +65,7 @@ export default function Footer() {
                     Contact us
                   </a>
                   <a
-                    href="/client/events"
+                    href="/events"
                     className="hover:underline font-productSans text-center md:text-left py-1"
                   >
                     Events

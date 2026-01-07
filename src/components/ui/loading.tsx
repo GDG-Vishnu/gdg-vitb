@@ -37,7 +37,13 @@ export function Loading({
 }: LoadingProps) {
   if (overlay) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm"
+        style={{
+          backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
+      >
         <Spinner
           message={text}
           size={size}

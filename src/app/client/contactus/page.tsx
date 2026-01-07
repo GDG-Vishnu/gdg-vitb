@@ -3,11 +3,12 @@
 import { motion } from "framer-motion";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
-import { MapPin, Mail, Linkedin, Instagram } from "lucide-react";
+import { MapPin, Mail, Linkedin, Instagram, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -34,6 +35,7 @@ const itemVariants = {
 
 export default function ContactUsPage() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -60,6 +62,7 @@ export default function ContactUsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const formDataToSend = new FormData();
@@ -77,14 +80,16 @@ export default function ContactUsPage() {
       );
 
       if (response.ok) {
-        alert("Message sent successfully!");
+        toast.success("Message sent successfully!");
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
-        alert("Failed to send message. Please try again.");
+        toast.error("Failed to send message. Please try again.");
       }
     } catch (error) {
       console.error("Form submission error:", error);
-      alert("Failed to send message. Please try again.");
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -247,9 +252,17 @@ export default function ContactUsPage() {
                     </div>
                     <Button
                       type="submit"
-                      className="w-full bg-white text-black hover:bg-stone-200 font-productSans font-medium"
+                      disabled={isSubmitting}
+                      className="w-full bg-white text-black hover:bg-stone-200 font-productSans font-medium flex items-center justify-center gap-2"
                     >
-                      Send Message
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        "Send Message"
+                      )}
                     </Button>
                   </form>
                 </motion.div>
@@ -406,9 +419,17 @@ export default function ContactUsPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-white text-black hover:bg-stone-200 font-productSans font-medium text-sm"
+                  disabled={isSubmitting}
+                  className="w-full bg-white text-black hover:bg-stone-200 font-productSans font-medium text-sm flex items-center justify-center gap-2"
                 >
-                  Send Message
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    "Send Message"
+                  )}
                 </Button>
               </form>
             </motion.div>

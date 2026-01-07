@@ -24,8 +24,14 @@ export default function LoadingGlobal({
   }
 
   return (
-    <div className="flex items-center justify-center py-20">
-      <div className="bg-white border-4 border-black rounded-2xl p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center">
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-white z-[9999]"
+      style={{
+        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+        backgroundSize: "20px 20px",
+      }}
+    >
+      <div className="bg-white border-4 border-black rounded-2xl p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center relative z-10">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-yellow-400 mx-auto mb-4"></div>
         <p className="text-black font-extrabold font-productSans text-xl">
           {name}

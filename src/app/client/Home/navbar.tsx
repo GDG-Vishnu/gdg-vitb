@@ -22,7 +22,7 @@ const navItems: NavItem[] = [
   { label: "Gallery", href: "/gallery" },
   
   { label: "Contact Us", href: "/contactus" },
-
+  
 ];
 
 interface NavbarProps {

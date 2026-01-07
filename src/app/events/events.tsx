@@ -194,7 +194,7 @@ function EventCard({ event }: { event: EventItem }) {
 
           <div>
             <Link
-              href={`/client/events/${event.id}`}
+              href={`/events/${event.id}`}
               aria-label={`Open ${event.title}`}
               className={`${getButtonClass(
                 event.ThemeColor
@@ -301,7 +301,7 @@ function EventCardMobile({ event }: { event: EventItem }) {
 
           <div>
             <Link
-              href={`/client/events/${event.id}`}
+              href={`/events/${event.id}`}
               aria-label={`Open ${event.title}`}
               className={`${getButtonClass(
                 event.ThemeColor

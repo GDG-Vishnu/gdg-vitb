@@ -268,7 +268,7 @@ function EventCard({ event }: { event: EventItem }) {
               style={getButtonStyle()}
               className="translate-x-1 translate-y-1 shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:translate-x-0 hover:translate-y-0 hover:shadow-none transition-all"
             >
-              <Link href={`/client/events/${event.id}`}>
+              <Link href={`/events/${event.id}`}>
                 <img
                   src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                   alt=""
@@ -371,7 +371,7 @@ function EventCardMobile({ event }: { event: EventItem }) {
               style={getButtonStyle()}
               className="hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
             >
-              <Link href={`/client/events/${event.id}`}>
+              <Link href={`/events/${event.id}`}>
                 <img
                   src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                   alt=""

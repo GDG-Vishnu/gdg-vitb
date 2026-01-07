@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef,useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Navbar from "@/app/client/Home/navbar";
 import Footer from "@/components/footer/Footer";
@@ -25,27 +25,26 @@ const useScrollAnimation = (): [
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
- useEffect(() => {
-  const element = ref.current; // capture once
+  useEffect(() => {
+    const element = ref.current; // capture once
 
-  if (!element) return;
+    if (!element) return;
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        setIsVisible(true);
-      }
-    },
-    { threshold: 0.1 }
-  );
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  observer.observe(element);
+    observer.observe(element);
 
-  return () => {
-    observer.unobserve(element); // cleanup uses same element
-  };
-}, []);
-
+    return () => {
+      observer.unobserve(element); // cleanup uses same element
+    };
+  }, []);
 
   return [ref, isVisible];
 };
@@ -120,18 +119,15 @@ const TypingAnimation = () => {
       timeout = setTimeout(() => {
         setText(currentPhrase.slice(0, text.length + 1));
       }, TYPING_SPEED);
-    } 
-    else if (!isDeleting && text.length === currentPhrase.length) {
+    } else if (!isDeleting && text.length === currentPhrase.length) {
       timeout = setTimeout(() => {
         setIsDeleting(true);
       }, HOLD_AFTER_TYPING);
-    } 
-    else if (isDeleting && text.length > 0) {
+    } else if (isDeleting && text.length > 0) {
       timeout = setTimeout(() => {
         setText(currentPhrase.slice(0, text.length - 1));
       }, DELETING_SPEED);
-    } 
-    else if (isDeleting && text.length === 0) {
+    } else if (isDeleting && text.length === 0) {
       setIsDeleting(false);
       setIndex((prev) => (prev + 1) % phrases.length);
     }
@@ -169,9 +165,7 @@ const TypingAnimation = () => {
             <span
               key={i}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                i === index
-                  ? "bg-blue-600 scale-125"
-                  : "bg-gray-300"
+                i === index ? "bg-blue-600 scale-125" : "bg-gray-300"
               }`}
             />
           ))}
@@ -180,8 +174,6 @@ const TypingAnimation = () => {
     </div>
   );
 };
-
-
 
 // Animated Counter Component
 interface AnimatedCounterProps {
@@ -604,17 +596,22 @@ const CTASection = () => {
             projects together.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-black bg-white border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold" 
-            onClick={() => window.location.href = '/events'}
+            <button
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-black bg-white border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold"
+              onClick={() => (window.location.href = "/events")}
             >
               <Calendar className="w-4 h-4" />
               Explore Events
             </button>
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-white bg-black border-4 border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold"
-            onClick={() => window.location.href = 'https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/'}
+            <button
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-white bg-black border-4 border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold"
+              onClick={() =>
+                (window.location.href =
+                  "https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/")
+              }
             >
               <Users className="w-4 h-4" />
-              Join Our Community 
+              Join Our Community
             </button>
           </div>
         </div>
@@ -816,7 +813,7 @@ export default function AboutPage() {
               <ExternalLink className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
             </a>
             <Link
-              href="/client/events"
+              href="/events"
               className="group flex items-center justify-center gap-3 px-8 py-4 text-lg font-bold text-white bg-blue-600 border-4 border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all duration-300 transform hover:scale-105"
             >
               <Calendar className="w-6 h-6 group-hover:bounce transition-transform duration-300" />

@@ -1,5 +1,5 @@
-import { PageLoading } from "@/components/ui/loading-fallbacks";
+import LoadingGlobal from "@/components/loadingPage/loading_global";
 
 export default function AuthLoading() {
-  return <PageLoading message="Loading authentication..." />;
+  return <LoadingGlobal message="Loading authentication..." />;
 }
