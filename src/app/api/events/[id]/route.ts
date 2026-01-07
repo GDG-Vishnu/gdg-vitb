@@ -1,16 +1,14 @@
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: idParam } = await params;
-    const id = parseInt(idParam);
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid event ID" }, { status: 400 });
-    }
+    const { id } = await params;
 
     const event = await prisma.events.findUnique({
       where: { id },

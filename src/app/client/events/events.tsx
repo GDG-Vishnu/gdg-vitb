@@ -18,6 +18,7 @@ type EventItem = {
   status?: string;
   ThemeColor?: string;
   imageUrl?: string;
+  rank: number;
 };
 
 export default function EventsCarousel() {
@@ -61,7 +62,7 @@ export default function EventsCarousel() {
         style={{ scrollPadding: "1.5rem", gap: "14px" }}
       >
         {events
-          .sort((a, b) => a.id - b.id)
+          .sort((a, b) => (a.rank || 0) - (b.rank || 0))
           .map((ev) => (
             <EventCard key={ev.id} event={ev} />
           ))}
@@ -77,7 +78,7 @@ export default function EventsCarousel() {
         style={{ scrollPadding: "1rem", gap: "12px" }}
       >
         {events
-          .sort((a, b) => b.id - a.id)
+          .sort((a, b) => (a.rank || 0) - (b.rank || 0))
           .map((ev) => (
             <EventCardMobile key={ev.id} event={ev} />
           ))}

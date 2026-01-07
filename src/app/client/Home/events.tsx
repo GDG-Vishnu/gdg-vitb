@@ -19,6 +19,7 @@ type EventItem = {
   status?: string;
   ThemeColor?: string;
   imageUrl?: string;
+  rank: number;
 };
 
 export default function EventsCarousel() {
