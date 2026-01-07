@@ -76,84 +76,6 @@ const EventClosed = [
   "Thank you for your interest. Stay tuned for more exciting events in the future!",
 ];
 
-const EVENT_CACHE_KEY_PREFIX = "gdg_event_";
-const EVENT_CACHE_TIMESTAMP_PREFIX = "gdg_event_timestamp_";
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-const tiles = [
-  // Try to match the "bento" look by mixing spans
-  {
-    src: "https://www.shutterstock.com/search/website-hero-banner",
-    alt: "Big hero",
-    cols: 2,
-    rows: 1,
-  },
-  {
-    src: "https://www.shutterstock.com/search/square-thumbnail-image",
-    alt: "Small",
-    cols: 1,
-    rows: 1,
-  },
-  {
-    src: "https://www.shutterstock.com/search/wide-landscape-image",
-    alt: "Square",
-    cols: 1,
-    rows: 1,
-  },
-  {
-    src: "https://www.shutterstock.com/search/portrait-vertical-image",
-    alt: "Wide",
-    cols: 2,
-    rows: 1,
-  },
-  {
-    src: "https://www.shutterstock.com/search/medium-size-image",
-    alt: "Tall",
-    cols: 1,
-    rows: 2,
-  },
-  {
-    src: "https://www.shutterstock.com/search/curved-bottom-banner",
-    alt: "Medium",
-    cols: 1,
-    rows: 1,
-  },
-  { src: "/images/bento7.jpg", alt: "Wide bottom", cols: 2, rows: 1 },
-];
-function getEventFromCache(eventId: string): Event | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const cached = localStorage.getItem(`${EVENT_CACHE_KEY_PREFIX}${eventId}`);
-    const timestamp = localStorage.getItem(
-      `${EVENT_CACHE_TIMESTAMP_PREFIX}${eventId}`
-    );
-    if (cached && timestamp) {
-      const age = Date.now() - parseInt(timestamp, 10);
-      if (age < CACHE_DURATION) {
-        return JSON.parse(cached);
-      }
-    }
-  } catch (e) {
-    console.error("Error reading event from cache:", e);
-  }
-  return null;
-}
-
-function setEventToCache(eventId: string, event: Event): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(
-      `${EVENT_CACHE_KEY_PREFIX}${eventId}`,
-      JSON.stringify(event)
-    );
-    localStorage.setItem(
-      `${EVENT_CACHE_TIMESTAMP_PREFIX}${eventId}`,
-      Date.now().toString()
-    );
-  } catch (e) {
-    console.error("Error saving event to cache:", e);
-  }
-}
-
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -167,14 +89,6 @@ export default function EventDetailPage() {
     let mounted = true;
     const eventId = params.id as string;
 
-    // First, try to load from cache for instant display
-    const cachedEvent = getEventFromCache(eventId);
-    if (cachedEvent) {
-      setEvent(cachedEvent);
-      setLoading(false);
-    }
-
-    // Then fetch fresh data from API
     (async () => {
       try {
         const res = await fetch(`/api/events/${eventId}`);
@@ -185,11 +99,9 @@ export default function EventDetailPage() {
         const data = await res.json();
         if (!mounted) return;
         setEvent(data);
-        setEventToCache(eventId, data); // Save to localStorage
       } catch (err: unknown) {
         console.error(err);
-        // Only show error if we don't have cached data
-        if (mounted && !cachedEvent) {
+        if (mounted) {
           setError((err as Error)?.message || "Unknown error");
         }
       } finally {
@@ -241,7 +153,7 @@ export default function EventDetailPage() {
       >
         <Navbar />
         <div className="flex flex-col items-center justify-center py-40">
-          <div className="text-6xl mb-4">😕</div>
+        
           <p className="text-red-500 font-medium text-lg mb-4">
             {error || "Event not found"}
           </p>
