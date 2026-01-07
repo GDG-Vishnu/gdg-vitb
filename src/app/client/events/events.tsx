@@ -5,7 +5,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 
 type EventItem = {
-  id: number;
+  id: string;
   title: string;
   description?: string;
   Date?: string;

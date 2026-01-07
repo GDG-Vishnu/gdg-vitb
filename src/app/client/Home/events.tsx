@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 type EventItem = {
-  id: number;
+  id: string;
   title: string;
   description?: string;
   Date?: string;

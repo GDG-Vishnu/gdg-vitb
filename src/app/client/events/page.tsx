@@ -29,7 +29,7 @@ const carouselImages = [
 ];
 
 type Event = {
-  id: number;
+  id: string;
   title: string;
   description: string | null;
   Date: string | null;

@@ -25,7 +25,7 @@ import NextJsImage from "@/components/NextJsImage";
 import { is } from "date-fns/locale";
 
 type Event = {
-  id: number;
+  id: string;
   title: string;
   description: string | null;
   Date: string | null;
@@ -153,7 +153,6 @@ export default function EventDetailPage() {
       >
         <Navbar />
         <div className="flex flex-col items-center justify-center py-40">
-        
           <p className="text-red-500 font-medium text-lg mb-4">
             {error || "Event not found"}
           </p>
