@@ -182,8 +182,9 @@ export default function TeamsPage() {
                     {/* <img src={members[0].dept_logo || "/default-logo.png"} alt={`${position} logo`} />*/}
                   </div>
                   <div className="h-4"></div>
-                  <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-                    <div className="flex gap-6 px-4 min-w-max justify-center md:justify-center">
+                  {/* Mobile: horizontal scroll */}
+                  <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 md:hidden">
+                    <div className="flex gap-6 px-4 min-w-max justify-center">
                       {members.map((m) => (
                         <div key={m.id} className="flex-shrink-0">
                           <MemberCard
@@ -200,6 +201,68 @@ export default function TeamsPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+
+                  {/* Desktop: 3-2-3-2 pattern when more than 4 members, otherwise centered flex */}
+                  <div className="hidden md:block w-full px-4">
+                    {members.length > 4 ? (
+                      <div className="space-y-6">
+                        {(() => {
+                          const rows = [];
+                          let index = 0;
+                          while (index < members.length) {
+                            const isFirstRow = rows.length % 2 === 0;
+                            const cardsInRow = isFirstRow ? 3 : 2;
+                            const rowMembers = members.slice(
+                              index,
+                              index + cardsInRow
+                            );
+                            rows.push(
+                              <div
+                                key={index}
+                                className="flex gap-6 justify-center"
+                              >
+                                {rowMembers.map((m) => (
+                                  <div key={m.id} className="flex-shrink-0">
+                                    <MemberCard
+                                      id={m.id}
+                                      imageUrl={m.imageUrl || "/file.svg"}
+                                      name={m.name}
+                                      designation={m.designation || "MEMBER"}
+                                      position={m.position || undefined}
+                                      linkedinUrl={m.linkedinUrl || undefined}
+                                      mail={m.mail || undefined}
+                                      bgColor={m.bgColor || undefined}
+                                      logo={m.logo || undefined}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                            index += cardsInRow;
+                          }
+                          return rows;
+                        })()}
+                      </div>
+                    ) : (
+                      <div className="flex gap-6 justify-center">
+                        {members.map((m) => (
+                          <div key={m.id} className="flex-shrink-0">
+                            <MemberCard
+                              id={m.id}
+                              imageUrl={m.imageUrl || "/file.svg"}
+                              name={m.name}
+                              designation={m.designation || "MEMBER"}
+                              position={m.position || undefined}
+                              linkedinUrl={m.linkedinUrl || undefined}
+                              mail={m.mail || undefined}
+                              bgColor={m.bgColor || undefined}
+                              logo={m.logo || undefined}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </section>
               ))}
