@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s | GDG VITB",
   },
   description:
-    "GDG On Campus at Vishnu Institute of Technology, Bhimavaram is a student-driven community that incubates student ideas from prototyping to product development with full technical and other support, conducting hackathons, workshops in different aspects of technical knowledge. It's not just a normal club, it is a student-driven and engaged community.",
+    "GDG On Campus at Vishnu Institute of Technology, Bhimavaram is a student-driven community that incubates student ideas from prototyping to product development with full technical and other support, conducting hackathons, workshops in different aspects of technical knowledge. It is a student-driven  Google Supported and engaged community.",
 
   // Essential SEO Meta Tags
   keywords: [
