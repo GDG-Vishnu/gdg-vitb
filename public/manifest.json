@@ -1,0 +1,53 @@
+{
+  "name": "GDG VITB - Google Developer Group On Campus Vishnu Institute of Technology",
+  "short_name": "GDG VITB",
+  "description": "GDG On Campus at Vishnu Institute of Technology, Bhimavaram - A student-driven community for tech enthusiasts",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4285f4",
+  "orientation": "portrait-primary",
+  "categories": ["education", "technology"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Events",
+      "short_name": "Events",
+      "description": "View upcoming GDG VITB events",
+      "url": "/events",
+      "icons": []
+    },
+    {
+      "name": "Gallery",
+      "short_name": "Gallery",
+      "description": "Browse GDG VITB event gallery",
+      "url": "/gallery",
+      "icons": []
+    },
+    {
+      "name": "Team",
+      "short_name": "Team",
+      "description": "Meet the GDG VITB team",
+      "url": "/teams",
+      "icons": []
+    }
+  ]
+}

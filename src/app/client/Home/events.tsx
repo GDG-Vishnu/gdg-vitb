@@ -93,6 +93,22 @@ export default function EventsCarousel() {
   const handleTouchStart = () => setIsAutoScrolling(false);
   const handleTouchEnd = () => setTimeout(() => setIsAutoScrolling(true), 2000); // Resume after 2s
 
+  // Set up non-passive wheel event listeners to prevent the passive event listener warning
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      setIsAutoScrolling(false);
+      scroller.scrollLeft += e.deltaY;
+      setTimeout(() => setIsAutoScrolling(true), 2000);
+    };
+
+    scroller.addEventListener('wheel', handleWheel, { passive: false });
+    return () => scroller.removeEventListener('wheel', handleWheel);
+  }, []);
+
   function renderDesktop() {
     return (
       <div
@@ -101,14 +117,6 @@ export default function EventsCarousel() {
         style={{
           scrollBehavior: "auto", // Changed to auto for smoother auto-scroll
           WebkitOverflowScrolling: "touch",
-        }}
-        onWheel={(e) => {
-          if (scrollerRef.current) {
-            e.preventDefault();
-            setIsAutoScrolling(false); // Pause auto-scroll on manual interaction
-            scrollerRef.current.scrollLeft += e.deltaY;
-            setTimeout(() => setIsAutoScrolling(true), 2000); // Resume after 3s
-          }
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -136,14 +144,6 @@ export default function EventsCarousel() {
           WebkitOverflowScrolling: "touch",
           scrollbarWidth: "thin",
           scrollbarColor: "#4285F4 #f1f1f1",
-        }}
-        onWheel={(e) => {
-          if (scrollerRef.current) {
-            e.preventDefault();
-            setIsAutoScrolling(false);
-            scrollerRef.current.scrollLeft += e.deltaY;
-            setTimeout(() => setIsAutoScrolling(true), 3000);
-          }
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
