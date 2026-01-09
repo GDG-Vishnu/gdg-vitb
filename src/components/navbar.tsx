@@ -394,6 +394,7 @@ export default function Navbar({ className }: NavbarProps) {
                   transition={{ delay: 0.1 }}
                   className="flex flex-col gap-0 font-productSans"
                 >
+                  
                   <motion.li
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
