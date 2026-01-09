@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import {
   Camera,
@@ -133,7 +132,6 @@ export default function EventDetailPage() {
           backgroundSize: "20px 20px",
         }}
       >
-        <Navbar />
         <div className="flex items-center justify-center py-40">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
         </div>
@@ -153,7 +151,6 @@ export default function EventDetailPage() {
           backgroundSize: "20px 20px",
         }}
       >
-        <Navbar />
         <div className="flex flex-col items-center justify-center py-40">
           <p className="text-red-500 font-medium text-lg mb-4">
             {error || "Event not found"}
@@ -188,8 +185,6 @@ export default function EventDetailPage() {
         backgroundSize: "20px 20px",
       }}
     >
-      <Navbar />
-
       <main className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Event Image Banner */}
