@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import Navbar from "@/app/client/Home/navbar";
+import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import { motion } from "framer-motion";
 import {

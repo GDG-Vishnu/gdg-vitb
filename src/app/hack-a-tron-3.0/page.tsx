@@ -7,7 +7,7 @@ import { Cinzel } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { Clock, Star, CheckCircle, ChevronRight } from "lucide-react";
 import RegistrationCard from "@/components/RegistrationCard";
-import Navbar from "../client/Home/navbar";
+import Navbar from "@/components/navbar";
 // Harry Potter-esque display font (must be module-scoped for Next.js)
 const hpFont = Cinzel({ subsets: ["latin"], weight: ["700", "900"] });
 
@@ -475,9 +475,7 @@ const HackATron3Content = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
               className="mt-8 flex flex-wrap justify-center gap-3"
-            >
-         
-            </motion.div>
+            ></motion.div>
           </div>
         </section>
 

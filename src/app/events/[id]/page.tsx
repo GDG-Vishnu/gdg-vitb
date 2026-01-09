@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Navbar from "@/app/client/Home/navbar";
+import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import {
   Camera,

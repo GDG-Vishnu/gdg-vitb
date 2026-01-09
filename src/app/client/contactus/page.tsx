@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Navbar from "@/app/client/Home/navbar";
+import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import { MapPin, Mail, Linkedin, Instagram, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";

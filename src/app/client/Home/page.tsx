@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Navbar from "./navbar";
+import Navbar from "@/components/navbar";
 import Events from "./events";
 import FAQs from "./faqs";
 import AboutSection from "./about";

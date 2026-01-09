@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/app/client/Home/navbar";
+import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 

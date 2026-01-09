@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "@/app/client/Home/navbar";
+import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
