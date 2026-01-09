@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Navbar from "@/components/navbar";
+//Navbar removed
 import Footer from "@/components/footer/Footer";
 import { MapPin, Mail, Linkedin, Instagram, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -448,7 +448,7 @@ export default function ContactUsPage() {
         backgroundSize: "20px 20px",
       }}
     >
-      <Navbar />
+    
 
       <motion.main
         variants={containerVariants}

@@ -7,7 +7,7 @@ import { Cinzel } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { Clock, Star, CheckCircle, ChevronRight } from "lucide-react";
 import RegistrationCard from "@/components/RegistrationCard";
-import Navbar from "@/components/navbar";
+//Navbar removed
 // Harry Potter-esque display font (must be module-scoped for Next.js)
 const hpFont = Cinzel({ subsets: ["latin"], weight: ["700", "900"] });
 
@@ -374,7 +374,7 @@ const HackATron3Content = () => {
         />
 
         {/* Navbar */}
-        <Navbar />
+        {/* Navbar removed */}
 
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 px-4">

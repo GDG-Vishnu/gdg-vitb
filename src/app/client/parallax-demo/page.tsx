@@ -1,12 +1,12 @@
 import React from "react";
-import Navbar from "@/components/navbar";
+// import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 export default function ParallaxDemoPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
 
       <main className="py-8 px-4">
         <div className="py-24 text-center">

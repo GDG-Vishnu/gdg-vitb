@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Navbar from "@/components/navbar";
+//Navbar removed
 import Events from "./events";
 import FAQs from "./faqs";
 import AboutSection from "./about";
@@ -72,12 +72,7 @@ const HomePage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-white relative overflow-hidden flex flex-col "
-      style={{
-        backgroundColor: "white",
-        backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
-        backgroundSize: "20px 20px",
-      }}
+      className="min-h-screen relative overflow-hidden flex flex-col "
     >
       {/* Enhanced floating background elements */}
       <motion.div
@@ -238,7 +233,7 @@ const HomePage = () => {
       />
 
       {/* Site navbar */}
-      <Navbar />
+      {/* Navbar removed */}
       {/* Top right user info and logout button - responsive design 
       {session && (
         <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Navbar from "@/components/navbar";
+//Navbar removed
 import Footer from "@/components/footer/Footer";
 import { Camera, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
@@ -198,7 +198,7 @@ function Gallery() {
         backgroundSize: "20px 20px",
       }}
     >
-      <Navbar />
+      {/* Navbar removed */}
 
       <main className="py-8 px-4">
         <div className="max-w-7xl mx-auto">

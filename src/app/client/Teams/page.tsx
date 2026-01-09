@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Navbar from "@/components/navbar";
+//Navbar removed
 import LoadingTeam from "@/components/loadingPage/loading_team";
 import Footer from "@/components/footer/Footer";
 import MemberCard from "./MemberCard";
@@ -58,7 +58,7 @@ export default function TeamsPage() {
       }}
     >
       {/* Site navbar */}
-      <Navbar />
+      {/* Navbar removed */}
 
       {/* Meet the Team CTA */}
 
