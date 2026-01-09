@@ -3,12 +3,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-//Navbar removed
+// import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
+// import HeroCarousel from "@/components/events/HeroCarousel"; // Assuming this component exists or is part of the omitted code
 
+// ... existing code ...
 const carouselImages = [
   {
     url: "https://images.unsplash.com/photo-1580757468214-c73f7062a5cb?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -211,7 +213,7 @@ export default function EventsPage() {
         backgroundSize: "20px 20px",
       }}
     >
-      {/* Navbar removed */}
+      {/* <Navbar /> */}
 
       <main className="relative z-10 py-12 px-4">
         {/* Hero Carousel 
@@ -272,23 +274,25 @@ export default function EventsPage() {
                 <p className="text-yellow-800 font-bold text-xl font-productSans mb-2">
                   No events found.
                 </p>
-                <p className="text-yellow-700 font-productSans text-base">
-                  Check back later for upcoming events!
+                <p className="text-yellow-700 font-productSans">
+                  Check back later for upcoming activities!
                 </p>
               </div>
             </div>
           )}
 
           {!loading && !error && events.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-6  w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
               {events.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <article key={event.id} className="w-full max-w-[450px]">
+                  <EventCard event={event} />
+                </article>
               ))}
             </div>
           )}
         </div>
       </main>
-
+      <div className="max-w-6xl mx-auto p-12"></div>
       <Footer />
     </div>
   );

@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers";
 import { productSans } from "./font";
 import CursorSpark from "./client/CursorSpark";
 import BackToTop from "@/components/ui/back_to_top";
+import Navbar from "@/components/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,8 +65,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://gdgvitb.in",
-    title:
-      "GDG VITB ",
+    title: "GDG VITB ",
     description:
       "Join GDG VITB, a vibrant student-driven tech community at Vishnu Institute of Technology. Participate in hackathons, workshops, and collaborative projects to enhance your technical skills.",
     siteName: "GDG VITB",
@@ -151,10 +151,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} ${productSans.variable} antialiased overflow-y-auto hide-scrollbar`}
         suppressHydrationWarning={true}
+        style={{
+          backgroundColor: "white",
+          backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
       >
         <Providers>
           <SpeedInsights />
           <CursorSpark />
+          <Navbar />
           {children}
           <BackToTop />
         </Providers>

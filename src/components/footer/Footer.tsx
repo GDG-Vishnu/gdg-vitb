@@ -28,7 +28,7 @@ export default function Footer() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 w-full max-w-[924px] px-0 sm:px-2 md:px-[56px] py-2 md:py-4">
               <div className="border p-4 sm:p-5 md:p-4 flex flex-col items-center justify-center border-[#C3ECF6] rounded-lg md:rounded-none">
                 <h2 className="text-[#C3ECF6] text-xl sm:text-2xl md:text-2xl font-medium font-productSans text-center leading-tight">
-                  © 2025 GDG VITB.
+                  © 2026 GDG VITB.
                 </h2>
                 <h2 className="text-[#C3ECF6] text-base sm:text-lg md:text-xl font-productSans text-center mt-1 leading-tight">
                   All Rights are reserved

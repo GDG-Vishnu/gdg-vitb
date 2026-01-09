@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import Navbar from "@/components/navbar";
+//Navbar removed
 import Footer from "@/components/footer/Footer";
 import { motion } from "framer-motion";
 import {
@@ -671,7 +671,7 @@ export default function AboutPage() {
       <CustomStyles />
 
       {/* Navbar */}
-      <Navbar />
+      {/* Navbar removed */}
 
       {/* Hero Section */}
       <section className="relative z-10 pt-16 sm:pt-20 pb-20 sm:pb-24 px-4 min-h-[80vh] flex items-center">

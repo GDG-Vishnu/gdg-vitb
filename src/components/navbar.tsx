@@ -186,7 +186,7 @@ export default function Navbar({ className }: NavbarProps) {
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="flex items-center justify-start flex-shrink-0"
+        className="flex items-center justify-start flex-shrink-0 bg-white "
       >
         <div className="flex items-center justify-center w-[250px] h-[60px]">
           <Link href="/">
@@ -357,7 +357,10 @@ export default function Navbar({ className }: NavbarProps) {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-      className={cn("w-full flex justify-center py-4 px-4", className)}
+      className={cn(
+        "w-full flex justify-center py-4 px-4 bg-transparent",
+        className
+      )}
     >
       <motion.nav
         initial={{ scale: 0.95, opacity: 0 }}
@@ -382,7 +385,7 @@ export default function Navbar({ className }: NavbarProps) {
               animate={{ opacity: 1, height: "auto", y: 0 }}
               exit={{ opacity: 0, height: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="absolute left-0 right-0 top-full mt-2 z-30"
+              className="absolute left-0 right-0 top-full mt-2 z-30 "
             >
               <div className="mx-4 rounded-lg bg-white border shadow-lg overflow-hidden">
                 <motion.ul

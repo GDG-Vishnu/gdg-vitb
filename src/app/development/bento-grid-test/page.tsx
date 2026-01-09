@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/navbar";
+// import Navbar from "@/components/navbar";
 import Footer from "@/components/footer/Footer";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 
@@ -54,7 +54,7 @@ export default function BentoGridTestPage() {
         backgroundSize: "20px 20px",
       }}
     >
-      <Navbar />
+      {/* <Navbar /> */}
 
       <main className="relative z-10 py-10 px-4">
         <div className="max-w-6xl mx-auto mb-8 text-center">
