@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/dashboard"],
+        disallow: ["/api/", "/auth/", "/admin/", "/dashboard/"],
       },
     ],
     sitemap: "https://gdgvitb.in/sitemap.xml",
