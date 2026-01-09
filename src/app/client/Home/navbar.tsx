@@ -172,7 +172,7 @@ export default function Navbar({ className }: NavbarProps) {
             className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 text-xs lg:text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-amber-300"
           >
             <Trophy className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
-            <span className="hidden sm:inline">Top 1 Study Jams</span>
+            <span className="hidden sm:inline">Top 2 Study Jams</span>
             <span className="sm:hidden">#1</span>
           </motion.div>
         </Link>
@@ -271,7 +271,7 @@ export default function Navbar({ className }: NavbarProps) {
         className="flex items-center flex-shrink-0 w-[250px] justify-end"
       >
         <Link
-          href="https://study-jams-dashboard-ecru.vercel.app/achieved-tier-1"
+          href="https://gen-ai-gdg-vitb.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -281,7 +281,7 @@ export default function Navbar({ className }: NavbarProps) {
             className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-amber-300"
           >
             <Trophy className="w-4 h-4" />
-            <span>Top 1 Study Jams</span>
+            <span>Top 2 in India </span>
           </motion.div>
         </Link>
       </motion.div>
@@ -398,7 +398,7 @@ export default function Navbar({ className }: NavbarProps) {
                     className="border-b"
                   >
                     <Link
-                      href="https://study-jams-dashboard-ecru.vercel.app/achieved-tier-1"
+                      href="https://gen-ai-gdg-vitb.vercel.app/"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setMobileOpen(false)}
@@ -409,7 +409,7 @@ export default function Navbar({ className }: NavbarProps) {
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-bold text-stone-900">
-                            Top 1 Study Jams
+                            Top 2 in India
                           </p>
                           <p className="text-[10px] text-stone-600 font-medium">
                             GDG On Campus VITB Achievement
