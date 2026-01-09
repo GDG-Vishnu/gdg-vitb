@@ -162,7 +162,7 @@ export default function Navbar({ className }: NavbarProps) {
         className="flex-shrink-0"
       >
         <Link
-          href="https://study-jams-dashboard-ecru.vercel.app/achieved-tier-1"
+          href="https://gen-ai-gdg-vitb.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
         >
