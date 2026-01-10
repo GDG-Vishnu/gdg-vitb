@@ -8,24 +8,7 @@
   "theme_color": "#4285f4",
   "orientation": "portrait-primary",
   "categories": ["education", "technology"],
-  "icons": [
-    {
-      "src": "/favicon.ico",
-      "sizes": "any",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/icon.svg",
-      "type": "image/svg+xml",
-      "sizes": "any",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    }
-  ],
+  "icons": [],
   "screenshots": [],
   "shortcuts": [
     {
