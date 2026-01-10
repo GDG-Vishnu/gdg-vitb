@@ -105,8 +105,8 @@ export default function EventsCarousel() {
       setTimeout(() => setIsAutoScrolling(true), 2000);
     };
 
-    scroller.addEventListener('wheel', handleWheel, { passive: false });
-    return () => scroller.removeEventListener('wheel', handleWheel);
+    scroller.addEventListener("wheel", handleWheel, { passive: false });
+    return () => scroller.removeEventListener("wheel", handleWheel);
   }, []);
 
   function renderDesktop() {
