@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react";
 //Navbar removed
 import Footer from "@/components/footer/Footer";
-import { Camera, ArrowLeft, Image as ImageIcon } from "lucide-react";
-import Link from "next/link";
+import { Camera, Image as ImageIcon } from "lucide-react";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -202,15 +201,6 @@ function Gallery() {
 
       <main className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
-          {/* Back Button */}
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-gray-100 hover:text-gray-200 transition mb-6 bg-stone-900 p-2 rounded-4xl"
-          >
-            <ArrowLeft className="w-6 h-6 text-stone-950 rounded-full hover:rotate-2 bg-blue-500 " />
-            <p className="hidden lg:block font-productSans">Back to Home</p>
-          </Link>
-
           {/* Gallery Header */}
           <div className="text-center mb-12">
             <div className="flex justify-center items-center gap-4 mb-4">

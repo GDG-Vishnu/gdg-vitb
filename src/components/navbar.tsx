@@ -20,7 +20,6 @@ const navItems: NavItem[] = [
   { label: "Team", href: "/teams" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
-
   { label: "Contact Us", href: "/contactus" },
 ];
 
@@ -32,6 +31,7 @@ export default function Navbar({ className }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isTablet, setIsTablet] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   const pathname = usePathname();
 
   const isActive = (href?: string): boolean => {
@@ -62,16 +62,47 @@ export default function Navbar({ className }: NavbarProps) {
   };
 
   useEffect(() => {
+    setMounted(true);
+    
     function handleResize(): void {
       const w = window.innerWidth;
       setIsMobile(w < 1024);
       setIsTablet(w >= 1024 && w < 1280);
       if (w >= 1024) setMobileOpen(false);
     }
+    
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <header className={cn("w-full flex justify-center py-4 px-4 bg-transparent", className)}>
+        <nav
+          className="w-full bg-white rounded-[40px] border border-black shadow-md px-4 py-2 md:py-3 flex items-center justify-between mx-4 relative font-productSans"
+          style={{
+            boxShadow: "0 8px 0 rgba(0,0,0,0.08), 0 4px 14px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div className="flex items-center justify-between w-full">
+            <div className="flex-shrink-0">
+              <Link href="/">
+                <img
+                  src="https://res.cloudinary.com/dlupkibvq/image/upload/v1766919662/Logo_udgpps.png"
+                  alt="GDG VITB"
+                  width={180}
+                  height={40}
+                  className="h-6 w-auto object-contain"
+                />
+              </Link>
+            </div>
+          </div>
+        </nav>
+      </header>
+    );
+  }
 
   const renderTablet = (): JSX.Element => (
     <div className="flex items-center justify-between w-full gap-3 lg:gap-4">

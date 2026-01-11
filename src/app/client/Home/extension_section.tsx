@@ -34,7 +34,7 @@ function ExtensionSection() {
 
   return (
     <div
-      className="flex flex-col justify-around items-around w-full my-20 mx-4 md:mx-20 lg:mx-40 space-y-10 relative"
+      className="flex flex-col justify-around items-center w-full py-20 px-4 md:px-10 lg:px-20 space-y-10 relative"
       style={{ background: "#F8D8D8" }}
     >
       {/* Background decoration */}
@@ -68,7 +68,7 @@ function ExtensionSection() {
         Why Join GDG VITB?
       </h1>
 
-      <div className="grid grid-cols-2 gap-4 md:flex md:flex-row md:justify-center md:items-center md:space-y-0 md:space-x-10 w-full relative z-10">
+      <div className="grid grid-cols-2 gap-4 md:gap-8 xl:flex xl:flex-row xl:justify-center xl:items-center xl:space-y-0 xl:space-x-10 w-full relative z-10 max-w-7xl mx-auto">
         {data.map((item, index) => (
           <Card
             key={index}
