@@ -9,25 +9,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 
-const carouselImages = [
-  {
-    url: "https://images.unsplash.com/photo-1580757468214-c73f7062a5cb?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    alt: "Tech Event 1",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1626593261859-4fe4865d8cb1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    alt: "Tech Event 2",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1594568284297-7c64464062b1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    alt: "Tech Event 3",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1599454100789-b211e369bd04?q=80&w=1306&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    alt: "Tech Event 4",
-  },
-];
-
 type Event = {
   id: string;
   title: string;
@@ -92,73 +73,48 @@ function EventCard({ event }: { event: Event }) {
 
   return (
     <article
-      className="bg-white shadow-md snap-start overflow-hidden"
-      style={{
-        width: 450,
-        height: 472,
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderColor: "#000",
-        borderRadius: 50,
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
+      className="bg-white shadow-md snap-start overflow-hidden w-full border border-black flex flex-col justify-between
+        rounded-[30px] sm:rounded-[40px] lg:rounded-[50px]
+        h-[380px] sm:h-[420px] lg:h-[472px]"
     >
+      {/* Image Container */}
       {event.imageUrl && (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "transparent",
-            overflow: "hidden",
-          }}
-        >
+        <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
           <img
             src={event.imageUrl}
             alt={event.title}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100%",
-              objectFit: "cover",
-              borderRadius: 50,
-            }}
+            className="w-full h-full object-cover rounded-[24px] sm:rounded-[32px] lg:rounded-[40px]"
           />
         </div>
       )}
 
-      <div style={{ padding: 30 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-          }}
-        >
-          <div>
-            <h3 className="text-2xl  font-semibold text-stone-950 font-productSans">
+      {/* Content Container */}
+      <div className="px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-6">
+        <div className="flex items-center justify-between gap-3 sm:gap-4">
+          {/* Title */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-stone-950 font-productSans truncate">
               {event.title}
             </h3>
           </div>
 
-          <div>
+          {/* Button */}
+          <div className="flex-shrink-0">
             <Button
               asChild
               variant="noShadow"
               size="round"
               aria-label={`Open ${event.title}`}
               style={getButtonStyle()}
-              className="translate-x-1 translate-y-1 shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:translate-x-0 hover:translate-y-0 hover:shadow-none transition-all"
+              className="translate-x-1 translate-y-1 shadow-[3px_3px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_rgba(0,0,0,1)] 
+                hover:translate-x-0 hover:translate-y-0 hover:shadow-none transition-all
+                w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 p-0 flex items-center justify-center"
             >
               <Link href={`/events/${event.id}`}>
                 <img
                   src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                   alt=""
-                  className="w-[40px] h-[40px]"
+                  className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
                 />
               </Link>
             </Button>
@@ -280,7 +236,7 @@ export default function EventsPage() {
           )}
 
           {!loading && !error && events.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-6  w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
               {events.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
