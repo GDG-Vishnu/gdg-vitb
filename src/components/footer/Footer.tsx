@@ -41,25 +41,25 @@ export default function Footer() {
                 </div>
                 <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 text-[#CCF6C5] text-base sm:text-lg md:text-base">
                   <a
-                    href="/client"
+                    href="/"
                     className="hover:underline font-productSans text-center md:text-left py-1"
                   >
                     Home
                   </a>
                   <a
-                    href="/client/gallery"
+                    href="/gallery"
                     className="hover:underline font-productSans text-center md:text-left py-1"
                   >
                     Gallery
                   </a>
                   <a
-                    href="/client/Teams"
+                    href="/teams"
                     className="hover:underline font-productSans text-center md:text-left py-1"
                   >
                     Team
                   </a>
                   <a
-                    href="/client/contactus"
+                    href="/contactus"
                     className="hover:underline font-productSans text-center md:text-left py-1"
                   >
                     Contact us
