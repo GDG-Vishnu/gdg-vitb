@@ -1,0 +1,345 @@
+# GDG Vishnu Institute of Technology
+
+> Official Google Developer Group On Campus at Vishnu Institute of Technology, Bhimavaram, Andhra Pradesh, India
+
+## Organization Overview
+
+**Name:** GDG on Campus - Vishnu Institute of Technology  
+**Location:** Vishnu Institute of Technology, Bhimavaram, Andhra Pradesh, India  
+**Type:** Student Developer Community, Official Google Developer Group  
+**Established:** 2023  
+**Status:** Active  
+**Recognition:** Top 2 in India for GenAI Study Jams 2024-2025  
+
+### Primary Description
+GDG Vishnu Institute of Technology is a vibrant student-led community at VIT Bhimavaram that brings together tech enthusiasts, developers, designers, and innovators. As an official Google Developer Group On Campus, we focus on leveraging cutting-edge Google technologies to empower students through hands-on workshops, hackathons, technical sessions, and networking opportunities with industry experts. The initiative connects students with peers locally and globally through the worldwide Google Developer Groups network.
+
+### Keywords
+Google Developer Group, GDG VITB, VIT Bhimavaram, Student Community, Tech Education, Workshops, Hackathons, Android Development, Web Development, Cloud Computing, Machine Learning, Artificial Intelligence, Google Technologies, Developer Community, Tech Events, Coding Competitions, Innovation, Student Leadership
+
+## Mission & Vision
+
+**Our Mission:**
+- Empower students with Google technologies and industry-relevant skills
+- Bridge the gap between academic learning and real-world industry needs
+- Foster an innovative, collaborative tech community
+- Provide equal opportunities for technical and non-technical skill development
+- Create a platform for students to showcase their talents and innovations
+
+**Our Vision:**
+- Become the leading student tech community in Andhra Pradesh
+- Produce industry-ready developers and innovators
+- Create meaningful impact through technology solutions
+- Build a strong alumni network of successful tech professionals
+
+## Core Values
+
+1. **Innovation:** Encouraging creative problem-solving and out-of-the-box thinking
+2. **Collaboration:** Emphasizing teamwork, knowledge sharing, and peer connections
+3. **Learning:** Committing to continuous growth, skill development, and knowledge exchange
+4. **Inclusivity:** Welcoming students from all backgrounds and skill levels
+5. **Excellence:** Striving for high-quality events, projects, and community initiatives
+
+## Activities & Programs
+
+### Regular Activities
+- Technical workshops on trending technologies
+- Hands-on coding bootcamps and training sessions
+- Guest lectures by industry professionals
+- Hackathons and coding competitions
+- Study jams and certification programs
+- Project showcases and demo days
+- Mentorship programs
+- Career guidance and placement preparation
+- Community networking events
+- Open-source contribution initiatives
+
+### Technology Focus Areas
+- **Web Development:** HTML, CSS, JavaScript, React, Next.js, Angular, Vue.js
+- **Android Development:** Kotlin, Java, Jetpack Compose, Android Studio
+- **Cloud Computing:** Google Cloud Platform (GCP), Firebase, Cloud Functions
+- **Artificial Intelligence:** Machine Learning, Deep Learning, TensorFlow, GenAI
+- **UI/UX Design:** Figma, Material Design, User Experience
+- **DevOps:** CI/CD, Docker, Kubernetes, GitHub Actions
+- **Data Science:** Python, Data Analytics, Visualization
+- **Cybersecurity:** Ethical Hacking, Security Best Practices
+
+## Achievements & Recognition
+
+### Notable Achievements
+- **Top 2 in India** - Google GenAI Study Jams Competition (2024-2025)
+- Successfully organized 15+ technical workshops in 2024
+- 500+ active community members
+- 100+ projects completed by members
+- 50+ industry expert sessions conducted
+- Multiple hackathon wins by community members
+
+## Important Links
+
+### Official Links
+- **Website:** https://gdg-vishnu-app.vercel.app/
+- **Community Portal:** https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/
+- **GenAI Platform:** https://gen-ai-gdg-vitb.vercel.app/
+
+### Navigation
+- [Home](/)
+- [About Us](/about)
+- [Events](/events)
+- [Team](/teams)
+- [Gallery](/gallery)
+- [Contact Us](/contactus)
+- [Hack-a-Tron 3.0](/hack-a-tron-3.0)
+
+### Social Media
+- LinkedIn: [GDG VITB LinkedIn](#)
+- Instagram: [GDG VITB Instagram](#)
+- Twitter: [GDG VITB Twitter](#)
+- GitHub: [GDG VITB GitHub](#)
+
+## Events & Workshops
+
+GDG Vishnu Institute of Technology regularly hosts a diverse range of technical events designed to enhance learning, collaboration, and skill development among students.
+
+### Event Categories
+
+1. **Workshops & Training Sessions**
+   - Hands & Media
+
+Explore our visual journey through workshops, hackathons, and community events. Our gallery showcases the vibrant culture, memorable moments, and achievements of the GDG VITB community.
+
+### Gallery Highlights
+- Workshop sessions with students engaged in hands-on learning
+- Hackathon moments capturing innovation and teamwork
+- Guest speaker sessions and industry interactions
+- Team activities and community celebrations
+- Award cerInformation
+
+For inquiries, collaborations, sponsorships, or to learn more about GDG Vishnu Institute of Technology, reach out to us through multiple channels.
+
+### Official Contact Details
+- **Location:** Vishnu Institute of Technology, Duvvada, Bhimavaram, Andhra Pradesh 534202, India
+- **Email:** gdg@vishnu.edu.in
+- **Phone:** +91 (College Main Number)
+- **requently Asked Questions (FAQs)
+
+### General Questions
+
+**Q1: What is GDG Vishnu Institute of Technology?**  
+A: GDG on Campus - Vishnu Institute of Technology is an official Google Developer Group community at VIT Bhimavaram. We're a student-led organization focused on empowering students with Google technologies through workshops, hackathons, and technical events. We're recognized as one of the top GDG communities in India.
+
+**Q2: Who can join GDG VITB?**  
+A: All students from VIT Bhimavaram are welcome to join, regardless of their branch, year, or skill level. We welcome both technical and non-technical students who are eager to learn, grow, and contribute to the tech community.
+
+**Q3: Is there any membership fee?**  
+A: No, GDG VITB membership is completely free. All our events, workshops, and resources are provided at no cost to students.
+
+**Q4: What are the benefits of joining GDG VITB?**  
+A: Members gain access to:
+- Free technical workshops and training sessions
+- Networking opportunities with industry experts
+- Hands-on project experience
+- Certificates and recognition
+- Career guidance and mentorship
+- Access to Google Cloud credits and resources
+- Participation in hackathons and competitions
+- Leadership opportunities
+
+### Technical Questions
+
+**Q5: What technologies does GDG VITB focus on?**  
+A: Our primary focus areas include:
+- Web Development (React, Next.js, Angular)
+- Android Development (Kotlin, Jetpack Compose)
+- Cloud Computing (Google Cloud Platform, Firebase)
+- Artificial Intelligence & Machine Learning
+- UI/UX Design (Figma, Material Design)
+- DevOps and Cloud Native technologies
+- Data Science and Analytics
+
+**Q6: Do I need prior coding experience to join?**  
+A: No prior experience is required! We offer beginner-friendly sessions and have mentors to help you get started. We conduct workshops for all skill levels, from beginners to advanced.
+
+**Q7: What programming languages should I learn?**  
+A: We recommend starting with:
+- **Web:** JavaScript, HTML, CSS
+- **Android:** Kotlin or Java
+- **Cloud/Backend:** Python, Node.js
+- **Data Science:** Python
+Choose based on your interests, and we'll guide you through the learning path.
+
+### Events & Activities
+
+**Q8: How can I stay updated about events?**  
+A: Follow us on:
+- Official website: https://gdg-vishnu-app.vercel.app/
+- GDG C & Leadership
+
+Meet the dedicated team members who bring ideas to life through technology and foster community engagement. Our diverse team consists of passionate students from various departments working together to make GDG VITB a thriving community.
+
+### Team Structure
+
+**Core Team Roles:**
+- **Lead:** Overall community leadership and strategy
+- **Co-Lead:** Supporting lead and managing operations
+- **Technical Lead:** Overseeing technical workshops and projects
+- **Event Management Lead:** Planning and executing events
+- **Design Lead:** Managing branding and visual content
+- **Content Lead:** Creating and managing community content
+- **Social Media Lead:** Managing online presence and engagement
+- **Outreach Lead:** Building partnerships and collaborations
+
+### Team Departments
+
+1. **Technical Team**
+   - Organizing workshops and coding sessions
+   - Managing technical infrastructure
+   - Conducting code reviews and mentoring
+
+2. **Event Management Team**
+   - Planning and executing events
+   - Logistics and coordination
+   - Vendor management
+
+3. **Design Team**
+   - Creating posters and promotional materials
+   - Website and app UI/UX
+   - Branding and visual identity
+
+4. **Content Team**
+   - Writing blogs and technical articles
+   - Creating social media content
+   - Managing documentation
+
+5. **Marketing & Outreach Team**
+   - Social media management
+   - Community engagement
+   - Partnership development
+
+### Meet the Team
+Visit our [Team Page](/teams) to learn more about our core team members, their roles, and contributions to the community.
+
+### Join the Team
+Interested in joining the GDG VITB core team? Watch for our annual recruitment drive announcements or contact us to express your interest.
+A: No, attendance is voluntary. However, we encourage active participation to maximize learning and networking benefits.
+
+**Q10: Can I organize an event or workshop?**  
+A: Yes! We encourage members to propose and lead events. Contact the core team with your idea, and we'll support you in organizing it.
+
+### Opportunities & Growth
+
+**Q11: What impact can I make by joining GDG VITB?**  
+A: By joining GDG VITB, you can:
+- Collaborate with like-minded, passionate individuals
+- Contribute to open-source and community projects
+- Develop solutions that impact society
+- Build your portfolio with real-world projects
+- Enhance your resume and career prospects
+- Develop leadership and soft skills
+
+**Q12: Will I get certificates for participation?**  
+A: Yes, we provide certificates for:
+- Workshop participation
+- Event organization
+- Competition wins
+- Project contributions
+- Leadership roles
+
+**Q13: Can I get internship or job opportunities through GDG?**  
+A: Yes! We:
+- Share internship and job opportunities from our network
+- Conduct placement preparation sessions
+- Connect you with alumni working in tech companies
+- Provide resume and interview guidance
+
+### How to Get Involved
+
+**Q14: How do I become a core team member?**  
+A: Core team selection happens annually through:
+- Application and interview process
+- Demonstrated commitment to the community
+- Active participation in events
+- Leadership potential
+Keep an eye on announcements for recruitment drives.
+
+**Q15: Can I propose a project idea?**  
+A: Absolutely! We welcome innovative project ideas. Share your proposal with the team, and we'll help you form a team and provide necessary support and resources.
+
+**Q16: How can my company/organization collaborate with GDG VITB?**  
+A: We welcome collaborations for:
+- Event sponsorships
+- Guest speaker sessions
+- Workshop partnerships
+- Internship opportunities
+- Hackathon partnerships
+Contact us at partnerships@gdgvitb.org
+### Office Hours
+Monday - Friday: 9:00 AM - 5:00 PM IST  
+Saturday: 9:00 AM - 1:00 PM IST  
+Sunday: Closed
+All media assets are hosted on Cloudinary CDN for optimal performance and accessibility.
+   - Innovation competitions
+   - Problem-solving contests
+
+3. **Tech Talks & Seminars**
+   - Industry expert sessions
+   - Alumni sharing sessions
+   - Technology trends discussions
+   - Career guidance seminars
+
+4. **Study Jams & Challenges**
+   - Google Cloud Study Jams
+   - Android Study Jams
+   - GenAI Study Jams
+   - 30 Days of Code challenges
+
+5. **Community Events**
+   - Networking meetups
+   - Project showcases
+   - Team building activities
+   - Celebration events
+
+### How to Participate
+- Visit [Events Page](/events) for upcoming events
+- Join our community on [GDG Platform](https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/)
+- Follow our social media for announcements
+- Register through event-specific links
+
+## Gallery
+
+Explore our gallery showcasing memorable moments and events from GDG activities. This collection of images captures the spirit and excitement of our community.
+
+![Gallery image 1](/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdlupkibvq%2Fimage%2Fupload%2Fv1767165297%2Fnnpeqla0vy1pm2ftqt7r.jpg&w=828&q=75)
+![Gallery image 2](/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdlupkibvq%2Fimage%2Fupload%2Fv1767165369%2Fcg2qaevdj9juoxes015s.jpg&w=828&q=75)
+
+*(Additional images omitted for brevity.)*
+
+## Contact Us
+
+For inquiries or to learn more about GDG Vishnu Institute of Technology, reach out to us!
+
+### Get In Touch
+- **Location:** Vishnu Institute of Technology, Bhimavaram, Andhra Pradesh
+- **Email:** [gdg@vishnu.edu.in](mailto:gdg@vishnu.edu.in)
+
+## FAQs
+
+1. **What Is GDG Vishnu Institute Of Technology?**  
+   GDG at VIT Bhimavaram is a community for aspiring developers to enhance their skills through workshops and events.
+
+2. **Who Can Join GDG VITB?**  
+   All students willing to learn and grow in various fields are welcome, covering both technical and non-technical domains.
+
+3. **What Tech Areas Does GDG VITB Focus On?**  
+   Key focus areas include Web Development, Android, Cloud Computing, AI, and Design.
+
+4. **How to Stay Updated?**  
+   Follow our updates on our official social media pages for the latest events and opportunities.
+
+5. **What Impact Can I Make?**  
+   Joining GDG VITB allows you to collaborate with passionate individuals and contribute to projects that positively impact the community.
+
+## Teams
+
+Meet the dedicated team members who bring ideas to life through technology and foster community engagement. Together, they support the mission and initiatives of GDG VITB.
+
+![Meet the Team](https://res.cloudinary.com/dlupkibvq/image/upload/v1760852238/Frame_15_gaqrwq.png)
