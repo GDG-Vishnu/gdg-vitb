@@ -68,7 +68,6 @@ export default function Footer() {
                     href="/events"
                     className="hover:underline font-productSans text-center md:text-left py-1"
                   >
-                    
                     Events
                   </a>
                 </div>
