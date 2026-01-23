@@ -1,5 +1,12 @@
 "use client";
-import React, { useState, useEffect, JSX } from "react";
+import React, {
+  useState,
+  useEffect,
+  JSX,
+  memo,
+  useMemo,
+  useCallback,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -27,59 +34,66 @@ interface NavbarProps {
   className?: string;
 }
 
-export default function Navbar({ className }: NavbarProps) {
+function Navbar({ className }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isTablet, setIsTablet] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
   const pathname = usePathname();
 
-  const isActive = (href?: string): boolean => {
-    if (!href || !pathname) return false;
-    const legacy = href === "/" ? "/client" : `/client${href}`;
-    const legacyAlt = href === "/teams" ? "/client/Teams" : undefined;
-    const nested = [
-      "/events",
-      "/teams",
-      "/about",
-      "/gallery",
-      "/contactus",
-      "/hack-a-tron-3.0",
-    ];
-    const isNested = nested.includes(href);
-    if (isNested)
+  const isActive = useCallback(
+    (href?: string): boolean => {
+      if (!href || !pathname) return false;
+      const legacy = href === "/" ? "/client" : `/client${href}`;
+      const legacyAlt = href === "/teams" ? "/client/Teams" : undefined;
+      const nested = [
+        "/events",
+        "/teams",
+        "/about",
+        "/gallery",
+        "/contactus",
+        "/hack-a-tron-3.0",
+      ];
+      const isNested = nested.includes(href);
+      if (isNested)
+        return (
+          pathname.startsWith(href) ||
+          pathname.startsWith(legacy) ||
+          (legacyAlt ? pathname.startsWith(legacyAlt) : false)
+        );
+      if (href === "/") return pathname === "/" || pathname === legacy;
       return (
-        pathname.startsWith(href) ||
-        pathname.startsWith(legacy) ||
-        (legacyAlt ? pathname.startsWith(legacyAlt) : false)
+        pathname === href ||
+        pathname === legacy ||
+        (legacyAlt ? pathname === legacyAlt : false)
       );
-    if (href === "/") return pathname === "/" || pathname === legacy;
-    return (
-      pathname === href ||
-      pathname === legacy ||
-      (legacyAlt ? pathname === legacyAlt : false)
-    );
-  };
+    },
+    [pathname],
+  );
+
+  const handleResize = useCallback(() => {
+    const w = window.innerWidth;
+    setIsMobile(w < 1024);
+    setIsTablet(w >= 1024 && w < 1280);
+    if (w >= 1024) setMobileOpen(false);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
-    
-    function handleResize(): void {
-      const w = window.innerWidth;
-      setIsMobile(w < 1024);
-      setIsTablet(w >= 1024 && w < 1280);
-      if (w >= 1024) setMobileOpen(false);
-    }
-    
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [handleResize]);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
-      <header className={cn("w-full flex justify-center py-4 px-4 bg-transparent", className)}>
+      <header
+        className={cn(
+          "w-full flex justify-center py-4 px-4 bg-transparent",
+          className,
+        )}
+      >
         <nav
           className="w-full bg-white rounded-[40px] border border-black shadow-md px-4 py-2 md:py-3 flex items-center justify-between mx-4 relative font-productSans"
           style={{
@@ -155,7 +169,7 @@ export default function Navbar({ className }: NavbarProps) {
                         "inline-flex items-center gap-1 px-2.5 lg:px-3 py-1.5 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200",
                         "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
                         "shadow-md hover:shadow-lg",
-                        active && "ring-1 ring-amber-300"
+                        active && "ring-1 ring-amber-300",
                       )}
                     >
                       <Sparkles className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
@@ -169,7 +183,7 @@ export default function Navbar({ className }: NavbarProps) {
                       "inline-block text-xs lg:text-sm font-medium px-2.5 lg:px-3 py-1.5 rounded-lg transition-colors duration-200",
                       active || item.active
                         ? "text-white font-bold bg-black shadow-md"
-                        : "text-gray-700 hover:text-black hover:bg-gray-100"
+                        : "text-gray-700 hover:text-black hover:bg-gray-100",
                     )}
                   >
                     <motion.span
@@ -260,7 +274,7 @@ export default function Navbar({ className }: NavbarProps) {
                       "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
                       "shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_25px_rgba(251,191,36,0.7)]",
                       "border-2 border-yellow-300",
-                      active && "ring-2 ring-offset-2 ring-amber-400"
+                      active && "ring-2 ring-offset-2 ring-amber-400",
                     )}
                   >
                     <Sparkles className="w-4 h-4 animate-pulse" />
@@ -278,7 +292,7 @@ export default function Navbar({ className }: NavbarProps) {
                     "text-base font-medium font-productSans px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105",
                     active || item.active
                       ? "text-white font-bold bg-black shadow-md"
-                      : "text-gray-600 hover:text-black hover:bg-gray-100"
+                      : "text-gray-600 hover:text-black hover:bg-gray-100",
                   )}
                 >
                   <motion.span
@@ -362,19 +376,19 @@ export default function Navbar({ className }: NavbarProps) {
             <span
               className={cn(
                 "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
-                mobileOpen ? "translate-y-1 rotate-45" : ""
+                mobileOpen ? "translate-y-1 rotate-45" : "",
               )}
             />
             <span
               className={cn(
                 "block w-6 h-0.5 bg-stone-950 transition-opacity duration-200",
-                mobileOpen ? "opacity-0" : "opacity-100"
+                mobileOpen ? "opacity-0" : "opacity-100",
               )}
             />
             <span
               className={cn(
                 "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
-                mobileOpen ? "-translate-y-1 -rotate-45" : ""
+                mobileOpen ? "-translate-y-1 -rotate-45" : "",
               )}
             />
           </span>
@@ -390,7 +404,7 @@ export default function Navbar({ className }: NavbarProps) {
       transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
       className={cn(
         "w-full flex justify-center py-4 px-4 bg-transparent",
-        className
+        className,
       )}
     >
       <motion.nav
@@ -406,8 +420,8 @@ export default function Navbar({ className }: NavbarProps) {
         {isMobile
           ? renderMobile()
           : isTablet
-          ? renderTablet()
-          : renderDesktop()}
+            ? renderTablet()
+            : renderDesktop()}
 
         <AnimatePresence>
           {isMobile && mobileOpen && (
@@ -425,7 +439,6 @@ export default function Navbar({ className }: NavbarProps) {
                   transition={{ delay: 0.1 }}
                   className="flex flex-col gap-0 font-productSans"
                 >
-                  
                   <motion.li
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -473,8 +486,8 @@ export default function Navbar({ className }: NavbarProps) {
                             item.special
                               ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 font-bold"
                               : active || item.active
-                              ? "text-white font-bold bg-black"
-                              : "text-stone-950 hover:bg-gray-50"
+                                ? "text-white font-bold bg-black"
+                                : "text-stone-950 hover:bg-gray-50",
                           )}
                           onClick={() => setMobileOpen(false)}
                         >
@@ -505,3 +518,6 @@ export default function Navbar({ className }: NavbarProps) {
     </motion.header>
   );
 }
+
+// Memoize the navbar to prevent unnecessary re-renders
+export default memo(Navbar);
