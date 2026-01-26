@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 //Navbar removed
-import LoadingTeam from "@/components/loadingPage/loading_team";
+import { LoadingTeam } from "@/components/loadingPage";
 import Footer from "@/components/footer/Footer";
 import MemberCard from "./MemberCard";
 
@@ -114,7 +114,7 @@ export default function TeamsPage() {
 
         <div className="mt-8 w-full">
           {loading && (
-            <LoadingTeam variant="section" message="Loading team members..." />
+            <LoadingTeam variant="page" message="Loading team members..." />
           )}
           {!loading && team.length === 0 && (
             <div className="col-span-full text-center font-productSans">
@@ -148,7 +148,7 @@ export default function TeamsPage() {
                     if (!acc[pos]) acc[pos] = [];
                     acc[pos].push(member);
                     return acc;
-                  }, {})
+                  }, {}),
               ).map(([position, members]) => (
                 <section
                   key={position}
@@ -215,7 +215,7 @@ export default function TeamsPage() {
                             const cardsInRow = isFirstRow ? 3 : 2;
                             const rowMembers = members.slice(
                               index,
-                              index + cardsInRow
+                              index + cardsInRow,
                             );
                             rows.push(
                               <div
@@ -237,7 +237,7 @@ export default function TeamsPage() {
                                     />
                                   </div>
                                 ))}
-                              </div>
+                              </div>,
                             );
                             index += cardsInRow;
                           }

@@ -9,7 +9,7 @@ interface LoadingTeamProps {
 
 export default function LoadingTeam({
   variant = "section",
-  message = "Loading team members...",
+  message = "Loading team Data...",
 }: LoadingTeamProps) {
   if (variant === "section") {
     return (
