@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import LoadingEvents from "@/components/loadingPage/loading_events";
+import { LoadingEvents } from "@/components/loadingPage";
 
 type EventItem = {
   id: string;
@@ -102,7 +102,7 @@ export default function EventsCarousel() {
   }, []);
 
   if (loading) {
-    return <LoadingEvents variant="section" />;
+    return <LoadingEvents variant="page" message="Loading Events..." />;
   }
 
   if (events.length === 0) {

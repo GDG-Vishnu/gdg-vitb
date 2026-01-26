@@ -23,6 +23,7 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import NextJsImage from "@/components/NextJsImage";
 import { is } from "date-fns/locale";
+import { LoadingEventDetail } from "@/components/loadingPage";
 
 type Event = {
   id: string;
@@ -132,9 +133,7 @@ export default function EventDetailPage() {
           backgroundSize: "20px 20px",
         }}
       >
-        <div className="flex items-center justify-center py-40">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-        </div>
+        <LoadingEventDetail variant="page" message="Loading Event Details..." />
         <Footer />
       </div>
     );
