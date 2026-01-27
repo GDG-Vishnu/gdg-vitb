@@ -27,6 +27,7 @@ const navItems: NavItem[] = [
   { label: "Team", href: "/teams" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Recruitment", href: "/recruitment" },
   { label: "Contact Us", href: "/contactus" },
 ];
 
@@ -52,6 +53,7 @@ function Navbar({ className }: NavbarProps) {
         "/about",
         "/gallery",
         "/contactus",
+        "/recruitment",
         "/hack-a-tron-3.0",
       ];
       const isNested = nested.includes(href);
