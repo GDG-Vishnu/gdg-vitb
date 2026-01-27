@@ -1,734 +1,143 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useState } from "react";
 import Image from "next/image";
-import { FormInput } from "@/components/recruitment/FormInput";
+import Link from "next/link";
 
-// Google Apps Script URL
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxjEw_88euD-3gWrrPhpwAQBlopweq4XoLb471x25Lu3iqTAfFAoaNA9becw0dAokYpHw/exec";
+interface RecruitmentRole {
+  id: string;
+  title: string;
+  description: string;
+  color: string;
+  icon: string;
+  route: string;
+  status: "open" | "closed" | "coming-soon";
+}
 
-// Theme colors hashmap
-const themeColors = {
-  red: "#E6452D",
-  green: "#33A854",
-  yellow: "#F1AE08",
-  blue: "#4584F4",
-};
-
-// Get random color from theme
-const getRandomColor = () => {
-  const colors = Object.values(themeColors);
-  return colors[Math.floor(Math.random() * colors.length)];
-};
-
-const formSchema = z.object({
-  // Section 1: Introduction & Links
-  fullName: z.string().min(1, "Full name is required"),
-  email: z
-    .string()
-    .email("Invalid email address")
-    .refine(
-      (email) => email.endsWith("@vishnu.edu.in"),
-      "Email must end with @vishnu.edu.in",
-    ),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  linkedinUrl: z.string().optional(),
-  githubUrl: z.string().optional(),
-  portfolioUrl: z.string().optional(),
-  resume: z
-    .any()
-    .refine((files) => files?.length > 0, "Resume is required")
-    .refine(
-      (files) => files?.[0]?.size <= 5 * 1024 * 1024,
-      "File size must be less than 5MB",
-    ),
-
-  // Section 2: Task & Declaration
-  taskSubmission: z
-    .any()
-    .refine((files) => files?.length > 0, "Task submission is required")
-    .refine(
-      (files) => files?.[0]?.size <= 10 * 1024 * 1024,
-      "File size must be less than 10MB",
-    )
-    .refine(
-      (files) =>
-        files?.[0]?.name.endsWith(".docx") || files?.[0]?.name.endsWith(".doc"),
-      "Only .docx or .doc files are allowed",
-    ),
-
-  gitRepoLink: z.string().url("Please enter a valid URL").optional(),
-
-  agreeToTerms: z.boolean().refine((val) => val === true, {
-    message: "You must agree to the terms and conditions",
-  }),
-  confirmInfo: z.boolean().refine((val) => val === true, {
-    message: "You must confirm the accuracy of information",
-  }),
-});
-
-type FormData = z.infer<typeof formSchema>;
+const recruitmentRoles: RecruitmentRole[] = [
+  {
+    id: "web-dev",
+    title: "Full Stack Web Development",
+    description:
+      "Join our web development team to build innovative web applications using modern technologies and frameworks.",
+    color: "#4584F4",
+    icon: "💻",
+    route: "/recruitment/web-dev",
+    status: "open",
+  },
+  // Add more roles here as needed
+];
 
 export default function RecruitmentPage() {
-  const [resumeFileName, setResumeFileName] = useState<string>("");
-  const [taskFileName, setTaskFileName] = useState<string>("");
-  const [currentStep, setCurrentStep] = useState(1);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string>("");
-  const [submitSuccess, setSubmitSuccess] = useState<string>("");
-  const [inputColors] = useState({
-    fullName: getRandomColor(),
-    email: getRandomColor(),
-    phone: getRandomColor(),
-    linkedinUrl: getRandomColor(),
-    githubUrl: getRandomColor(),
-    portfolioUrl: getRandomColor(),
-    resume: getRandomColor(),
-    taskSubmission: getRandomColor(),
-    gitRepoLink: getRandomColor(),
-    declaration: getRandomColor(),
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    trigger,
-    getValues,
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
-  });
-
-  const onSubmit = async (data: FormData) => {
-    try {
-      setIsSubmitting(true);
-      setSubmitError("");
-      setSubmitSuccess("");
-
-      // Convert files to base64
-      const resumeFile = data.resume[0];
-      const taskFile = data.taskSubmission[0];
-
-      const payload = {
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
-        linkedinUrl: data.linkedinUrl || "",
-        githubUrl: data.githubUrl || "",
-        portfolioUrl: data.portfolioUrl || "",
-        resume: {
-          data: await fileToBase64(resumeFile),
-          mimeType: resumeFile.type,
-          name: resumeFile.name,
-        },
-        taskSubmission: {
-          data: await fileToBase64(taskFile),
-          mimeType: taskFile.type,
-          name: taskFile.name,
-        },
-        gitRepoLink: data.gitRepoLink || "",
-        agreeToTerms: data.agreeToTerms,
-        confirmInfo: data.confirmInfo,
-      };
-
-      const response = await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      // With no-cors mode, we can't read the response
-      // So we assume success if no error was thrown
-      setSubmitSuccess("Form submitted successfully!");
-      setTimeout(() => {
-        setShowSuccessDialog(true);
-        setSubmitSuccess("");
-      }, 1500);
-    } catch (error) {
-      console.error("Submission error:", error);
-      setSubmitError(
-        "An error occurred while submitting the form. Please try again.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        resolve(result.split(",")[1]);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleClearForm = () => {
-    reset();
-    setResumeFileName("");
-    setTaskFileName("");
-    setCurrentStep(1);
-  };
-
-  const handleCloseDialog = () => {
-    setShowSuccessDialog(false);
-    reset();
-    setResumeFileName("");
-    setTaskFileName("");
-    setCurrentStep(1);
-  };
-
-  const handleNext = async () => {
-    let fieldsToValidate: (keyof FormData)[] = [];
-
-    if (currentStep === 1) {
-      fieldsToValidate = ["fullName", "email", "phone", "resume"];
-    }
-
-    const isValid = await trigger(fieldsToValidate);
-
-    if (isValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, 2));
-    }
-  };
-
-  const handlePrevious = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      {/* Success Dialog */}
-      {showSuccessDialog && (
-        <div className="fixed inset-0 bg-white bg-opacity-95 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="relative bg-white rounded-lg shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-300">
-            {/* Wavy Top Border */}
-            <div className="absolute top-0 left-0 right-0 h-8 bg-blue-500 overflow-hidden">
-              <svg
-                viewBox="0 0 400 30"
-                className="w-full h-8"
-                preserveAspectRatio="none"
-              >
-                <defs>
-                  <pattern
-                    id="wave-pattern"
-                    x="0"
-                    y="0"
-                    width="20"
-                    height="30"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <circle cx="10" cy="0" r="10" fill="#EF4444" />
-                  </pattern>
-                </defs>
-                <rect width="400" height="30" fill="url(#wave-pattern)" />
-              </svg>
-            </div>
-
-            {/* Blue Background Section */}
-            <div className="bg-blue-500 pt-12 pb-8 px-8 relative">
-              {/* Registration Confirmed Badge */}
-              <div className="absolute top-8 right-6 bg-yellow-400 rounded-full w-32 h-32 flex items-center justify-center shadow-lg">
-                <div className="text-center">
-                  <p className="text-black font-bold text-sm leading-tight">
-                    Application
-                    <br />
-                    Submitted
-                  </p>
-                </div>
-              </div>
-
-              {/* Main Text */}
-              <div className="pr-20">
-                <h3 className="text-2xl font-bold text-black mb-4">
-                  APPLICATION
-                  <br />
-                  SUBMITTED!
-                </h3>
-                <h2 className="text-4xl font-black text-white leading-tight">
-                  WE WILL
-                  <br />
-                  GET BACK
-                  <br />
-                  TO YOU!
-                </h2>
-              </div>
-            </div>
-
-            {/* White Bottom Section */}
-            <div className="bg-white px-8 py-10">
-              <button
-                onClick={handleCloseDialog}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="w-full max-w-3xl">
-        {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 md:p-12">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-200">
+    <div className="min-h-screen px-4 py-4 md:py-8">
+      <div className="w-full max-w-6xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-6 md:mb-10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4 md:mb-6">
             <Image
               src="/favicon.ico"
               alt="GDG Logo"
-              width={128}
-              height={128}
-              className="w-32 h-32 rounded-full"
+              width={96}
+              height={96}
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full"
             />
-            <div>
-              <h2 className="text-lg     font-medium text-gray-900">
-                Google Developer Group
-              </h2>
-              <p className="text-xs text-gray-500">
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+                <span className="text-blue-600">GDG VITB</span>
+                <span className="text-gray-400"> - </span>
+                <span className="text-red-500">Recruitment</span>
+              </h1>
+              <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-1">
                 Vishnu Institute of Technology
               </p>
             </div>
           </div>
-
-          {/* Title */}
-          <h1 className="text-3xl font-bold mb-2">
-            <span className="text-blue-600">Full Stack Web Development</span>
-            <span className="text-gray-400"> - </span>
-            <span className="text-red-500">Hiring</span>
-          </h1>
-
-          <p className="text-sm text-gray-600 mb-8">
-            Welcome to{" "}
-            <strong>GDG VITB Full Stack Web Development Recruitment</strong>
-            <br />
-            This form will help us evaluate your application for the Full Stack
-            Developer position. Please fill in your details carefully and ensure
-            all information is accurate.
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
+            Join Google Developer Groups at VITB and be part of an amazing
+            community of developers, designers, and innovators. Choose your
+            domain below to apply.
           </p>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Progress Indicator */}
-            <div className="flex items-center justify-between mb-8">
-              {[1, 2].map((step) => (
-                <div key={step} className="flex items-center flex-1">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                      currentStep >= step
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 text-gray-600"
-                    }`}
-                  >
-                    {step}
-                  </div>
-                  {step < 2 && (
-                    <div
-                      className={`flex-1 h-1 mx-2 ${
-                        currentStep > step ? "bg-blue-600" : "bg-gray-200"
-                      }`}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* SECTION 1: Introduction & Links */}
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-gray-900 border-b-2 border-blue-600 pb-2">
-                  Section 1: Introduction & Links
-                </h2>
-
-                <FormInput
-                  label="Full Name"
-                  placeholder="Enter your full name"
-                  required
-                  register={register("fullName")}
-                  error={errors.fullName?.message}
-                  borderColor={inputColors.fullName}
-                />
-
-                <FormInput
-                  label="College Email"
-                  placeholder="regdnumber@vishnu.edu.in"
-                  type="email"
-                  required
-                  register={register("email")}
-                  error={errors.email?.message}
-                  borderColor={inputColors.email}
-                />
-
-                <FormInput
-                  label="Phone Number"
-                  placeholder="+91 XXXXX XXXXX"
-                  type="tel"
-                  required
-                  register={register("phone")}
-                  error={errors.phone?.message}
-                  borderColor={inputColors.phone}
-                />
-
-                <FormInput
-                  label="LinkedIn Profile URL"
-                  placeholder="https://linkedin.com/in/yourprofile"
-                  register={register("linkedinUrl")}
-                  error={errors.linkedinUrl?.message}
-                  borderColor={inputColors.linkedinUrl}
-                />
-
-                <FormInput
-                  label="GitHub Profile URL"
-                  placeholder="https://github.com/yourusername"
-                  register={register("githubUrl")}
-                  error={errors.githubUrl?.message}
-                  borderColor={inputColors.githubUrl}
-                />
-
-                <FormInput
-                  label="Portfolio Website"
-                  placeholder="https://yourportfolio.com"
-                  register={register("portfolioUrl")}
-                  error={errors.portfolioUrl?.message}
-                  borderColor={inputColors.portfolioUrl}
-                />
-
-                {/* Resume Upload */}
-                <div
-                  className="border-2 rounded-3xl p-6"
-                  style={{ borderColor: inputColors.resume }}
-                >
-                  <label className="block text-base font-semibold text-gray-900 mb-3">
-                    Upload Resume <span className="text-red-500">*</span>{" "}
-                    <span className="text-xs text-gray-500 font-normal">
-                      ( PDF format, up to 5MB )
-                    </span>
-                  </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-                    <input
-                      type="file"
-                      id="resume"
-                      accept=".pdf,.doc,.docx"
-                      {...register("resume", {
-                        onChange: (e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setResumeFileName(file.name);
-                          }
-                        },
-                      })}
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor="resume"
-                      className="cursor-pointer flex flex-col items-center gap-2"
-                    >
-                      <svg
-                        className="w-8 h-8 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        />
-                      </svg>
-                      <span className="text-sm text-blue-600 font-medium">
-                        {resumeFileName || "Upload Resume"}
-                      </span>
-                    </label>
-                  </div>
-                  {errors.resume && (
-                    <p className="mt-2 text-xs text-red-500">
-                      {String(errors.resume.message)}
-                    </p>
-                  )}
-                </div>
-
-                {/* Navigation Buttons */}
-                <div className="flex justify-end pt-4">
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md"
-                  >
-                    Next →
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* SECTION 2: Task Submission & Declaration */}
-            {currentStep === 2 && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-gray-900 border-b-2 border-yellow-600 pb-2">
-                  Section 2: Task Submission & Declaration
-                </h2>
-
-                {/* Task Submission */}
-                <div
-                  className="border-2 rounded-3xl p-6 bg-blue-50"
-                  style={{ borderColor: inputColors.taskSubmission }}
-                >
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    Assignment Task
-                    <span className="text-red-500 ml-1">*</span>
-                  </h3>
-                  <p className="text-sm text-gray-700 mb-4">
-                    Please download the task template, complete the assignment,
-                    and upload your completed document below in
-                    NAME_REGDNUMBER.docx. format
-                  </p>
-
-                  {/* Download Template Link */}
-                  <div className="mb-4">
-                    <a
-                      href="/assignment-task.docx"
-                      download="GDG-Assignment-Task.docx"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                      Download Task Template
-                    </a>
-                  </div>
-
-                  {/* File Upload */}
-                  <div> 
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Upload Completed Task (NAME_REGDNUMBER.docx )
-                      <span className="text-red-500 ml-1">*</span>
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <label
-                        className="flex-1 cursor-pointer"
-                        style={{
-                          borderColor: inputColors.taskSubmission,
-                          borderWidth: "2px",
-                          borderStyle: "solid",
-                          borderRadius: "1.5rem",
-                        }}
-                      >
-                        <div className="flex items-center gap-3 px-4 py-3">
-                          <svg
-                            className="w-6 h-6 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                            />
-                          </svg>
-                          <span className="text-sm text-gray-600">
-                            {taskFileName || "Choose file..."}
-                          </span>
-                        </div>
-                        <input
-                          type="file"
-                          accept=".doc,.docx,.pdf"
-                          {...register("taskSubmission", {
-                            onChange: (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                setTaskFileName(file.name);
-                              }
-                            },
-                          })}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-                    {errors.taskSubmission && (
-                      <p className="mt-2 text-xs text-red-500">
-                        {String(errors.taskSubmission.message)}
-                      </p>
-                    )}
-                    <p className="mt-2 text-xs text-gray-500">
-                      Maximum file size: 10MB. Allowed formats: .docx, .doc
-                    </p>
-                  </div>
-                </div>
-
-                {/* Git Repository Link */}
-                <FormInput
-                  label="Git Repository Link (Assignment)"
-                  placeholder="https://github.com/yourusername/assignment-repo"
-                  type="text"
-                  register={register("gitRepoLink")}
-                  error={errors.gitRepoLink?.message}
-                  borderColor={inputColors.gitRepoLink}
-                />
-
-                {/* Declaration */}
-                <div
-                  className="border-2 rounded-3xl p-6"
-                  style={{ borderColor: inputColors.declaration }}
-                >
-                  <div className="space-y-4">
-                    <label className="flex items-start gap-3 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        {...register("agreeToTerms")}
-                        className="w-5 h-5 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                        I agree to the terms and conditions of the recruitment
-                        process and understand that any false information may
-                        lead to disqualification.
-                        <span className="text-red-500 ml-1">*</span>
-                      </span>
-                    </label>
-                    {errors.agreeToTerms && (
-                      <p className="text-xs text-red-500 ml-8">
-                        {errors.agreeToTerms.message}
-                      </p>
-                    )}
-
-                    <label className="flex items-start gap-3 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        {...register("confirmInfo")}
-                        className="w-5 h-5 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                        I confirm that all the information provided in this form
-                        is accurate and complete to the best of my knowledge.
-                        <span className="text-red-500 ml-1">*</span>
-                      </span>
-                    </label>
-                    {errors.confirmInfo && (
-                      <p className="text-xs text-red-500 ml-8">
-                        {errors.confirmInfo.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Success Message */}
-                {submitSuccess && (
-                  <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-                    <p className="text-sm text-green-600 font-medium flex items-center gap-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {submitSuccess}
-                    </p>
-                  </div>
-                )}
-
-                {/* Error Message */}
-                {submitError && (
-                  <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
-                    <p className="text-sm text-green-600 font-medium flex items-center gap-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {submitError}
-                    </p>
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-                  <button
-                    type="button"
-                    onClick={handlePrevious}
-                    className="px-8 py-3 bg-gray-200 text-gray-700 text-base font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-                  >
-                    ← Previous
-                  </button>
-                  <div className="flex gap-4">
-                    <button
-                      type="button"
-                      onClick={handleClearForm}
-                      className="text-base text-red-600 hover:text-red-700 font-semibold hover:underline"
-                    >
-                      Clear Form
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <svg
-                            className="animate-spin h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            />
-                          </svg>
-                          Submitting...
-                        </>
-                      ) : (
-                        "Submit Application"
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </form>
         </div>
+
+        {/* Recruitment Cards */}
+        <div className="space-y-4 md:space-y-6">
+          {recruitmentRoles.map((role) => (
+            <Link
+              key={role.id}
+              href={role.status === "open" ? role.route : "#"}
+              className={`group block ${
+                role.status === "open"
+                  ? "cursor-pointer"
+                  : "cursor-not-allowed opacity-60"
+              }`}
+            >
+              <div
+                className={`relative bg-white rounded-xl md:rounded-2xl shadow-sm border-2 p-4 sm:p-6 md:p-8 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 ${
+                  role.status === "open"
+                    ? "hover:shadow-xl hover:-translate-y-1"
+                    : "border-opacity-10"
+                }`}
+                style={{
+                  borderColor: role.color,
+                }}
+              >
+                {/* Status Badge */}
+                {role.status !== "open" && (
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+                    <span className="px-2 py-1 sm:px-3 bg-gray-200 text-gray-600 text-xs font-semibold rounded-full">
+                      {role.status === "closed" ? "Closed" : "Coming Soon"}
+                    </span>
+                  </div>
+                )}
+
+                {/* Icon */}
+
+                {/* Content */}
+                <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
+                  {/* Title */}
+                  <h3
+                    className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2"
+                    style={{ color: role.color }}
+                  >
+                    {role.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
+                    {role.description}
+                  </p>
+                </div>
+
+                {/* Apply Button */}
+                {role.status === "open" && (
+                  <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-center sm:justify-start mt-2 sm:mt-0">
+                    <span
+                      className="text-sm md:text-base font-semibold"
+                      style={{ color: role.color }}
+                    >
+                      Apply Now
+                    </span>
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-2"
+                      fill="none"
+                      stroke={role.color}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Footer Note */}
       </div>
     </div>
   );
