@@ -210,16 +210,16 @@ function Gallery() {
       {/* Navbar removed */}
 
       {/* Decorative Background Elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-3xl"></div>
+      {/* <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-3xl"></div>
       <div className="absolute top-40 right-20 w-32 h-32 bg-green-500/10 rounded-full blur-3xl"></div>
       <div className="absolute top-60 left-1/4 w-24 h-24 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="absolute top-80 right-1/3 w-28 h-28 bg-red-500/10 rounded-full blur-3xl"></div>
 
-      <div className="relative">
+      <div className="relative"> */}
         {/* Title Section with Decorative Elements */}
-        <div className="text-center py-12 px-4 relative">
+        {/* <div className="text-center py-12 px-4 relative"> */}
           {/* Decorative Stars */}
-          <Star
+          {/* <Star
             className="absolute top-8 left-1/4 w-6 h-6 text-yellow-400 animate-pulse"
             fill="currentColor"
           />
@@ -235,11 +235,11 @@ function Gallery() {
           <Sparkles
             className="absolute top-20 right-1/3 w-6 h-6 text-red-400 animate-pulse"
             style={{ animationDelay: "1.5s" }}
-          />
+          /> */}
 
           {/* Main Title */}
 
-          <h1 className="text-5xl md:text-7xl lg:text-6xl font-bold text-stone-900 font-productSans mb-4 relative mr-2">
+          {/* <h1 className="text-5xl md:text-7xl lg:text-6xl font-bold text-stone-900 font-productSans mb-4 relative mr-2">
             <Users className="inline-block w-12 h-12 md:w-16 md:h-16 text-blue-600 mb-4" />
             GDG TEAM
             <span className="absolute -top-2 -right-8 w-4 h-4 bg-blue-500 rounded-full"></span>
@@ -247,22 +247,22 @@ function Gallery() {
           </h1>
           <p className="text-3xl md:text-4xl lg:text-5xl font-semibold text-stone-700 font-productSans">
             (2025-26)
-          </p>
+          </p> */}
 
           {/* Decorative Line */}
-          <div className="flex items-center justify-center gap-2 mt-6">
+          {/* <div className="flex items-center justify-center gap-2 mt-6">
             <div className="w-16 h-1 bg-gradient-to-r from-transparent via-blue-500 to-blue-500 rounded-full"></div>
             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
             <div className="w-24 h-1 bg-blue-500 rounded-full"></div>
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             <div className="w-16 h-1 bg-gradient-to-l from-transparent via-green-500 to-green-500 rounded-full"></div>
           </div>
-        </div>
+        </div> */}
 
         {/* Cover Section with Decorative Border */}
-        <div className="max-w-7xl mx-auto px-4 mb-12 relative">
+        {/* <div className="max-w-7xl mx-auto px-4 mb-12 relative"> */}
           {/* Decorative Corner Elements */}
-          <div className="absolute -top-4 -left-4 w-8 h-8 border-t-4 border-l-4 border-blue-500 rounded-tl-lg z-10"></div>
+          {/* <div className="absolute -top-4 -left-4 w-8 h-8 border-t-4 border-l-4 border-blue-500 rounded-tl-lg z-10"></div>
           <div className="absolute -top-4 -right-4 w-8 h-8 border-t-4 border-r-4 border-green-500 rounded-tr-lg z-10"></div>
           <div className="absolute -bottom-4 -left-4 w-8 h-8 border-b-4 border-l-4 border-yellow-500 rounded-bl-lg z-10"></div>
           <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b-4 border-r-4 border-red-500 rounded-br-lg z-10"></div>
@@ -277,7 +277,7 @@ function Gallery() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Team Title Section */}
 
