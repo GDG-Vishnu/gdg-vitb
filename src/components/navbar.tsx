@@ -27,7 +27,7 @@ const navItems: NavItem[] = [
   { label: "Team", href: "/teams" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Recruitment", href: "/recruitment" },
+  // { label: "Recruitment", href: "/recruitment" },
   { label: "Contact Us", href: "/contactus" },
 ];
 
