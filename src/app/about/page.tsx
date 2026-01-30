@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import AboutPage from "@/app/client/about/page";
+import AboutPage from "@/features/about/components/AboutPage";
 
 export const metadata: Metadata = {
   title: "About Us",

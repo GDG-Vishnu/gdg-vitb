@@ -604,7 +604,7 @@ const CTASection = () => {
               Explore Events
             </button>
             <button
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-sm sm:text-base text-white bg-black border-4 border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-4 text-white bg-black border-4 border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-300 font-productSans font-bold"
               onClick={() =>
                 (window.location.href =
                   "https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/")
@@ -799,47 +799,26 @@ export default function AboutPage() {
               </div>
             </div>
           </div>
-
-          {/* Hero CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center relative z-10">
-            <a
-              href="https://gdg.community.dev/gdg-on-campus-vishnu-institute-of-technology-bhimavaram-india/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center justify-center gap-3 px-8 py-4 text-lg font-bold text-black bg-yellow-400 border-4 border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all duration-300 transform hover:scale-105"
-            >
-              <Users className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" />
-              Join Our Community
-              <ExternalLink className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
-            </a>
-            <Link
-              href="/events"
-              className="group flex items-center justify-center gap-3 px-8 py-4 text-lg font-bold text-white bg-blue-600 border-4 border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all duration-300 transform hover:scale-105"
-            >
-              <Calendar className="w-6 h-6 group-hover:bounce transition-transform duration-300" />
-              Explore Events
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
-            </Link>
-          </div>
         </div>
       </section>
 
       {/* Mission Section */}
-      <section className="py-12 sm:py-16 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MissionCard />
         </div>
       </section>
 
       {/* Statistics Section */}
-      <section className="py-12 sm:py-16 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <StatisticsSection />
         </div>
       </section>
+
       {/* Values Section */}
-      <section className="py-12 sm:py-16 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ValuesSection />
         </div>
       </section>
@@ -847,14 +826,13 @@ export default function AboutPage() {
       {/* Activities Section */}
       <ActivitiesSection />
 
-      {/* Call to Action Section */}
-      <section className="py-12 sm:py-16 px-4">
-        <div className="max-w-7xl mx-auto flex justify-center">
+      {/* CTA Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
           <CTASection />
         </div>
       </section>
 
-      {/* Footer */}
       <Footer />
     </div>
   );
