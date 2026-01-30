@@ -6,7 +6,7 @@ import { Providers } from "@/components/providers";
 import { productSans } from "./font";
 import CursorSpark from "./client/CursorSpark";
 import BackToTop from "@/components/ui/back_to_top";
-import Navbar from "@/components/navbar";
+import Navbar from "@/features/layout/components/Navbar/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
