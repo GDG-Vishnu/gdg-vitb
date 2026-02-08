@@ -24,12 +24,13 @@ type GalleryItem = {
 };
 // Sample gallery items with curated images
 const sampleGalleryItems: GalleryItem[] = [
-  {
+    {
     id: 1,
     imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165297/nnpeqla0vy1pm2ftqt7r.jpg",
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165472/y5anut1yhwcekgd25m21.jpg",
     uploadedAt: "2025-12-31",
   },
+ 
   {
     id: 2,
     imageUrl:
@@ -42,78 +43,28 @@ const sampleGalleryItems: GalleryItem[] = [
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165428/zffvckhjitt9hqudyxrs.jpg",
     uploadedAt: "2025-12-31",
   },
-  {
+ {
     id: 4,
     imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165472/y5anut1yhwcekgd25m21.jpg",
+      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165297/nnpeqla0vy1pm2ftqt7r.jpg",
     uploadedAt: "2025-12-31",
   },
-  {
-    id: 5,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165592/nikdkhhnvvszxicl427o.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 6,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165620/ofzu1a2lxxpftwgynmtg.jpg",
-    uploadedAt: "2025-12-31",
-  },
+
+
   {
     id: 7,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165671/s6bp1di12zvdghmr1w0w.jpg",
     uploadedAt: "2025-12-31",
   },
-  {
-    id: 8,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165713/uzhlycorvyzrwfwf3okb.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 9,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165807/kpjvewqs1s3lw4nmmdfj.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 10,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170078/gji3tk1hm1qd7k7wvknb.jpg",
-    uploadedAt: "2025-12-31",
-  },
+
   {
     id: 11,
     imageUrl:
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170128/i3d8b8qtgb7kbfamuxy3.jpg",
     uploadedAt: "2025-12-31",
   },
-  {
-    id: 12,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170171/ppgkbul5ng3iuanjm1fw.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 13,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170250/zzb9ndsaftyp2ejztxb5.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 14,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170356/pisuxpm8ixsrlksyb32b.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 15,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170427/ctyuvukbhwlnamqv0fhi.jpg",
-    uploadedAt: "2025-12-31",
-  },
+ 
   {
     id: 16,
     imageUrl:
@@ -126,18 +77,7 @@ const sampleGalleryItems: GalleryItem[] = [
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170551/sghz2b8xtbolh90rj6ye.jpg",
     uploadedAt: "2025-12-31",
   },
-  {
-    id: 18,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767175376/hxmbw2efjqqlnv5rqaju.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 19,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767175409/atnhxkbbmmfdlndva2yl.jpg",
-    uploadedAt: "2025-12-31",
-  },
+ 
   {
     id: 20,
     imageUrl:
@@ -168,12 +108,7 @@ const sampleGalleryItems: GalleryItem[] = [
       "https://res.cloudinary.com/dlupkibvq/image/upload/v1767175693/f7gerxglae9pomxppanb.png",
     uploadedAt: "2025-12-31",
   },
-  {
-    id: 25,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767175729/aiokkm8bvl3olshgxbjq.png",
-    uploadedAt: "2025-12-31",
-  },
+  
   {
     id: 26,
     imageUrl:

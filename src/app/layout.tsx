@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers";
 import { productSans } from "./font";
 import CursorSpark from "./client/CursorSpark";
 import BackToTop from "@/components/ui/back_to_top";
+import ChatBox from "@/components/chat/ChatBox";
 import Navbar from "@/features/layout/components/Navbar/Navbar";
 
 const geistSans = Geist({
@@ -159,6 +160,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <BackToTop />
+          <ChatBox />
         </Providers>
       </body>
     </html>
