@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     url: "https://gdgvitb.in",
     title: "GDG VITB ",
     description:
-      "Join GDG VITB, a vibrant student-driven tech community at Vishnu Institute of Technology. Participate in hackathons, workshops, and collaborative projects to enhance your technical skills.",
+      "Join GDG VITB, a vibrant student-driven tech community at Vishnu Institute of Technology. Participate in hackathons, workshops, and collaborative projects to enhance your technical skills   .",
     siteName: "GDG VITB",
     images: [
       {
