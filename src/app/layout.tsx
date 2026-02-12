@@ -27,7 +27,7 @@ const redHatDisplay = Red_Hat_Display({
 export const metadata: Metadata = {
   title: {
     default:
-      "GDG VITB - Google Developer Group On Campus Vishnu Institute of Technology",
+      "GDG OnCampus VITB ",
     template: "%s | GDG VITB",
   },
   description:
