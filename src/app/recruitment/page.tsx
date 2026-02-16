@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 
 interface RecruitmentRole {
   id: string;
@@ -22,7 +21,7 @@ const recruitmentRoles: RecruitmentRole[] = [
     color: "#4584F4",
     icon: "💻",
     route: "/recruitment/web-dev",
-    status: "open",
+    status: "closed",
   },
   // Add more roles here as needed
 ];
@@ -54,87 +53,20 @@ export default function RecruitmentPage() {
           </div>
           <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
             Join Google Developer Groups at VITB and be part of an amazing
-            community of developers, designers, and innovators. Choose your
-            domain below to apply.
+            community of developers, designers, and innovators.
           </p>
         </div>
 
-        {/* Recruitment Cards */}
-        <div className="space-y-4 md:space-y-6">
-          {recruitmentRoles.map((role) => (
-            <Link
-              key={role.id}
-              href={role.status === "open" ? role.route : "#"}
-              className={`group block ${
-                role.status === "open"
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed opacity-60"
-              }`}
-            >
-              <div
-                className={`relative bg-white rounded-xl md:rounded-2xl shadow-sm border-2 p-4 sm:p-6 md:p-8 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 ${
-                  role.status === "open"
-                    ? "hover:shadow-xl hover:-translate-y-1"
-                    : "border-opacity-10"
-                }`}
-                style={{
-                  borderColor: role.color,
-                }}
-              >
-                {/* Status Badge */}
-                {role.status !== "open" && (
-                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-                    <span className="px-2 py-1 sm:px-3 bg-gray-200 text-gray-600 text-xs font-semibold rounded-full">
-                      {role.status === "closed" ? "Closed" : "Coming Soon"}
-                    </span>
-                  </div>
-                )}
-
-                {/* Icon */}
-
-                {/* Content */}
-                <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
-                  {/* Title */}
-                  <h3
-                    className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2"
-                    style={{ color: role.color }}
-                  >
-                    {role.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                    {role.description}
-                  </p>
-                </div>
-
-                {/* Apply Button */}
-                {role.status === "open" && (
-                  <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-center sm:justify-start mt-2 sm:mt-0">
-                    <span
-                      className="text-sm md:text-base font-semibold"
-                      style={{ color: role.color }}
-                    >
-                      Apply Now
-                    </span>
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-2"
-                      fill="none"
-                      stroke={role.color}
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                  </div>
-                )}
-              </div>
-            </Link>
-          ))}
+        {/* Hirings Closed Banner */}
+        <div className="bg-red-50 border-2 border-red-200 rounded-xl md:rounded-2xl p-8 sm:p-10 md:p-14 text-center">
+          <div className="text-5xl sm:text-6xl mb-4">🚫</div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-red-600 mb-3">
+            Hirings Closed
+          </h2>
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-xl mx-auto">
+            Thank you for your interest! Recruitment for all positions is
+            currently closed. Stay tuned for future openings.
+          </p>
         </div>
 
         {/* Footer Note */}
