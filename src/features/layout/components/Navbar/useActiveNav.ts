@@ -32,7 +32,7 @@ export const useActiveNav = () => {
         (legacyAlt ? pathname === legacyAlt : false)
       );
     },
-    [pathname]
+    [pathname],
   );
 
   return isActive;
