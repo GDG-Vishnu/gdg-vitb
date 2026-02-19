@@ -17,105 +17,25 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import NextJsImage from "@/components/NextJsImage";
 import Image from "next/image";
-type GalleryItem = {
+
+export type GalleryItem = {
   id: number;
   imageUrl: string;
   uploadedAt: string;
 };
-// Sample gallery items with curated images
-const sampleGalleryItems: GalleryItem[] = [
-  {
-    id: 1,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1771301326/ctv8yn9y6xaczodyjo0c.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 2,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767086900/prompt%20engineering/tk3aakahjoxsimjvidgm.jpg",
 
-    uploadedAt: "2025-12-31",
-  },
+interface GalleryProps {
+  initialItems: GalleryItem[];
+}
 
-  {
-    id: 3,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1765644013/mggyknteqkhgkb2w3grz.jpg",
-
-    uploadedAt: "2025-12-31",
-  },
-
-  {
-    id: 4,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767165297/nnpeqla0vy1pm2ftqt7r.jpg",
-    uploadedAt: "2025-12-31",
-  },
-
-  {
-    id: 5,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1771301326/gzruxxa5nyohbu9e1s7i.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 6,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1771301325/bdkiturqrivu4rmzkmnl.jpg",
-    uploadedAt: "2025-12-31",
-  },
-
-  {
-    id: 7,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170501/joat26rbj3rb0kdja0ue.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 8,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767170551/sghz2b8xtbolh90rj6ye.jpg",
-    uploadedAt: "2025-12-31",
-  },
-
-  {
-    id: 9,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732847/uumcqlo3robkw70z9rhk.jpg",
-    uploadedAt: "2025-12-31",
-  },
-
-  {
-    id: 10,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1766732840/igrrs1fp9ag45hqzz64r.jpg",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 11,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767175612/jxsg0t4bozchigoqodga.png",
-    uploadedAt: "2025-12-31",
-  },
-  {
-    id: 12,
-    imageUrl:
-      "https://res.cloudinary.com/dlupkibvq/image/upload/v1767175818/nrei8nrsar4iio30ukkh.jpg",
-    uploadedAt: "2025-12-31",
-  },
-];
-
-function Gallery() {
-  const [galleryItems, setGalleryItems] =
-    useState<GalleryItem[]>(sampleGalleryItems);
+function Gallery({ initialItems = [] }: GalleryProps) {
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(initialItems);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   // Cover image URL - replace this with your actual cover image URL
   const coverImageUrl =
     "https://res.cloudinary.com/dlupkibvq/image/upload/v1767175693/f7gerxglae9pomxppanb.png";
-
   return (
     <div
       className="min-h-screen bg-white"
