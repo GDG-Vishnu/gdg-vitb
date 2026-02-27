@@ -1,13 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: ["query"],
-  });
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Prisma has been removed. This project now uses Firebase Firestore.
+// See: src/lib/firebase-client.ts  (client SDK)
+//      src/lib/firebase-admin.ts   (admin SDK for server routes)
+//      src/services/               (service layer)

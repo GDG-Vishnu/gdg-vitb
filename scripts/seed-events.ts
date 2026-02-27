@@ -1,8 +1,30 @@
-import { PrismaClient } from "@prisma/client";
+/**
+ * Seed script — adds sample events to the Firestore "events" collection.
+ * Run with:  npx tsx scripts/seed-events.ts
+ *
+ * Requires FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY
+ * in .env.local (or exported in the shell).
+ */
+import { initializeApp, cert, getApps } from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import "dotenv/config";
 
-const prisma = new PrismaClient();
+function getAdminDb() {
+  if (!getApps().length) {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID!,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, "\n"),
+      }),
+    });
+  }
+  return getFirestore();
+}
 
 async function main() {
+  const db = getAdminDb();
+
   const events = [
     {
       title: "GDG Build with AI",
@@ -26,6 +48,7 @@ async function main() {
       isDone: false,
       MembersParticipated: 0,
       rank: 1,
+      eventGallery: [],
     },
     {
       title: "Hack-a-tron 3.0",
@@ -45,6 +68,7 @@ async function main() {
       isDone: false,
       MembersParticipated: 0,
       rank: 2,
+      eventGallery: [],
     },
     {
       title: "Google Cloud Study Jams",
@@ -67,28 +91,25 @@ async function main() {
       isDone: false,
       MembersParticipated: 120,
       rank: 3,
+      eventGallery: [],
     },
   ];
 
   console.log("Seeding events...");
 
   for (const event of events) {
-    const createdEvent = await prisma.events.create({
-      data: event,
+    const ref = await db.collection("events").add({
+      ...event,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
     });
-    console.log(
-      `Created event: ${createdEvent.title} with ID: ${createdEvent.id}`
-    );
+    console.log(`Created event: ${event.title} with ID: ${ref.id}`);
   }
 
   console.log("Seeding completed.");
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
