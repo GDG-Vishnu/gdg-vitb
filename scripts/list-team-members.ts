@@ -1,25 +1,41 @@
 #!/usr/bin/env node
-import { prisma } from "../src/lib/prisma";
+/**
+ * List all team members from the Firestore "team" collection.
+ * Run with:  npx tsx scripts/list-team-members.ts
+ */
+import { initializeApp, cert, getApps } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import "dotenv/config";
+
+function getAdminDb() {
+  if (!getApps().length) {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID!,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, "\n"),
+      }),
+    });
+  }
+  return getFirestore();
+}
 
 async function main() {
-  const rows = await prisma.teamMember.findMany({ select: { name: true } });
+  const db = getAdminDb();
+  const snap = await db.collection("team").orderBy("name", "asc").get();
 
-  if (!rows || rows.length === 0) {
-    console.log("No TeamMember rows found.");
+  if (snap.empty) {
+    console.log("No team members found.");
     return;
   }
 
-  console.log(`Found ${rows.length} TeamMember(s):`);
-  for (const r of rows) {
-    console.log(`- ${r.name}`);
+  console.log(`Found ${snap.size} team member(s):`);
+  for (const doc of snap.docs) {
+    console.log(`- ${doc.data().name}`);
   }
 }
 
-main()
-  .catch((err) => {
-    console.error("Error querying TeamMember:", err);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((err) => {
+  console.error("Error querying team members:", err);
+  process.exitCode = 1;
+});
