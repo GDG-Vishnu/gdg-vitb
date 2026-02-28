@@ -2,17 +2,15 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-//Navbar removed
+
 import Events from "./events";
 import FAQs from "./faqs";
 import AboutSection from "./about";
 // Auth removed: no session or signOut
 import { useRouter } from "next/navigation";
-import { Button3D as MagneticButton } from "@/components/ui/3d-button";
-import { LogOut, User, LogIn } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import Footer from "@/components/footer/Footer";
-import { url } from "inspector";
+
 import ExtensionSection from "./extension_section";
 import CursorSpark from "../CursorSpark";
 
@@ -47,14 +45,14 @@ const HomePage = () => {
           body: JSON.stringify({
             email: email,
           }),
-        }
+        },
       );
 
       const result = await response.json();
 
       if (result.success) {
         setMessage(
-          "Successfully subscribed! Check your inbox for a confirmation email."
+          "Successfully subscribed! Check your inbox for a confirmation email.",
         );
         setEmail("");
       } else {

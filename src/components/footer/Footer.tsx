@@ -1,15 +1,63 @@
 "use client";
 
-import { Link } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Loader2 } from "lucide-react";
 import {
   FaLinkedinIn,
   FaInstagram,
   FaEnvelope,
   FaWhatsapp,
 } from "react-icons/fa";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Footer() {
+  const [showContact, setShowContact] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const fd = new FormData();
+      fd.append("name", formData.name);
+      fd.append("email", formData.email);
+      fd.append("subject", formData.subject);
+      fd.append("message", formData.message);
+      const res = await fetch(
+        "https://script.google.com/macros/s/AKfycbyuwiXZV8fcoO8M2qdH3-Rt7ik9BgTjsix9LMEbjop0rFAhYX1MvukmrPMHapY7ry3geg/exec",
+        { method: "POST", body: fd },
+      );
+      if (res.ok) {
+        toast.success("Message sent successfully!");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setShowContact(false);
+      } else {
+        toast.error("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <footer className="bg-[#111214] text-gray-300 w-full pt-4 md:pt-8">
       <div className="w-full mx-auto px-3 sm:px-4 md:px-6">
@@ -58,12 +106,12 @@ export default function Footer() {
                   >
                     Team
                   </a>
-                  <a
-                    href="/contactus"
-                    className="hover:underline font-productSans text-center md:text-left py-1"
+                  <button
+                    onClick={() => setShowContact(true)}
+                    className="hover:underline font-productSans text-center md:text-left py-1 bg-transparent border-none cursor-pointer text-[#CCF6C5] text-base sm:text-lg md:text-base"
                   >
                     Contact us
-                  </a>
+                  </button>
                   <a
                     href="/events"
                     className="hover:underline font-productSans text-center md:text-left py-1"
@@ -135,6 +183,100 @@ export default function Footer() {
           />
         </div>
       </div>
+      {/* Contact Form Modal */}
+      <AnimatePresence>
+        {showContact && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            onClick={() => setShowContact(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 30 }}
+              transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              className="w-full max-w-lg bg-[#111111] rounded-2xl border-2 border-white/10 shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                <h2 className="text-xl font-bold text-white font-productSans">
+                  Contact Us
+                </h2>
+                <button
+                  onClick={() => setShowContact(false)}
+                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4 text-white" />
+                </button>
+              </div>
+
+              {/* Modal body */}
+              <div className="px-6 py-5">
+                <p className="text-sm text-stone-400 font-productSans mb-5">
+                  Have a question or want to collaborate? Drop us a message and
+                  we&apos;ll get back to you.
+                </p>
+
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <Input
+                    name="name"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-stone-400 font-productSans text-sm"
+                    required
+                  />
+                  <Input
+                    name="email"
+                    type="email"
+                    placeholder="Your Email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-stone-400 font-productSans text-sm"
+                    required
+                  />
+                  <Input
+                    name="subject"
+                    placeholder="Subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-stone-400 font-productSans text-sm"
+                    required
+                  />
+                  <Textarea
+                    name="message"
+                    placeholder="Your Message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-stone-400 font-productSans min-h-[100px] text-sm"
+                    required
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-white text-black hover:bg-stone-200 font-productSans font-medium text-sm flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
+                  </Button>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </footer>
   );
 }

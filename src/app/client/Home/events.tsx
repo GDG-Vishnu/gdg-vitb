@@ -9,16 +9,15 @@ type EventItem = {
   id: string;
   title: string;
   description?: string;
-  Date?: string;
-  Time?: string;
-  Theme?: string[];
+  date?: string;
+  endDate?: string;
+  theme?: string[];
   venue?: string;
   organizer?: string;
   coOrganizer?: string;
   keyHighlights?: string[];
   tags?: string[];
   status?: string;
-  ThemeColor?: string;
   imageUrl?: string;
   rank: number;
 };
@@ -145,7 +144,7 @@ function EventCard({ event }: { event: EventItem }) {
   // Get the primary theme color for the button
   const getButtonStyle = () => {
     const primaryColor =
-      event.Theme && event.Theme[0] ? event.Theme[0] : "#4285F4";
+      event.theme && event.theme[0] ? event.theme[0] : "#4285F4";
     const isLightColor = (color: string) => {
       const hex = color.replace("#", "");
       const r = parseInt(hex.substr(0, 2), 16);

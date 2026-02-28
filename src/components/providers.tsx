@@ -1,11 +1,17 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState } from "react";
+import { useState, lazy } from "react";
 import { ThemeProvider } from "./theme-provider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/contexts/AuthContext";
+
+const ReactQueryDevtools = lazy(() =>
+  import("@tanstack/react-query-devtools").then((m) => ({
+    default: m.ReactQueryDevtools,
+  })),
+);
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -21,7 +27,7 @@ export function Providers({ children }: ProvidersProps) {
             retry: 1,
           },
         },
-      })
+      }),
   );
 
   return (
@@ -33,9 +39,11 @@ export function Providers({ children }: ProvidersProps) {
         disableTransitionOnChange
       >
         <QueryClientProvider client={queryClient}>
-          {children}
+          <AuthProvider>{children}</AuthProvider>
           <Toaster />
-          <ReactQueryDevtools position="bottom" initialIsOpen={false} />
+          {process.env.NODE_ENV === "development" && (
+            <ReactQueryDevtools position="bottom" initialIsOpen={false} />
+          )}
         </QueryClientProvider>
       </ThemeProvider>
     </NuqsAdapter>

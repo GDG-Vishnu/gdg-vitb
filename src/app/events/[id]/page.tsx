@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Clock,
   Star,
+  CheckCircle,
 } from "lucide-react";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
@@ -22,15 +23,20 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import NextJsImage from "@/components/NextJsImage";
-import { is } from "date-fns/locale";
 import { LoadingEventDetail } from "@/components/loadingPage";
+import { checkRegistrationEligibility } from "@/services/registration.service";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import RegistrationCard from "@/components/RegistrationCard";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase-client";
 
 type Event = {
   id: string;
   title: string;
   description: string | null;
-  Date: string | null;
-  Time: string | null;
+  date: string | null;
+  endDate: string | null;
   venue: string | null;
   organizer: string | null;
   coOrganizer: string | null;
@@ -41,9 +47,12 @@ type Event = {
   rank: number;
   eventGallery: string[];
   coverUrl: string | null;
-  Theme: string[] | null;
+  theme: string[] | null;
   isDone: boolean;
-  MembersParticipated: number;
+  membersParticipated: number;
+  registrationEnabled: boolean;
+  teamSizeMin: number;
+  teamSizeMax: number;
 };
 
 // Theme color helper - extracts colors from event Theme array
@@ -80,12 +89,100 @@ const EventClosed = [
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { firebaseUser, signInWithGoogle } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [showRegistration, setShowRegistration] = useState(false);
+  const [registering, setRegistering] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+
+  // ── Check if user already registered for this event ─────
+
+  useEffect(() => {
+    if (!firebaseUser || !params.id) return;
+
+    let mounted = true;
+    const eventId = params.id as string;
+
+    (async () => {
+      try {
+        const q = query(
+          collection(db, "registrations"),
+          where("userId", "==", firebaseUser.uid),
+          where("eventId", "==", eventId),
+        );
+        const snap = await getDocs(q);
+        if (mounted && !snap.empty) {
+          setAlreadyRegistered(true);
+        }
+      } catch (err) {
+        // Silently fail — non-critical check
+        console.error("[Registration] check failed:", err);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [firebaseUser, params.id]);
+
+  // ── Registration guard handler ──────────────────────────
+
+  async function handleRegisterClick() {
+    setRegistering(true);
+    try {
+      const result = await checkRegistrationEligibility();
+
+      if (result.allowed) {
+        setShowRegistration(true);
+        return;
+      }
+
+      switch (result.reason) {
+        case "not-logged-in":
+          toast.info("Please sign in to register for this event.");
+          try {
+            await signInWithGoogle();
+            // Re-check after sign-in
+            const recheck = await checkRegistrationEligibility();
+            if (recheck.allowed) {
+              setShowRegistration(true);
+            } else if (
+              !recheck.allowed &&
+              recheck.reason === "profile-incomplete"
+            ) {
+              toast.info("Complete your profile first to register.");
+              router.push(`/profile-setup?redirect=/events/${params.id}`);
+            }
+          } catch (signInErr) {
+            toast.error(
+              signInErr instanceof Error
+                ? signInErr.message
+                : "Sign-in failed.",
+            );
+          }
+          break;
+
+        case "profile-incomplete":
+          toast.info("Complete your profile first to register for events.");
+          router.push(`/profile-setup?redirect=/events/${params.id}`);
+          break;
+
+        case "blocked":
+          toast.error("Your account has been blocked. Contact the admin.");
+          break;
+      }
+    } catch (err) {
+      console.error("[Registration] guard check failed:", err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setRegistering(false);
+    }
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -172,7 +269,7 @@ export default function EventDetailPage() {
     "bg-gray-100 text-gray-800 border-gray-200";
 
   // Get theme colors from event
-  const theme = getThemeColors(event.Theme);
+  const theme = getThemeColors(event.theme);
 
   return (
     <div
@@ -220,13 +317,13 @@ export default function EventDetailPage() {
             <div className="w-[300px] hidden lg:block"></div>
 
             <ParticipantBadge
-              text={`${event.MembersParticipated}+`}
+              text={`${event.membersParticipated}+`}
               icon={<User className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
               bgColor={theme.primary}
             />
 
             <ParticipantBadge
-              text={formatDate(event.Date)}
+              text={formatDate(event.date)}
               className="mt-3 sm:mt-0 sm:ml-4"
               icon={
                 <Calendar className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />
@@ -493,11 +590,21 @@ export default function EventDetailPage() {
                 {event.isDone ? EventClosed[1] : EventOpen[1]}
               </p>
               <div className="flex wrap justify-center gap-4">
-                {!event.isDone && (
-                  <button className="px-8 py-4 bg-[#1a1a1a] text-white rounded-full text-lg font-semibold hover:bg-[#2a2a2a] transition-colors flex items-center gap-2">
+                {!event.isDone && !alreadyRegistered && (
+                  <button
+                    onClick={handleRegisterClick}
+                    disabled={registering}
+                    className="px-8 py-4 bg-[#1a1a1a] text-white rounded-full text-lg font-semibold hover:bg-[#2a2a2a] transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
                     <Star className="w-5 h-5" />
-                    Register Now
+                    {registering ? "Checking…" : "Register Now"}
                   </button>
+                )}
+                {!event.isDone && alreadyRegistered && (
+                  <div className="px-8 py-4 bg-green-600 text-white rounded-full text-lg font-semibold flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Already Registered
+                  </div>
                 )}
                 <Link
                   href="/events"
@@ -511,6 +618,23 @@ export default function EventDetailPage() {
           </div>
         </div>
       </main>
+
+      {/* Registration modal */}
+      <RegistrationCard
+        visible={showRegistration}
+        onClose={() => setShowRegistration(false)}
+        eventId={event?.id}
+        eventTitle={event?.title}
+        onRegistered={() => {
+          setAlreadyRegistered(true);
+          // Update local participant count immediately
+          setEvent((prev) =>
+            prev
+              ? { ...prev, membersParticipated: prev.membersParticipated + 1 }
+              : prev,
+          );
+        }}
+      />
 
       <Footer />
     </div>

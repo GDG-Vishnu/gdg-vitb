@@ -1,13 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { X, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
+import { db, auth } from "@/lib/firebase-client";
 
 type Props = {
   visible: boolean;
   onClose: () => void;
-  onRegister?: () => void;
+  onRegistered?: () => void;
+  eventId?: string;
+  eventTitle?: string;
   hack2skillLink?: string;
   formLink?: string;
 };
@@ -15,11 +29,56 @@ type Props = {
 export default function RegistrationCard({
   visible,
   onClose,
-  onRegister,
+  onRegistered,
+  eventId,
+  eventTitle,
   hack2skillLink = "https://vision.hack2skill.com/event/gdgoc-25-gdgvitb",
   formLink = "https://forms.gle/1yhQcDpzFVR9jQkd8",
 }: Props) {
+  const [saved, setSaved] = useState(false);
+
   if (!visible) return null;
+
+  async function handleStepClick() {
+    // Save registration to Firestore on first external link click
+    if (!saved && auth.currentUser && eventId) {
+      try {
+        // ── Duplicate check ──────────────────────────────
+        const q = query(
+          collection(db, "registrations"),
+          where("userId", "==", auth.currentUser.uid),
+          where("eventId", "==", eventId),
+        );
+        const existing = await getDocs(q);
+        if (!existing.empty) {
+          // Already registered — skip write, just flag it
+          setSaved(true);
+          onRegistered?.();
+          return;
+        }
+
+        // ── Save registration doc ────────────────────────
+        await addDoc(collection(db, "registrations"), {
+          userId: auth.currentUser.uid,
+          eventId,
+          eventTitle: eventTitle ?? "Unknown Event",
+          status: "registered",
+          registeredAt: serverTimestamp(),
+        });
+
+        // ── Increment event's registration count ─────────
+        const eventRef = doc(db, "events", eventId);
+        await updateDoc(eventRef, {
+          membersParticipated: increment(1),
+        });
+
+        setSaved(true);
+        onRegistered?.();
+      } catch (err) {
+        console.error("[RegistrationCard] save failed:", err);
+      }
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -39,7 +98,9 @@ export default function RegistrationCard({
           <X className="w-5 h-5" />
         </button>
 
-        <h3 className="text-xl text-stone-900 font-bold mb-2">How to Register</h3>
+        <h3 className="text-xl text-stone-900 font-bold mb-2">
+          How to Register
+        </h3>
         <p className="text-sm text-gray-900 mb-4">
           Follow these two quick steps to complete your registration.
         </p>
@@ -57,7 +118,7 @@ export default function RegistrationCard({
                 href={hack2skillLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={onRegister}
+                onClick={handleStepClick}
                 className="ml-4 inline-flex items-center gap-2 px-3 py-2 bg-yellow-500 text-black rounded-full text-sm font-semibold"
               >
                 Open
@@ -78,7 +139,7 @@ export default function RegistrationCard({
                 href={formLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={onRegister}
+                onClick={handleStepClick}
                 className="ml-4 inline-flex items-center gap-2 px-3 py-2 bg-sky-600 text-white rounded-full text-sm font-semibold"
               >
                 Open Form
@@ -87,10 +148,16 @@ export default function RegistrationCard({
             </div>
           </>
         </div>
-        <div className="text-stone-900">For any queries , complaints contact us at <a href="mailto:gdg@vishnu.edu.in" className="text-blue-600 underline">gdg@vishnu.edu.in</a>
-        <p>Contact 1. 94931 23579 </p>
-        <p>Contact 2. 89853 95957 </p>
-        
+        <div className="text-stone-900">
+          For any queries , complaints contact us at{" "}
+          <a
+            href="mailto:gdg@vishnu.edu.in"
+            className="text-blue-600 underline"
+          >
+            gdg@vishnu.edu.in
+          </a>
+          <p>Contact 1. 94931 23579 </p>
+          <p>Contact 2. 89853 95957 </p>
         </div>
         <div className="mt-6 flex justify-end">
           <button
