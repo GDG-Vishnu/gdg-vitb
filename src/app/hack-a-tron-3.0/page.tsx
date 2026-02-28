@@ -50,8 +50,8 @@ const HackATron3Content = () => {
   const targetOverride = dateParam
     ? new Date(dateParam)
     : Date.now() > REGISTRATION_CLOSE.getTime()
-    ? EVENT_START
-    : REGISTRATION_CLOSE;
+      ? EVENT_START
+      : REGISTRATION_CLOSE;
   const timerLabel =
     targetOverride.getTime() === REGISTRATION_CLOSE.getTime()
       ? "Registration closes on Dec 29, 2025 at 10:00 PM (IST)"
@@ -982,10 +982,12 @@ const HackATron3Content = () => {
       <RegistrationCard
         visible={showRegCard}
         onClose={() => setShowRegCard(false)}
-        onRegister={() => {
+        onRegistered={() => {
           setIsRegistered(true);
           setShowRegCard(false);
         }}
+        eventId="hack-a-tron-3"
+        eventTitle="Hack-a-Tron 3.0"
         hack2skillLink={"https://vision.hack2skill.com/event/gdgoc-25-gdgvitb"}
         formLink="https://forms.gle/1yhQcDpzFVR9jQkd8"
       />

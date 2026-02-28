@@ -1,4 +1,3 @@
-
 rules_version = '2';
 
 service cloud.firestore {
@@ -11,35 +10,63 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated()
-        && request.auth.token.role == 'ADMIN';
+        && exists(/databases/$(database)/documents/client_users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/client_users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // ── Users ──────────────────────────────────────────────
+    match /client_users/{userId} {
+      // Users can read their own profile; admins can read any
+      allow read: if isOwner(userId) || isAdmin();
+      // Anyone authenticated can create their own profile
+      allow create: if isOwner(userId)
+        && request.resource.data.role == 'user'
+        && request.resource.data.isBlocked == false;
+      // Users can update their own profile (except role & isBlocked)
+      allow update: if isOwner(userId)
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.isBlocked == resource.data.isBlocked;
+      // Admins can update any user (including role & isBlocked)
+      allow update: if isAdmin();
+      // Only admins can delete users
+      allow delete: if isAdmin();
     }
 
     // ── Events ─────────────────────────────────────────────
     match /events/{eventId} {
-      // Public website can read events
       allow read: if true;
-      // Only admin dashboard (authenticated admins) can write
-      allow create, update, delete: if isAdmin();
+      allow create, delete: if isAdmin();
+      // Admins can update any field
+      allow update: if isAdmin();
+      // Authenticated users may only touch membersParticipated (for registration count)
+      allow update: if isAuthenticated()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['membersParticipated']);
     }
 
     // ── Team Members ───────────────────────────────────────
-    match /team/{memberId} {
+    match /team_members/{memberId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
     // ── Blogs ──────────────────────────────────────────────
     match /blogs/{blogId} {
-      // Published blogs are public; drafts require admin
-      allow read: if resource.data.published == true || isAdmin();
+      allow read: if resource == null || resource.data.published == true || isAdmin();
       allow create, update, delete: if isAdmin();
     }
 
     // ── Registrations ──────────────────────────────────────
     match /registrations/{regId} {
-      // Anyone can create a registration (public sign-up)
-      allow create: if true;
-      // Only admins can read/update/delete
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid;
+      // Users can read their own registrations (single doc or list query)
+      allow read: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+      // Admins can read/update/delete any
       allow read, update, delete: if isAdmin();
     }
 

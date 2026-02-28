@@ -5,6 +5,7 @@ import { Trophy, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
+import UserMenu from "@/components/auth/UserMenu";
 
 export const NavbarMobile = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -41,6 +42,7 @@ export const NavbarMobile = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="ml-auto flex items-center gap-2"
       >
+        <UserMenu size="sm" />
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -53,19 +55,19 @@ export const NavbarMobile = () => {
             <span
               className={cn(
                 "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
-                mobileOpen ? "translate-y-1 rotate-45" : ""
+                mobileOpen ? "translate-y-1 rotate-45" : "",
               )}
             />
             <span
               className={cn(
                 "block w-6 h-0.5 bg-stone-950 transition-opacity duration-200",
-                mobileOpen ? "opacity-0" : "opacity-100"
+                mobileOpen ? "opacity-0" : "opacity-100",
               )}
             />
             <span
               className={cn(
                 "block w-6 h-0.5 bg-stone-950 transition-transform duration-300",
-                mobileOpen ? "-translate-y-1 -rotate-45" : ""
+                mobileOpen ? "-translate-y-1 -rotate-45" : "",
               )}
             />
           </span>
@@ -135,8 +137,8 @@ export const NavbarMobile = () => {
                           item.special
                             ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 font-bold"
                             : active || item.active
-                            ? "text-white font-bold bg-black"
-                            : "text-stone-950 hover:bg-gray-50"
+                              ? "text-white font-bold bg-black"
+                              : "text-stone-950 hover:bg-gray-50",
                         )}
                         onClick={() => setMobileOpen(false)}
                       >

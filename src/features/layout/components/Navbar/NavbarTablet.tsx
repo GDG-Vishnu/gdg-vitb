@@ -5,6 +5,7 @@ import { Sparkles, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
+import UserMenu from "@/components/auth/UserMenu";
 
 export const NavbarTablet = () => {
   const isActive = useActiveNav();
@@ -60,7 +61,7 @@ export const NavbarTablet = () => {
                         "inline-flex items-center gap-1 px-2.5 lg:px-3 py-1.5 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200",
                         "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
                         "shadow-md hover:shadow-lg",
-                        active && "ring-1 ring-amber-300"
+                        active && "ring-1 ring-amber-300",
                       )}
                     >
                       <Sparkles className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
@@ -74,7 +75,7 @@ export const NavbarTablet = () => {
                       "inline-block text-xs lg:text-sm font-medium px-2.5 lg:px-3 py-1.5 rounded-lg transition-colors duration-200",
                       active || item.active
                         ? "text-white font-bold bg-black shadow-md"
-                        : "text-gray-700 hover:text-black hover:bg-gray-100"
+                        : "text-gray-700 hover:text-black hover:bg-gray-100",
                     )}
                   >
                     <motion.span
@@ -95,7 +96,7 @@ export const NavbarTablet = () => {
         initial={{ x: 20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.45, delay: 0.16 }}
-        className="flex-shrink-0"
+        className="flex-shrink-0 flex items-center gap-2"
       >
         <Link
           href="https://gen-ai-gdg-vitb.vercel.app/"
@@ -112,6 +113,7 @@ export const NavbarTablet = () => {
             <span className="sm:hidden">#1</span>
           </motion.div>
         </Link>
+        <UserMenu size="sm" />
       </motion.div>
     </div>
   );

@@ -5,6 +5,7 @@ import { Sparkles, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
+import UserMenu from "@/components/auth/UserMenu";
 
 export const NavbarDesktop = () => {
   const isActive = useActiveNav();
@@ -58,7 +59,7 @@ export const NavbarDesktop = () => {
                       "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900",
                       "shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_25px_rgba(251,191,36,0.7)]",
                       "border-2 border-yellow-300",
-                      active && "ring-2 ring-offset-2 ring-amber-400"
+                      active && "ring-2 ring-offset-2 ring-amber-400",
                     )}
                   >
                     <Sparkles className="w-4 h-4 animate-pulse" />
@@ -76,7 +77,7 @@ export const NavbarDesktop = () => {
                     "text-base font-medium font-productSans px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105",
                     active || item.active
                       ? "text-white font-bold bg-black shadow-md"
-                      : "text-gray-600 hover:text-black hover:bg-gray-100"
+                      : "text-gray-600 hover:text-black hover:bg-gray-100",
                   )}
                 >
                   <motion.span
@@ -97,7 +98,7 @@ export const NavbarDesktop = () => {
         initial={{ x: 50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="flex items-center flex-shrink-0 w-[250px] justify-end"
+        className="flex items-center flex-shrink-0 w-[250px] justify-end gap-3"
       >
         <Link
           href="https://gen-ai-gdg-vitb.vercel.app/"
@@ -113,6 +114,7 @@ export const NavbarDesktop = () => {
             <span>Top 2 in India </span>
           </motion.div>
         </Link>
+        <UserMenu size="md" />
       </motion.div>
     </>
   );

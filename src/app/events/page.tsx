@@ -1,11 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-//Navbar removed
 import Footer from "@/components/footer/Footer";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 
@@ -13,17 +10,19 @@ type Event = {
   id: string;
   title: string;
   description: string | null;
-  Date: string | null;
-  Time: string | null;
+  date: string | null;
+  endDate: string | null;
   venue: string | null;
   organizer: string | null;
   coOrganizer: string | null;
   keyHighlights: string[] | null;
   tags: string[] | null;
   status: string | null;
-  Theme: string[] | null;
+  theme: string[] | null;
   imageUrl?: string | null;
-
+  membersParticipated: number;
+  registrationEnabled: boolean;
+  isDone: boolean;
   coverUrl?: string | null;
 };
 
@@ -50,13 +49,13 @@ function formatDate(dateStr: string | null): string {
   });
 }
 
-function EventCard({ event }: { event: Event }) {
-  const theme = getThemeColors(event.Theme);
+function EventCard({ event, isLive }: { event: Event; isLive?: boolean }) {
+  const theme = getThemeColors(event.theme);
 
   // Get the primary theme color for the button
   const getButtonStyle = () => {
     const primaryColor =
-      event.Theme && event.Theme[0] ? event.Theme[0] : "#FBBC05";
+      event.theme && event.theme[0] ? event.theme[0] : "#FBBC05";
 
     return {
       backgroundColor: primaryColor,
@@ -67,16 +66,30 @@ function EventCard({ event }: { event: Event }) {
     };
   };
 
-  const startDate = event.Date ? formatDate(event.Date) : "TBA";
-  const eventTime = event.Time ? event.Time : "TBA";
+  const startDate = event.date ? formatDate(event.date) : "TBA";
   const eventVenue = event.venue ? event.venue : "TBA";
 
   return (
     <article
-      className="bg-white shadow-md snap-start overflow-hidden w-full border border-black flex flex-col justify-between
+      className={`relative bg-white shadow-md snap-start overflow-hidden w-full border flex flex-col justify-between
         rounded-[30px] sm:rounded-[40px] lg:rounded-[50px]
-        h-[380px] sm:h-[420px] lg:h-[472px]"
+        h-[380px] sm:h-[420px] lg:h-[472px] ${
+          isLive
+            ? "border-2 border-green-500 ring-2 ring-green-300/50"
+            : "border-black"
+        }`}
     >
+      {/* Live badge */}
+      {isLive && (
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-productSans">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+          </span>
+          LIVE
+        </div>
+      )}
+
       {/* Image Container */}
       {event.imageUrl && (
         <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
@@ -236,11 +249,65 @@ export default function EventsPage() {
           )}
 
           {!loading && !error && events.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-              {events.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-            </div>
+            <>
+              {/* ── Ongoing / Live Events ── */}
+              {events.filter(
+                (e) => e.status?.toLowerCase() === "ongoing" && !e.isDone,
+              ).length > 0 && (
+                <div className="mb-12">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="flex items-center gap-2 bg-green-100 border-3 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      <span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-600" />
+                      </span>
+                      <h2 className="text-xl md:text-2xl font-bold text-green-800 font-productSans">
+                        Happening Now
+                      </h2>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                    {events
+                      .filter(
+                        (e) =>
+                          e.status?.toLowerCase() === "ongoing" && !e.isDone,
+                      )
+                      .map((event) => (
+                        <EventCard key={event.id} event={event} isLive />
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── All Events ── */}
+              {events.filter(
+                (e) => !(e.status?.toLowerCase() === "ongoing" && !e.isDone),
+              ).length > 0 && (
+                <div>
+                  {events.filter(
+                    (e) => e.status?.toLowerCase() === "ongoing" && !e.isDone,
+                  ).length > 0 && (
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="bg-gray-100 border-3 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        <h2 className="text-xl md:text-2xl font-bold text-black font-productSans">
+                          All Events
+                        </h2>
+                      </div>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                    {events
+                      .filter(
+                        (e) =>
+                          !(e.status?.toLowerCase() === "ongoing" && !e.isDone),
+                      )
+                      .map((event) => (
+                        <EventCard key={event.id} event={event} />
+                      ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
