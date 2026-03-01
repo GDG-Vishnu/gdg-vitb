@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, User, ClipboardList, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
-import UserMenu from "@/components/auth/UserMenu";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const NavbarMobile = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isActive = useActiveNav();
+  const { firebaseUser, signOut } = useAuth();
+  const router = useRouter();
 
   return (
     <>
@@ -130,15 +134,121 @@ export const NavbarMobile = () => {
                   );
                 })}
 
-                {/* User Menu as menu item */}
-                <motion.li
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: navItems.length * 0.1, duration: 0.3 }}
-                  className="px-4 py-3 hover:bg-gray-50 transition-all duration-300 ease-in-out"
-                >
-                  <UserMenu size="sm" />
-                </motion.li>
+                {/* Auth Menu Items */}
+                {firebaseUser ? (
+                  // Logged in - show profile items
+                  <>
+                    <motion.li
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{
+                        delay: navItems.length * 0.1,
+                        duration: 0.3,
+                      }}
+                      className="border-b"
+                    >
+                      <Link
+                        href="/profile-setup"
+                        className={cn(
+                          "block px-4 py-3 font-productSans transition-all duration-300 ease-in-out",
+                          isActive("/profile-setup")
+                            ? "text-white font-bold bg-black"
+                            : "text-stone-950 hover:bg-gray-50",
+                        )}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <motion.span
+                          whileHover={{ x: 5 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                          className="flex items-center gap-2"
+                        >
+                          <User className="w-4 h-4" />
+                          My Profile
+                        </motion.span>
+                      </Link>
+                    </motion.li>
+
+                    <motion.li
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{
+                        delay: (navItems.length + 1) * 0.1,
+                        duration: 0.3,
+                      }}
+                      className="border-b"
+                    >
+                      <Link
+                        href="/registrations"
+                        className={cn(
+                          "block px-4 py-3 font-productSans transition-all duration-300 ease-in-out",
+                          isActive("/registrations")
+                            ? "text-white font-bold bg-black"
+                            : "text-stone-950 hover:bg-gray-50",
+                        )}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <motion.span
+                          whileHover={{ x: 5 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                          className="flex items-center gap-2"
+                        >
+                          <ClipboardList className="w-4 h-4" />
+                          My Registrations
+                        </motion.span>
+                      </Link>
+                    </motion.li>
+
+                    <motion.li
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{
+                        delay: (navItems.length + 2) * 0.1,
+                        duration: 0.3,
+                      }}
+                    >
+                      <button
+                        className="w-full block px-4 py-3 font-productSans transition-all duration-300 ease-in-out text-red-600 hover:bg-red-50 text-left"
+                        onClick={async () => {
+                          setMobileOpen(false);
+                          await signOut();
+                          toast.success("Signed out");
+                        }}
+                      >
+                        <motion.span
+                          whileHover={{ x: 5 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                          className="flex items-center gap-2"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </motion.span>
+                      </button>
+                    </motion.li>
+                  </>
+                ) : (
+                  // Not logged in - show signup button
+                  <motion.li
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: navItems.length * 0.1, duration: 0.3 }}
+                  >
+                    <button
+                      className="w-full block px-4 py-3 font-productSans transition-all duration-300 ease-in-out text-stone-950 hover:bg-gray-50 text-left font-bold"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        router.push("/auth/signup");
+                      }}
+                    >
+                      <motion.span
+                        whileHover={{ x: 5 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        className="flex items-center gap-2"
+                      >
+                        Sign Up
+                      </motion.span>
+                    </button>
+                  </motion.li>
+                )}
               </motion.ul>
             </div>
           </motion.div>
