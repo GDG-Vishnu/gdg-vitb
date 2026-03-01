@@ -47,7 +47,7 @@ export default function LoginCard() {
       });
 
       toast.success("Signed in successfully!");
-      router.push("/");
+      router.replace("/");
     } catch (err) {
       const msg = getAuthErrorMessage(err);
       if (!msg.includes("popup was closed")) {
@@ -83,7 +83,7 @@ export default function LoginCard() {
       });
 
       toast.success("Signed in successfully!");
-      router.push("/");
+      router.replace("/");
     } catch (err) {
       toast.error(getAuthErrorMessage(err));
     } finally {
@@ -101,7 +101,7 @@ export default function LoginCard() {
         stiffness: 300,
         damping: 25,
       }}
-      className="w-full max-w-lg bg-[#CCF6C5] border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-8"
+      className="w-full max-w-lg bg-[#CCF6C5] border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-5 sm:p-8"
     >
       <h1 className="text-2xl font-bold text-center mb-1 font-productSans text-black">
         Welcome Back
@@ -185,6 +185,7 @@ export default function LoginCard() {
         Don&apos;t have an account?{" "}
         <Link
           href="/auth/signup"
+          prefetch={true}
           className="font-bold text-black hover:underline"
         >
           Sign Up

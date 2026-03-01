@@ -53,7 +53,7 @@ function Navbar({ className }: NavbarProps) {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+      transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
       className={cn(
         "w-full flex justify-center py-4 px-4 bg-transparent",
         className,
@@ -62,7 +62,7 @@ function Navbar({ className }: NavbarProps) {
       <motion.nav
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
         className="w-full bg-white rounded-[40px] border border-black shadow-md px-4 py-2 md:py-3 flex items-center justify-between mx-4 relative font-productSans overflow-visible"
         style={{
           boxShadow: "0 8px 0 rgba(0,0,0,0.08), 0 4px 14px rgba(0,0,0,0.06)",

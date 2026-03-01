@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogOut, User, ClipboardList, ChevronDown } from "lucide-react";
@@ -52,9 +52,24 @@ export default function UserMenu({
 }: UserMenuProps) {
   const { firebaseUser, userProfile, loading, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const s = sizeClasses[size];
+
+  // Determine which auth button to show based on current page
+  const isOnSignupPage = pathname === "/auth/signup";
+  const isOnLoginPage = pathname === "/auth/login";
+  const authButtonLabel = isOnSignupPage
+    ? "Login"
+    : isOnLoginPage
+      ? "Sign Up"
+      : "Sign Up";
+  const authButtonHref = isOnSignupPage
+    ? "/auth/login"
+    : isOnLoginPage
+      ? "/auth/signup"
+      : "/auth/signup";
 
   // Redirect to profile-setup when profileCompleted is false
   useEffect(() => {
@@ -102,14 +117,15 @@ export default function UserMenu({
 
   if (!firebaseUser) {
     return (
-      <motion.button
-        whileHover={{ scale: 1.05, y: -1 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={() => router.push("/auth/signup")}
-        className={`flex items-center ${s.btn} bg-white text-black font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-black font-productSans ${className}`}
-      >
-        <span>Sign Up</span>
-      </motion.button>
+      <Link href={authButtonHref} prefetch={true}>
+        <motion.span
+          whileHover={{ scale: 1.05, y: -1 }}
+          whileTap={{ scale: 0.97 }}
+          className={`flex items-center ${s.btn} bg-white text-black font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-black font-productSans cursor-pointer ${className}`}
+        >
+          {authButtonLabel}
+        </motion.span>
+      </Link>
     );
   }
 
