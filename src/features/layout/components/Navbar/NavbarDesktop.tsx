@@ -75,19 +75,13 @@ export const NavbarDesktop = () => {
                   href={item.href ?? "#"}
                   prefetch={true}
                   className={cn(
-                    "text-base font-medium font-productSans px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105",
+                    "text-base font-semibold font-productSans px-3 py-2 rounded-lg transition-colors duration-300 ease-in-out",
                     active || item.active
-                      ? "text-white font-bold bg-black shadow-md"
+                      ? "text-white bg-black shadow-md"
                       : "text-gray-600 hover:text-black hover:bg-gray-100",
                   )}
                 >
-                  <motion.span
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="font-productSans"
-                  >
-                    {item.label}
-                  </motion.span>
+                  <span className="font-productSans">{item.label}</span>
                 </Link>
               )}
             </motion.li>

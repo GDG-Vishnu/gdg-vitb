@@ -54,7 +54,6 @@ export default function RegistrationCard({
 
           const eventSnap = await tx.get(eventRef);
           const currentCount =
-            eventSnap.data()?.membersParticipated ??
             eventSnap.data()?.MembersParticipated ??
             0;
 
@@ -67,7 +66,7 @@ export default function RegistrationCard({
           });
 
           tx.update(eventRef, {
-            membersParticipated: currentCount + 1,
+            MembersParticipated: currentCount + 1,
           });
         });
 

@@ -42,10 +42,10 @@ service cloud.firestore {
       allow create, delete: if isAdmin();
       // Admins can update any field
       allow update: if isAdmin();
-      // Authenticated users may only increment membersParticipated by 1
+      // Authenticated users may only increment MembersParticipated by 1
       allow update: if isAuthenticated()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['membersParticipated'])
-        && request.resource.data.membersParticipated == resource.data.membersParticipated + 1;
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['MembersParticipated'])
+        && request.resource.data.MembersParticipated == resource.data.MembersParticipated + 1;
     }
 
     // ── Team Members ───────────────────────────────────────
@@ -66,9 +66,9 @@ service cloud.firestore {
       allow create: if isAuthenticated()
         && request.resource.data.userId == request.auth.uid
         && regId.matches(request.auth.uid + '_.*');
-      // Users can read their own registrations
+      // Users can read their own registrations (or check if one exists)
       allow read: if isAuthenticated()
-        && resource.data.userId == request.auth.uid;
+        && (resource == null || resource.data.userId == request.auth.uid);
       // Admins can read/update/delete any
       allow read, update, delete: if isAdmin();
     }

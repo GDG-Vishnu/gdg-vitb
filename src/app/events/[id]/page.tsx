@@ -27,8 +27,15 @@ import { LoadingEventDetail } from "@/components/loadingPage";
 import { checkRegistrationEligibility } from "@/services/registration.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import RegistrationCard from "@/components/RegistrationCard";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  runTransaction,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db, auth } from "@/lib/firebase-client";
 
 type Event = {
@@ -96,7 +103,6 @@ export default function EventDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [showRegistration, setShowRegistration] = useState(false);
   const [registering, setRegistering] = useState(false);
   const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
@@ -132,13 +138,58 @@ export default function EventDetailPage() {
 
   // ── Registration guard handler ──────────────────────────
 
+  async function registerDirectly() {
+    const user = auth.currentUser;
+    if (!user || !params.id) return;
+
+    const eventId = params.id as string;
+    const regId = `${user.uid}_${eventId}`;
+    const regRef = doc(db, "registrations", regId);
+    const eventRef = doc(db, "events", eventId);
+
+    await runTransaction(db, async (tx) => {
+      const regSnap = await tx.get(regRef);
+      if (regSnap.exists()) {
+        // Already registered
+        setAlreadyRegistered(true);
+        return;
+      }
+
+      const eventSnap = await tx.get(eventRef);
+      const currentCount =
+        eventSnap.data()?.MembersParticipated ??
+        eventSnap.data()?.membersParticipated ??
+        0;
+
+      tx.set(regRef, {
+        userId: user.uid,
+        eventId,
+        eventTitle: event?.title ?? "Unknown Event",
+        status: "registered",
+        registeredAt: serverTimestamp(),
+      });
+
+      tx.update(eventRef, {
+        MembersParticipated: currentCount + 1,
+      });
+    });
+
+    setAlreadyRegistered(true);
+    setEvent((prev) =>
+      prev
+        ? { ...prev, membersParticipated: prev.membersParticipated + 1 }
+        : prev,
+    );
+    toast.success("You're registered! 🎉");
+  }
+
   async function handleRegisterClick() {
     setRegistering(true);
     try {
       const result = await checkRegistrationEligibility();
 
       if (result.allowed) {
-        setShowRegistration(true);
+        await registerDirectly();
         return;
       }
 
@@ -150,7 +201,7 @@ export default function EventDetailPage() {
             // Re-check after sign-in
             const recheck = await checkRegistrationEligibility();
             if (recheck.allowed) {
-              setShowRegistration(true);
+              await registerDirectly();
             } else if (
               !recheck.allowed &&
               recheck.reason === "profile-incomplete"
@@ -622,23 +673,6 @@ export default function EventDetailPage() {
           </div>
         </div>
       </main>
-
-      {/* Registration modal */}
-      <RegistrationCard
-        visible={showRegistration}
-        onClose={() => setShowRegistration(false)}
-        eventId={event?.id}
-        eventTitle={event?.title}
-        onRegistered={() => {
-          setAlreadyRegistered(true);
-          // Update local participant count immediately
-          setEvent((prev) =>
-            prev
-              ? { ...prev, membersParticipated: prev.membersParticipated + 1 }
-              : prev,
-          );
-        }}
-      />
 
       <Footer />
     </div>
