@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,9 @@ interface NavbarProps {
 
 function Navbar({ className }: NavbarProps) {
   const { isMobile, isTablet, mounted } = useResponsive();
+
+  // Track whether this is the first mount — animate only once
+  const hasAnimated = useRef(false);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
@@ -49,9 +52,15 @@ function Navbar({ className }: NavbarProps) {
     );
   }
 
+  // Only play entrance animation on very first mount
+  const shouldAnimate = !hasAnimated.current;
+  if (mounted && !hasAnimated.current) {
+    hasAnimated.current = true;
+  }
+
   return (
     <motion.header
-      initial={{ y: -100 }}
+      initial={shouldAnimate ? { y: -100 } : false}
       animate={{ y: 0 }}
       transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
       className={cn(
@@ -60,7 +69,7 @@ function Navbar({ className }: NavbarProps) {
       )}
     >
       <motion.nav
-        initial={{ scale: 0.95, opacity: 0 }}
+        initial={shouldAnimate ? { scale: 0.95, opacity: 0 } : false}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.05 }}
         className="w-full bg-white rounded-[40px] border border-black shadow-md px-4 py-2 md:py-3 flex items-center justify-between mx-4 relative font-productSans overflow-visible"

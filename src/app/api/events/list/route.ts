@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 import type { EventSerialized } from "@/types/event";
 
-export const dynamic = "force-dynamic";
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 // ─── Helpers ────────────────────────────────────────────────

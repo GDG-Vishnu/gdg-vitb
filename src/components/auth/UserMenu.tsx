@@ -34,8 +34,8 @@ interface MenuItem {
   icon: React.ElementType;
 }
 
-const menuItems: MenuItem[] = [
-  { label: "My Profile", href: "/profile-setup", icon: User },
+const menuItems: (uid: string) => MenuItem[] = (uid) => [
+  { label: "My Profile", href: `/profile/${uid}`, icon: User },
   { label: "My Registrations", href: "/registrations", icon: ClipboardList },
 ];
 
@@ -58,20 +58,11 @@ export default function UserMenu({
   const s = sizeClasses[size];
 
   // Determine which auth button to show based on current page
-  const isOnSignupPage = pathname === "/auth/signup";
   const isOnLoginPage = pathname === "/auth/login";
-  const authButtonLabel = isOnSignupPage
-    ? "Login"
-    : isOnLoginPage
-      ? "Sign Up"
-      : "Sign Up";
-  const authButtonHref = isOnSignupPage
-    ? "/auth/login"
-    : isOnLoginPage
-      ? "/auth/signup"
-      : "/auth/signup";
+  const authButtonLabel = isOnLoginPage ? "Sign Up" : "Login";
+  const authButtonHref = isOnLoginPage ? "/auth/signup" : "/auth/login";
 
-  // Redirect to profile-setup when profileCompleted is false
+  // Redirect to profile page when profileCompleted is false
   useEffect(() => {
     if (
       !loading &&
@@ -79,7 +70,7 @@ export default function UserMenu({
       userProfile &&
       !userProfile.profileCompleted
     ) {
-      router.push("/profile-setup");
+      router.push(`/profile/${firebaseUser.uid}`);
     }
   }, [loading, firebaseUser, userProfile, router]);
 
@@ -103,29 +94,31 @@ export default function UserMenu({
     return () => document.removeEventListener("keydown", handleKey);
   }, []);
 
-  // ── Loading skeleton ────────────────────────────────────
+  // ── Loading — reserve space to prevent layout shift ───
 
   if (loading) {
     return (
-      <div
-        className={`${s.avatar} rounded-full bg-gray-200 animate-pulse ${className}`}
-      />
+      <div className={`min-w-[80px] flex justify-center ${className}`}>
+        <div className={`${s.avatar} rounded-full bg-gray-200 animate-pulse`} />
+      </div>
     );
   }
 
-  // ── Logged-out: Login with Google button ────────────────
+  // ── Logged-out: Login button ────────────────────────────
 
   if (!firebaseUser) {
     return (
-      <Link href={authButtonHref} prefetch={true}>
-        <motion.span
-          whileHover={{ scale: 1.05, y: -1 }}
-          whileTap={{ scale: 0.97 }}
-          className={`flex items-center ${s.btn} bg-white text-black font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-black font-productSans cursor-pointer ${className}`}
-        >
-          {authButtonLabel}
-        </motion.span>
-      </Link>
+      <div className={`min-w-[80px] flex justify-center ${className}`}>
+        <Link href={authButtonHref} prefetch={true}>
+          <motion.span
+            whileHover={{ scale: 1.05, y: -1 }}
+            whileTap={{ scale: 0.97 }}
+            className={`flex items-center ${s.btn} bg-white text-black font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-black font-productSans cursor-pointer ${className}`}
+          >
+            {authButtonLabel}
+          </motion.span>
+        </Link>
+      </div>
     );
   }
 
@@ -201,7 +194,7 @@ export default function UserMenu({
 
               {/* Navigation items */}
               <div className="py-1">
-                {menuItems.map((item, index) => (
+                {menuItems(firebaseUser.uid).map((item, index) => (
                   <motion.div
                     key={item.label}
                     initial={{ opacity: 0, x: -10 }}
