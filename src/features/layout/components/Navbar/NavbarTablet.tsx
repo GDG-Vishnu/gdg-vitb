@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Sparkles, Trophy } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
@@ -98,21 +98,6 @@ export const NavbarTablet = () => {
         transition={{ duration: 0.45, delay: 0.16 }}
         className="flex-shrink-0 flex items-center gap-2"
       >
-        <Link
-          href="https://gen-ai-gdg-vitb.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <motion.div
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 text-xs lg:text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-amber-300"
-          >
-            <Trophy className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
-            <span className="hidden sm:inline">Top 2 Study Jams</span>
-            <span className="sm:hidden">#1</span>
-          </motion.div>
-        </Link>
         <UserMenu size="sm" />
       </motion.div>
     </div>

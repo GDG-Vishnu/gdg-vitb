@@ -18,10 +18,10 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase-client";
 import type { UserSerialized } from "@/types/user";
+import { isAllowedDomain } from "@/lib/auth-helpers";
 
 // ─── Constants ──────────────────────────────────────────────
 
-const ALLOWED_DOMAIN = "@vishnu.edu.in";
 const USERS_COLLECTION = "client_users";
 
 // ─── Context Types ──────────────────────────────────────────
@@ -159,7 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const result = await signInWithPopup(auth, provider);
     const email = result.user.email ?? "";
 
-    if (!email.endsWith(ALLOWED_DOMAIN)) {
+    if (!isAllowedDomain(email)) {
       // Sign out immediately — domain not allowed
       await firebaseSignOut(auth);
       throw new Error(

@@ -106,12 +106,12 @@ export default function Footer() {
                   >
                     Team
                   </a>
-                  <button
-                    onClick={() => setShowContact(true)}
+                  <a
+                    href="/contactus"
                     className="hover:underline font-productSans text-center md:text-left py-1 bg-transparent border-none cursor-pointer text-[#CCF6C5] text-base sm:text-lg md:text-base"
                   >
                     Contact us
-                  </button>
+                  </a>
                   <a
                     href="/events"
                     className="hover:underline font-productSans text-center md:text-left py-1"

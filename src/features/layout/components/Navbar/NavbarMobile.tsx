@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
@@ -90,36 +90,6 @@ export const NavbarMobile = () => {
                 transition={{ delay: 0.1 }}
                 className="flex flex-col gap-0 font-productSans"
               >
-                <motion.li
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.05, duration: 0.3 }}
-                  className="border-b"
-                >
-                  <Link
-                    href="https://gen-ai-gdg-vitb.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    <div className="px-4 py-4 bg-gradient-to-r from-amber-50 to-yellow-50 flex items-center gap-3">
-                      <div className="p-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 rounded-full">
-                        <Trophy className="w-5 h-5 text-stone-900" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-bold text-stone-900">
-                          Top 2 in India
-                        </p>
-                        <p className="text-[10px] text-stone-600 font-medium">
-                          GDG On Campus VITB Achievement
-                        </p>
-                      </div>
-                      <span className="px-2 py-1 bg-amber-500 text-stone-900 text-[10px] font-bold rounded-full">
-                        🏆
-                      </span>
-                    </div>
-                  </Link>
-                </motion.li>
                 {navItems.map((item, index) => {
                   const active = isActive(item.href);
                   return (
