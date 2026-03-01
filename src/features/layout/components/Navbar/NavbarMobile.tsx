@@ -42,7 +42,6 @@ export const NavbarMobile = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="ml-auto flex items-center gap-2"
       >
-        <UserMenu size="sm" />
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -98,7 +97,7 @@ export const NavbarMobile = () => {
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: index * 0.1, duration: 0.3 }}
-                      className="border-b last:border-b-0"
+                      className="border-b"
                     >
                       <Link
                         href={item.href ?? "#"}
@@ -130,6 +129,16 @@ export const NavbarMobile = () => {
                     </motion.li>
                   );
                 })}
+
+                {/* User Menu as menu item */}
+                <motion.li
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: navItems.length * 0.1, duration: 0.3 }}
+                  className="px-4 py-3 hover:bg-gray-50 transition-all duration-300 ease-in-out"
+                >
+                  <UserMenu size="sm" />
+                </motion.li>
               </motion.ul>
             </div>
           </motion.div>
