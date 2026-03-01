@@ -104,11 +104,11 @@ export const NavbarMobile = () => {
                         href={item.href ?? "#"}
                         prefetch={true}
                         className={cn(
-                          "block px-4 py-3 font-productSans transition-all duration-300 ease-in-out",
+                          "block px-4 py-3 font-productSans font-semibold transition-colors duration-300 ease-in-out",
                           item.special
-                            ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 font-bold"
+                            ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900"
                             : active || item.active
-                              ? "text-white font-bold bg-black"
+                              ? "text-white bg-black"
                               : "text-stone-950 hover:bg-gray-50",
                         )}
                         onClick={() => setMobileOpen(false)}

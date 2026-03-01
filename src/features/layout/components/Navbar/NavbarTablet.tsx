@@ -73,9 +73,9 @@ export const NavbarTablet = () => {
                     href={item.href ?? "#"}
                     prefetch={true}
                     className={cn(
-                      "inline-block text-xs lg:text-sm font-medium px-2.5 lg:px-3 py-1.5 rounded-lg transition-colors duration-200",
+                      "inline-block text-xs lg:text-sm font-semibold px-2.5 lg:px-3 py-1.5 rounded-lg transition-colors duration-200",
                       active || item.active
-                        ? "text-white font-bold bg-black shadow-md"
+                        ? "text-white bg-black shadow-md"
                         : "text-gray-700 hover:text-black hover:bg-gray-100",
                     )}
                   >
