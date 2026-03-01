@@ -19,6 +19,7 @@ import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase-client";
 import type { UserSerialized } from "@/types/user";
 import { isAllowedDomain } from "@/lib/auth-helpers";
+import { parseRollNumber } from "@/lib/roll-number";
 
 // ─── Constants ──────────────────────────────────────────────
 
@@ -82,13 +83,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
       }
 
-      // First login — create the user document
+      // First login — extract branch & graduation year from roll number
+      const rollInfo = parseRollNumber(user.email ?? "");
+
       const newUser = {
         name: user.displayName ?? "",
         email: user.email ?? "",
         profileUrl: user.photoURL ?? "",
-        branch: "",
-        graduationYear: 0,
+        branch: rollInfo?.branch ?? "",
+        graduationYear: rollInfo?.graduationYear ?? 0,
         phoneNumber: "",
         socialMedia: {},
         resumeUrl: "",
@@ -109,8 +112,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         name: newUser.name,
         email: newUser.email,
         profileUrl: newUser.profileUrl,
-        branch: "",
-        graduationYear: 0,
+        branch: rollInfo?.branch ?? "",
+        graduationYear: rollInfo?.graduationYear ?? 0,
         phoneNumber: "",
         socialMedia: {},
         resumeUrl: "",

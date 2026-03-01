@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import type { Firestore } from "firebase/firestore";
+import { parseRollNumber } from "@/lib/roll-number";
 
 // ─── Constants ──────────────────────────────────────────────
 
@@ -45,12 +46,14 @@ export async function ensureFirestoreUserDoc(
     return false; // Document already exists — no duplicate
   }
 
+  const rollInfo = parseRollNumber(data.email);
+
   await setDoc(ref, {
     name: data.name,
     email: data.email,
     profileUrl: data.profileUrl ?? "",
-    branch: "",
-    graduationYear: 0,
+    branch: rollInfo?.branch ?? "",
+    graduationYear: rollInfo?.graduationYear ?? 0,
     phoneNumber: "",
     socialMedia: {},
     resumeUrl: "",
