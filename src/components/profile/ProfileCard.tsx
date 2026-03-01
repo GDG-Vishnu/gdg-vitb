@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Linkedin, Github, Globe, ExternalLink } from "lucide-react";
+import { Linkedin, Github, Globe } from "lucide-react";
 import type { UserSerialized } from "@/types/user";
 
 interface ProfileCardProps {
@@ -18,7 +18,6 @@ export default function ProfileCard({ user }: ProfileCardProps) {
     graduationYear,
     phoneNumber,
     socialMedia,
-    resumeUrl,
   } = user;
 
   return (
@@ -84,24 +83,6 @@ export default function ProfileCard({ user }: ProfileCardProps) {
             </div>
           </div>
           <div className="hidden sm:block" />
-          <div className="flex items-end sm:justify-end">
-            {resumeUrl ? (
-              <a
-                href={resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#FFE7A5] text-black font-bold text-xs sm:text-sm px-4 sm:px-6 py-2 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] hover:bg-[#ffd96e] transition-all duration-200"
-              >
-                VIEW RESUME
-                <ExternalLink size={14} />
-              </a>
-            ) : (
-              <span className="inline-flex items-center gap-2 bg-[#FFE7A5] text-black font-bold text-xs sm:text-sm px-4 sm:px-6 py-2 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] cursor-not-allowed">
-                VIEW RESUME
-                <ExternalLink size={14} />
-              </span>
-            )}
-          </div>
         </div>
       </div>
     </motion.div>

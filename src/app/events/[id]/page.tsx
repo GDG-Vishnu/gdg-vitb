@@ -29,7 +29,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import RegistrationCard from "@/components/RegistrationCard";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase-client";
+import { db, auth } from "@/lib/firebase-client";
 
 type Event = {
   id: string;
@@ -156,7 +156,9 @@ export default function EventDetailPage() {
               recheck.reason === "profile-incomplete"
             ) {
               toast.info("Complete your profile first to register.");
-              router.push(`/profile-setup?redirect=/events/${params.id}`);
+              router.push(
+                `/profile/${auth.currentUser?.uid ?? ""}?redirect=/events/${params.id}`,
+              );
             }
           } catch (signInErr) {
             toast.error(
@@ -169,7 +171,9 @@ export default function EventDetailPage() {
 
         case "profile-incomplete":
           toast.info("Complete your profile first to register for events.");
-          router.push(`/profile-setup?redirect=/events/${params.id}`);
+          router.push(
+            `/profile/${firebaseUser?.uid ?? auth.currentUser?.uid ?? ""}?redirect=/events/${params.id}`,
+          );
           break;
 
         case "blocked":

@@ -55,7 +55,7 @@ export default function SignupCard() {
 
       if (isNew) {
         toast.success("Account created successfully!");
-        router.push("/profile-setup");
+        router.push(`/profile/${result.user.uid}`);
       } else {
         toast.success("Welcome back! You already have an account.");
         router.push("/");
@@ -156,7 +156,7 @@ export default function SignupCard() {
       });
 
       toast.success("Account created successfully!");
-      router.push("/profile-setup");
+      router.push(`/profile/${result.user.uid}`);
     } catch (err) {
       toast.error(getAuthErrorMessage(err));
     } finally {

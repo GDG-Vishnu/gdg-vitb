@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import {
   doc,
   updateDoc,
@@ -23,11 +23,14 @@ import type { EventSerialized } from "@/types/event";
 
 // ─── Page ───────────────────────────────────────────────────
 
-export default function ProfileSetupPage() {
+export default function ProfilePage() {
   const { firebaseUser, userProfile, loading, refreshProfile } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const params = useParams();
   const redirectTo = searchParams.get("redirect");
+
+  const userId = params.userId as string;
 
   // View mode: "profile" (read-only card) or "edit" (form)
   const [mode, setMode] = useState<"profile" | "edit">("profile");
@@ -46,13 +49,18 @@ export default function ProfileSetupPage() {
     }
   }, [userProfile]);
 
-  // Auth guard
+  // Auth guard — must be logged in, and the URL userId must match the logged-in user
   useEffect(() => {
     if (loading) return;
     if (!firebaseUser) {
-      router.replace("/");
+      router.replace("/auth/login");
+      return;
     }
-  }, [loading, firebaseUser, router]);
+    // If the userId in the URL doesn't match the logged-in user, redirect to their own profile
+    if (firebaseUser.uid !== userId) {
+      router.replace(`/profile/${firebaseUser.uid}`);
+    }
+  }, [loading, firebaseUser, router, userId]);
 
   // Fetch registered events from registrations collection
   const fetchRegisteredEvents = useCallback(async () => {
@@ -125,6 +133,7 @@ export default function ProfileSetupPage() {
           twitter: values.socialMedia.twitter,
         },
         resumeUrl: values.resumeUrl,
+        profileUrl: values.profileUrl,
         profileCompleted: true,
         updatedAt: serverTimestamp(),
       });
@@ -138,7 +147,7 @@ export default function ProfileSetupPage() {
         setMode("profile");
       }
     } catch (err) {
-      console.error("[ProfileSetup] update failed:", err);
+      console.error("[Profile] update failed:", err);
       toast.error("Failed to update profile. Please try again.");
     } finally {
       setSubmitting(false);
@@ -147,7 +156,7 @@ export default function ProfileSetupPage() {
 
   // ── Loading / guard ─────────────────────────────────────
 
-  if (loading || !firebaseUser || !userProfile) {
+  if (loading || !firebaseUser || !userProfile || firebaseUser.uid !== userId) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"

@@ -2,7 +2,6 @@ import { NextResponse, NextRequest } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 import type { EventSerialized } from "@/types/event";
 
-export const dynamic = "force-dynamic";
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 // ─── Helpers ────────────────────────────────────────────────
@@ -41,6 +40,11 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+
+    // Validate ID format
+    if (!id || typeof id !== "string" || id.length > 128 || /[\/]/.test(id)) {
+      return NextResponse.json({ error: "Invalid event ID" }, { status: 400 });
+    }
 
     const docRef = adminDb.collection("events").doc(id);
     const snap = await docRef.get();

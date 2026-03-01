@@ -53,6 +53,7 @@ export interface EditProfileSubmitData {
   graduationYear: number;
   phoneNumber: string;
   resumeUrl: string;
+  profileUrl: string;
   socialMedia: {
     linkedin: string;
     github: string;
@@ -87,7 +88,6 @@ function validateUrl(url: string): boolean {
 function validate(values: FormData): FormErrors {
   const errors: FormErrors = {};
 
-  if (!values.name.trim()) errors.name = "Name is required.";
   if (!values.branch) errors.branch = "Please select your branch.";
 
   const gradYear = Number(values.graduationYear);
@@ -152,6 +152,36 @@ export default function EditProfileForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [branchOpen, setBranchOpen] = useState(false);
   const branchRef = useRef<HTMLDivElement>(null);
+
+  // ── Profile image upload state ─────────────────────────
+  const [profileUrl, setProfileUrl] = useState(user.profileUrl || "");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+
+      const res = await fetch("/api/upload", { method: "POST", body });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
+      setProfileUrl(data.url);
+    } catch (err) {
+      console.error("[Upload] failed:", err);
+      alert(err instanceof Error ? err.message : "Image upload failed.");
+    } finally {
+      setUploading(false);
+      // Reset the input so the same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   // Close branch dropdown on outside click
   useEffect(() => {
@@ -236,6 +266,7 @@ export default function EditProfileForm({
       graduationYear: Number(formData.graduationYear),
       phoneNumber: formData.phoneNumber.trim(),
       resumeUrl: formData.resumeUrl.trim(),
+      profileUrl,
       socialMedia: {
         linkedin: (formData.socialLinks["LINKEDIN"] || "").trim(),
         github: (formData.socialLinks["GITHUB"] || "").trim(),
@@ -303,10 +334,10 @@ export default function EditProfileForm({
                 Profile Image
               </label>
               <div className="flex items-center gap-4">
-                {user.profileUrl ? (
+                {profileUrl ? (
                   <img
-                    src={user.profileUrl}
-                    alt={user.name}
+                    src={profileUrl}
+                    alt={formData.name}
                     referrerPolicy="no-referrer"
                     className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-md object-cover border border-gray-600"
                   />
@@ -315,28 +346,48 @@ export default function EditProfileForm({
                     {formData.name?.charAt(0)?.toUpperCase() || "?"}
                   </div>
                 )}
+
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+
                 <motion.button
                   type="button"
-                  whileHover={{ scale: 1.03, y: -1 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-2 bg-[#BFDCE5] text-black px-4 py-2 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] font-semibold text-sm hover:bg-[#a8cdd8] transition-all duration-200"
+                  disabled={uploading}
+                  onClick={() => fileInputRef.current?.click()}
+                  whileHover={uploading ? {} : { scale: 1.03, y: -1 }}
+                  whileTap={uploading ? {} : { scale: 0.97 }}
+                  className="flex items-center gap-2 bg-[#BFDCE5] text-black px-4 py-2 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] font-semibold text-sm hover:bg-[#a8cdd8] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <Upload size={14} />
-                  Upload
+                  {uploading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      Uploading…
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={14} />
+                      Upload
+                    </>
+                  )}
                 </motion.button>
               </div>
             </div>
 
             {/* ── Fields Grid ────────────────────────────────── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-              {/* Name */}
-              <FieldBlock label="Name" required error={errors.name}>
+              {/* Name (read-only — from Google account) */}
+              <FieldBlock label="Name">
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => updateField("name", e.target.value)}
-                  placeholder="Your full name"
-                  className={inputClass(errors.name)}
+                  readOnly
+                  className={`${inputClass()} bg-[#2a2a2a] cursor-not-allowed opacity-60`}
                 />
               </FieldBlock>
 

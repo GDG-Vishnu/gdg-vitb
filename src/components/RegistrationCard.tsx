@@ -4,15 +4,11 @@ import React, { useState } from "react";
 import { X, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import {
-  addDoc,
   collection,
   serverTimestamp,
-  query,
-  where,
-  getDocs,
   doc,
-  updateDoc,
-  increment,
+  runTransaction,
+  getDoc,
 } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase-client";
 
@@ -43,33 +39,36 @@ export default function RegistrationCard({
     // Save registration to Firestore on first external link click
     if (!saved && auth.currentUser && eventId) {
       try {
-        // ── Duplicate check ──────────────────────────────
-        const q = query(
-          collection(db, "registrations"),
-          where("userId", "==", auth.currentUser.uid),
-          where("eventId", "==", eventId),
-        );
-        const existing = await getDocs(q);
-        if (!existing.empty) {
-          // Already registered — skip write, just flag it
-          setSaved(true);
-          onRegistered?.();
-          return;
-        }
-
-        // ── Save registration doc ────────────────────────
-        await addDoc(collection(db, "registrations"), {
-          userId: auth.currentUser.uid,
-          eventId,
-          eventTitle: eventTitle ?? "Unknown Event",
-          status: "registered",
-          registeredAt: serverTimestamp(),
-        });
-
-        // ── Increment event's registration count ─────────
+        // Use deterministic doc ID to prevent duplicate registrations
+        const regId = `${auth.currentUser.uid}_${eventId}`;
+        const regRef = doc(db, "registrations", regId);
         const eventRef = doc(db, "events", eventId);
-        await updateDoc(eventRef, {
-          membersParticipated: increment(1),
+
+        // Atomic transaction: check duplicate + write + increment
+        await runTransaction(db, async (tx) => {
+          const regSnap = await tx.get(regRef);
+          if (regSnap.exists()) {
+            // Already registered — no-op inside transaction
+            return;
+          }
+
+          const eventSnap = await tx.get(eventRef);
+          const currentCount =
+            eventSnap.data()?.membersParticipated ??
+            eventSnap.data()?.MembersParticipated ??
+            0;
+
+          tx.set(regRef, {
+            userId: auth.currentUser!.uid,
+            eventId,
+            eventTitle: eventTitle ?? "Unknown Event",
+            status: "registered",
+            registeredAt: serverTimestamp(),
+          });
+
+          tx.update(eventRef, {
+            membersParticipated: currentCount + 1,
+          });
         });
 
         setSaved(true);

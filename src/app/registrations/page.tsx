@@ -8,6 +8,7 @@ import { db } from "@/lib/firebase-client";
 import { useAuth } from "@/contexts/AuthContext";
 import Footer from "@/components/footer/Footer";
 import { CalendarDays, MapPin, ArrowLeft, Loader2 } from "lucide-react";
+import { ProtectedRoute } from "@/components/auth/RouteGuards";
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -22,18 +23,19 @@ interface Registration {
 // ─── Page ───────────────────────────────────────────────────
 
 export default function MyRegistrationsPage() {
-  const { firebaseUser, loading: authLoading } = useAuth();
+  return (
+    <ProtectedRoute>
+      <MyRegistrationsContent />
+    </ProtectedRoute>
+  );
+}
+
+function MyRegistrationsContent() {
+  const { firebaseUser } = useAuth();
   const router = useRouter();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Auth guard
-  useEffect(() => {
-    if (!authLoading && !firebaseUser) {
-      router.replace("/");
-    }
-  }, [authLoading, firebaseUser, router]);
 
   // Fetch registrations
   useEffect(() => {
@@ -85,16 +87,6 @@ export default function MyRegistrationsPage() {
       mounted = false;
     };
   }, [firebaseUser]);
-
-  // ── Loading / auth guard ──────────────────────────────────
-
-  if (authLoading || !firebaseUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-      </div>
-    );
-  }
 
   // ── Render ────────────────────────────────────────────────
 
