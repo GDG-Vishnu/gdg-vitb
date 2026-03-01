@@ -71,6 +71,7 @@ export const NavbarTablet = () => {
                 ) : (
                   <Link
                     href={item.href ?? "#"}
+                    prefetch={true}
                     className={cn(
                       "inline-block text-xs lg:text-sm font-medium px-2.5 lg:px-3 py-1.5 rounded-lg transition-colors duration-200",
                       active || item.active

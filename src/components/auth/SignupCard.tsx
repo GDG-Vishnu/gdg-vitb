@@ -174,7 +174,7 @@ export default function SignupCard() {
         stiffness: 300,
         damping: 25,
       }}
-      className="w-full max-w-lg bg-[#CCF6C5] border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-8"
+      className="w-full max-w-lg bg-[#CCF6C5] border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] p-5 sm:p-8"
     >
       <h1 className="text-2xl font-bold text-center mb-1 font-productSans text-black">
         Create Account
@@ -290,6 +290,7 @@ export default function SignupCard() {
         Already have an account?{" "}
         <Link
           href="/auth/login"
+          prefetch={true}
           className="font-bold text-black hover:underline"
         >
           Login

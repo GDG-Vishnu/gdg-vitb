@@ -105,6 +105,7 @@ export const NavbarMobile = () => {
                     >
                       <Link
                         href={item.href ?? "#"}
+                        prefetch={true}
                         className={cn(
                           "block px-4 py-3 font-productSans transition-all duration-300 ease-in-out",
                           item.special

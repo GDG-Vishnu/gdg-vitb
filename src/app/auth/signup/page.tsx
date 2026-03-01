@@ -6,7 +6,7 @@ import Footer from "@/components/footer/Footer";
 export default function SignupPage() {
   return (
     <>
-      <div className="flex items-center justify-center py-12 px-4">
+      <div className="flex items-center justify-center py-8 sm:py-12 px-3 sm:px-4">
         <SignupCard />
       </div>
       <Footer />
