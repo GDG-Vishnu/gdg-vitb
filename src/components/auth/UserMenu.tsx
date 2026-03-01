@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogIn, LogOut, User, ClipboardList, ChevronDown } from "lucide-react";
+import { LogOut, User, ClipboardList, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -50,11 +50,9 @@ export default function UserMenu({
   size = "md",
   className = "",
 }: UserMenuProps) {
-  const { firebaseUser, userProfile, loading, signInWithGoogle, signOut } =
-    useAuth();
+  const { firebaseUser, userProfile, loading, signOut } = useAuth();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [signingIn, setSigningIn] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const s = sizeClasses[size];
 
@@ -107,22 +105,10 @@ export default function UserMenu({
       <motion.button
         whileHover={{ scale: 1.05, y: -1 }}
         whileTap={{ scale: 0.97 }}
-        disabled={signingIn}
-        onClick={async () => {
-          setSigningIn(true);
-          try {
-            await signInWithGoogle();
-            toast.success("Signed in successfully!");
-          } catch (err) {
-            toast.error(err instanceof Error ? err.message : "Sign-in failed");
-          } finally {
-            setSigningIn(false);
-          }
-        }}
-        className={`flex items-center ${s.btn} bg-black text-white font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-black disabled:opacity-60 font-productSans ${className}`}
+        onClick={() => router.push("/auth/signup")}
+        className={`flex items-center ${s.btn} bg-white text-black font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-black font-productSans ${className}`}
       >
-        <LogIn className="w-4 h-4" />
-        <span>{signingIn ? "Signing in…" : "Login"}</span>
+        <span>Sign Up</span>
       </motion.button>
     );
   }

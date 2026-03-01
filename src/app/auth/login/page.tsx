@@ -1,11 +1,15 @@
-import React from "react";
+"use client";
+
+import LoginCard from "@/components/auth/LoginCard";
+import Footer from "@/components/footer/Footer";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="p-6 bg-white rounded shadow">
-        Login functionality is temporarily unavailable.
+    <>
+      <div className="flex items-center justify-center py-12 px-4">
+        <LoginCard />
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }

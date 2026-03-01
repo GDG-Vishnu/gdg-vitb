@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Sparkles, Trophy } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
@@ -100,20 +100,6 @@ export const NavbarDesktop = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="flex items-center flex-shrink-0 w-[250px] justify-end gap-3"
       >
-        <Link
-          href="https://gen-ai-gdg-vitb.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <motion.div
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-900 text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 border border-amber-300"
-          >
-            <Trophy className="w-4 h-4" />
-            <span>Top 2 in India </span>
-          </motion.div>
-        </Link>
         <UserMenu size="md" />
       </motion.div>
     </>
