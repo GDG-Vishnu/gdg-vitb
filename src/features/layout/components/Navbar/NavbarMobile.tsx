@@ -131,7 +131,7 @@ export const NavbarMobile = () => {
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: index * 0.1, duration: 0.3 }}
-                      className="border-b last:border-b-0"
+                      className="border-b"
                     >
                       <Link
                         href={item.href ?? "#"}
