@@ -20,8 +20,11 @@ service cloud.firestore {
 
     // ── Users ──────────────────────────────────────────────
     match /client_users/{userId} {
-      // Users can read their own profile; admins can read any
-      allow read: if isOwner(userId) || isAdmin();
+      // Public read access for non-blocked users (for profile sharing)
+      // Users can also read their own profile; admins can read any
+      allow read: if (resource != null && resource.data.isBlocked == false) 
+        || isOwner(userId) 
+        || isAdmin();
       // Anyone authenticated can create their own profile
       allow create: if isOwner(userId)
         && request.resource.data.role == 'user'

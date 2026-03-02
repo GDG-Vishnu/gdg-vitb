@@ -1,19 +1,25 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+
+import { Sparkles, LogOut, User, ClipboardList } from "lucide-react";
 import { Sparkles, User, ClipboardList, LogOut } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export const NavbarMobile = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isActive = useActiveNav();
-  const { firebaseUser, signOut } = useAuth();
-  const router = useRouter();
+  const { firebaseUser, userProfile, loading, signOut } = useAuth();
+
+  const isLoggedIn = !loading && !!firebaseUser;
+  const displayName = userProfile?.name || firebaseUser?.displayName || "User";
+  const photoURL = userProfile?.profileUrl || firebaseUser?.photoURL || "";
+  const email = userProfile?.email || firebaseUser?.email || "";
 
   return (
     <>
@@ -87,12 +93,39 @@ export const NavbarMobile = () => {
             className="absolute left-0 right-0 top-full mt-2 z-30 "
           >
             <div className="mx-4 rounded-lg bg-white border shadow-lg overflow-hidden">
+              {/* ── Profile info header (logged in) ────── */}
+              {isLoggedIn && (
+                <div className="px-4 py-3 border-b bg-gray-50">
+                  <div className="flex items-center gap-3">
+                    {photoURL ? (
+                      <img
+                        src={photoURL}
+                        alt={displayName}
+                        referrerPolicy="no-referrer"
+                        className="w-10 h-10 rounded-full object-cover border-2 border-black"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm">
+                        {displayName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-black truncate font-productSans">
+                        {displayName}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">{email}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <motion.ul
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.1 }}
                 className="flex flex-col gap-0 font-productSans"
               >
+                {/* ── Nav items ─────────────────────────── */}
                 {navItems.map((item, index) => {
                   const active = isActive(item.href);
                   return (
@@ -135,9 +168,8 @@ export const NavbarMobile = () => {
                   );
                 })}
 
-                {/* Auth Menu Items */}
-                {firebaseUser ? (
-                  // Logged in - show profile items
+                {/* ── Profile items (logged in) ────────── */}
+                {isLoggedIn && (
                   <>
                     <motion.li
                       initial={{ x: -20, opacity: 0 }}
@@ -146,29 +178,34 @@ export const NavbarMobile = () => {
                         delay: navItems.length * 0.1,
                         duration: 0.3,
                       }}
-                      className="border-b"
+                      className="border-t"
                     >
                       <Link
-                        href="/profile-setup"
-                        className={cn(
-                          "block px-4 py-3 font-productSans transition-all duration-300 ease-in-out",
-                          isActive("/profile-setup")
-                            ? "text-white font-bold bg-black"
-                            : "text-stone-950 hover:bg-gray-50",
-                        )}
+                        href={`/profile/${firebaseUser.uid}`}
+                        prefetch={true}
+                        className="flex items-center gap-3 px-4 py-3 text-stone-950 hover:bg-gray-50 font-productSans font-semibold transition-colors duration-300"
                         onClick={() => setMobileOpen(false)}
                       >
-                        <motion.span
-                          whileHover={{ x: 5 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                          className="flex items-center gap-2"
-                        >
-                          <User className="w-4 h-4" />
-                          My Profile
-                        </motion.span>
+                        <User className="w-4 h-4" />
+                        My Profile
                       </Link>
                     </motion.li>
-
+                    {/* <motion.li
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: (navItems.length + 1) * 0.1, duration: 0.3 }}
+                      className="border-t"
+                    >
+                      <Link
+                        href="/registrations"
+                        prefetch={true}
+                        className="flex items-center gap-3 px-4 py-3 text-stone-950 hover:bg-gray-50 font-productSans font-semibold transition-colors duration-300"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <ClipboardList className="w-4 h-4" />
+                        My Registrations
+                      </Link>
+                    </motion.li> */}
                     <motion.li
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
@@ -176,78 +213,39 @@ export const NavbarMobile = () => {
                         delay: (navItems.length + 1) * 0.1,
                         duration: 0.3,
                       }}
-                      className="border-b"
-                    >
-                      <Link
-                        href="/registrations"
-                        className={cn(
-                          "block px-4 py-3 font-productSans transition-all duration-300 ease-in-out",
-                          isActive("/registrations")
-                            ? "text-white font-bold bg-black"
-                            : "text-stone-950 hover:bg-gray-50",
-                        )}
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        <motion.span
-                          whileHover={{ x: 5 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                          className="flex items-center gap-2"
-                        >
-                          <ClipboardList className="w-4 h-4" />
-                          My Registrations
-                        </motion.span>
-                      </Link>
-                    </motion.li>
-
-                    <motion.li
-                      initial={{ x: -20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{
-                        delay: (navItems.length + 2) * 0.1,
-                        duration: 0.3,
-                      }}
+                      className="border-t"
                     >
                       <button
-                        className="w-full block px-4 py-3 font-productSans transition-all duration-300 ease-in-out text-red-600 hover:bg-red-50 text-left"
                         onClick={async () => {
                           setMobileOpen(false);
                           await signOut();
                           toast.success("Signed out");
                         }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 font-productSans font-semibold transition-colors duration-300 cursor-pointer"
                       >
-                        <motion.span
-                          whileHover={{ x: 5 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                          className="flex items-center gap-2"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Logout
-                        </motion.span>
+                        <LogOut className="w-4 h-4" />
+                        Logout
                       </button>
                     </motion.li>
                   </>
-                ) : (
-                  // Not logged in - show signup button
+                )}
+
+                {/* ── Login button (logged out) ────────── */}
+                {!isLoggedIn && !loading && (
                   <motion.li
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: navItems.length * 0.1, duration: 0.3 }}
+                    className="border-t"
                   >
-                    <button
-                      className="w-full block px-4 py-3 font-productSans transition-all duration-300 ease-in-out text-stone-950 hover:bg-gray-50 text-left font-bold"
-                      onClick={() => {
-                        setMobileOpen(false);
-                        router.push("/auth/signup");
-                      }}
+                    <Link
+                      href="/auth/login"
+                      prefetch={true}
+                      className="block px-4 py-3 font-productSans font-semibold text-stone-950 hover:bg-gray-50 transition-colors duration-300"
+                      onClick={() => setMobileOpen(false)}
                     >
-                      <motion.span
-                        whileHover={{ x: 5 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                        className="flex items-center gap-2"
-                      >
-                        Sign Up
-                      </motion.span>
-                    </button>
+                      Login
+                    </Link>
                   </motion.li>
                 )}
               </motion.ul>

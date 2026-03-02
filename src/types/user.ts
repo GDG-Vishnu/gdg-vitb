@@ -6,6 +6,7 @@ export interface UserSocialMedia {
   linkedin?: string;
   github?: string;
   twitter?: string;
+  [key: string]: string | undefined; // Support custom platforms
 }
 
 export interface User {
