@@ -23,7 +23,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 const MIN_YEAR = CURRENT_YEAR;
 const MAX_YEAR = CURRENT_YEAR + 6;
 
-const SOCIAL_PLATFORMS = ["GITHUB", "LINKEDIN", "PORTFOLIO"] as const;
+const SOCIAL_PLATFORMS = ["GITHUB", "LINKEDIN", "PORTFOLIO", "OTHER"] as const;
 type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
 
 // ─── Types ──────────────────────────────────────────────────
@@ -54,11 +54,7 @@ export interface EditProfileSubmitData {
   phoneNumber: string;
   resumeUrl: string;
   profileUrl: string;
-  socialMedia: {
-    linkedin: string;
-    github: string;
-    twitter: string;
-  };
+  socialMedia: Record<string, string>;
 }
 
 interface EditProfileFormProps {
@@ -132,6 +128,17 @@ export default function EditProfileForm({
       links["LINKEDIN"] = user.socialMedia.linkedin;
     if (user.socialMedia?.twitter)
       links["PORTFOLIO"] = user.socialMedia.twitter;
+    // Add any custom platforms
+    Object.entries(user.socialMedia || {}).forEach(([key, value]) => {
+      if (
+        key !== "github" &&
+        key !== "linkedin" &&
+        key !== "twitter" &&
+        value
+      ) {
+        links[key.toUpperCase()] = value;
+      }
+    });
     return links;
   };
 
@@ -152,6 +159,12 @@ export default function EditProfileForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [branchOpen, setBranchOpen] = useState(false);
   const branchRef = useRef<HTMLDivElement>(null);
+
+  // Social platform selection dropdown state
+  const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
+  const platformDropdownRef = useRef<HTMLDivElement>(null);
+  const [customPlatformName, setCustomPlatformName] = useState("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
   // ── Profile image upload state ─────────────────────────
   const [profileUrl, setProfileUrl] = useState(user.profileUrl || "");
@@ -183,11 +196,17 @@ export default function EditProfileForm({
     }
   };
 
-  // Close branch dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (branchRef.current && !branchRef.current.contains(e.target as Node)) {
         setBranchOpen(false);
+      }
+      if (
+        platformDropdownRef.current &&
+        !platformDropdownRef.current.contains(e.target as Node)
+      ) {
+        setPlatformDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -213,15 +232,32 @@ export default function EditProfileForm({
 
   // ── Social links management ─────────────────────────────
 
-  const addSocialLink = () => {
-    // Find a platform not yet added
-    const existing = Object.keys(formData.socialLinks);
-    const available = SOCIAL_PLATFORMS.filter((p) => !existing.includes(p));
-    if (available.length === 0) return;
+  const addSocialLink = (platform: SocialPlatform) => {
+    if (platform === "OTHER") {
+      setShowCustomInput(true);
+      setPlatformDropdownOpen(false);
+    } else {
+      updateField("socialLinks", {
+        ...formData.socialLinks,
+        [platform]: "",
+      });
+      setPlatformDropdownOpen(false);
+    }
+  };
+
+  const addCustomPlatform = () => {
+    const trimmed = customPlatformName.trim().toUpperCase();
+    if (!trimmed) return;
+    if (formData.socialLinks[trimmed]) {
+      alert("This platform already exists!");
+      return;
+    }
     updateField("socialLinks", {
       ...formData.socialLinks,
-      [available[0]]: "",
+      [trimmed]: "",
     });
+    setCustomPlatformName("");
+    setShowCustomInput(false);
   };
 
   const removeSocialLink = (platform: string) => {
@@ -260,6 +296,19 @@ export default function EditProfileForm({
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
+    // Build socialMedia object from all social links
+    const socialMedia: Record<string, string> = {};
+    Object.entries(formData.socialLinks).forEach(([platform, url]) => {
+      const trimmedUrl = url.trim();
+      if (trimmedUrl) {
+        // Map platform names to DB keys
+        if (platform === "GITHUB") socialMedia.github = trimmedUrl;
+        else if (platform === "LINKEDIN") socialMedia.linkedin = trimmedUrl;
+        else if (platform === "PORTFOLIO") socialMedia.twitter = trimmedUrl;
+        else socialMedia[platform.toLowerCase()] = trimmedUrl; // Custom platforms
+      }
+    });
+
     onSubmit({
       name: formData.name.trim(),
       branch: formData.branch,
@@ -267,18 +316,18 @@ export default function EditProfileForm({
       phoneNumber: formData.phoneNumber.trim(),
       resumeUrl: formData.resumeUrl.trim(),
       profileUrl,
-      socialMedia: {
-        linkedin: (formData.socialLinks["LINKEDIN"] || "").trim(),
-        github: (formData.socialLinks["GITHUB"] || "").trim(),
-        twitter: (formData.socialLinks["PORTFOLIO"] || "").trim(),
-      },
+      socialMedia,
     });
   };
 
   // ── Available platforms for adding ──────────────────────
 
-  const canAddMore =
-    Object.keys(formData.socialLinks).length < SOCIAL_PLATFORMS.length;
+  const availablePlatforms = SOCIAL_PLATFORMS.filter((p) => {
+    // "OTHER" is always available for adding custom platforms
+    if (p === "OTHER") return true;
+    return !Object.keys(formData.socialLinks).includes(p);
+  });
+  const canAddMore = availablePlatforms.length > 0;
 
   // ── Render ──────────────────────────────────────────────
 
@@ -292,32 +341,33 @@ export default function EditProfileForm({
         backgroundSize: "20px 20px",
       }}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="flex justify-center">
         {/* ── Outer wrapper card ─────────────────────────── */}
-        <div className="bg-[#111111] border border-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl">
+        <div className="bg-[#111111] border border-gray-700 rounded-[14px] sm:rounded-[20px] md:rounded-[28px] min-[1440px]:rounded-[38px] p-4 sm:p-6 md:p-8 shadow-xl w-full max-w-[1388px]">
           {/* ── Header ───────────────────────────────────── */}
-          <div className="relative flex items-center justify-between mb-4 sm:mb-6">
-            <h1 className="text-gray-200 text-xl sm:text-2xl font-bold tracking-widest uppercase">
-              {isFirstSetup ? "Complete Your Profile" : "Edit Profile"}
-            </h1>
-            {isFirstSetup && (
-              <p className="text-gray-500 text-sm mt-1">
-                Fill in the required details to get started with GDG on Campus
-                VITB.
-              </p>
-            )}
+          <div className="w-full min-[1440px]:w-[1264px] mx-auto mb-4 sm:mb-6">
+            <div className="relative flex items-center justify-between">
+              <h1 className="text-gray-200 text-[22px] sm:text-[24px] md:text-[26px] min-[1440px]:text-[30px] font-[900] leading-[146%] tracking-[0.11em] uppercase">
+                {isFirstSetup ? "Complete Your Profile" : "Edit Profile"}
+              </h1>
+              {isFirstSetup && (
+                <p className="text-gray-500 text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] min-[1440px]:text-[16px] mt-1">
+                  Fill in the required details to get started with GDG on Campus
+                  VITB.
+                </p>
+              )}
 
-            {!isFirstSetup && (
-              <motion.button
-                type="button"
-                onClick={onCancel}
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-[#BFDCE5] text-black px-4 py-2 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] font-bold text-sm uppercase tracking-wide hover:bg-[#a8cdd8] transition-all duration-200"
-              >
-                Cancel
-              </motion.button>
-            )}
+              {!isFirstSetup && (
+                <motion.button
+                  type="button"
+                  onClick={onCancel}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-[#BFDCE5] text-black px-4 py-2 border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] font-[900] text-[14px] sm:text-[16px] md:text-[18px] uppercase tracking-wide hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200"
+                >
+                  Cancel
+                </motion.button>
+              )}
+            </div>
           </div>
 
           {/* ── Form Card ────────────────────────────────── */}
@@ -326,11 +376,11 @@ export default function EditProfileForm({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="bg-[#1E1E1E] border border-gray-600 rounded-xl p-4 sm:p-6 md:p-8 shadow-lg"
+            className="bg-[#1E1E1E] border border-gray-600 rounded-[14px] p-4 sm:p-6 md:p-8 shadow-lg w-full min-[1440px]:w-[1264px] mx-auto"
           >
             {/* ── Profile Image ──────────────────────────────── */}
             <div className="mb-8">
-              <label className="block text-xs font-semibold text-[#78C6E7] mb-3 uppercase tracking-wider">
+              <label className="block text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] text-[#57CAFF] mb-3 uppercase tracking-[0.11em] leading-[146%]">
                 Profile Image
               </label>
               <div className="flex items-center gap-4">
@@ -342,7 +392,7 @@ export default function EditProfileForm({
                     className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-md object-cover border border-gray-600"
                   />
                 ) : (
-                  <div className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-md bg-gray-700 flex items-center justify-center text-3xl sm:text-4xl font-bold text-white border border-gray-600">
+                  <div className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-md bg-gray-700 flex items-center justify-center text-3xl sm:text-4xl font-[700] text-white border border-gray-600">
                     {formData.name?.charAt(0)?.toUpperCase() || "?"}
                   </div>
                 )}
@@ -360,9 +410,8 @@ export default function EditProfileForm({
                   type="button"
                   disabled={uploading}
                   onClick={() => fileInputRef.current?.click()}
-                  whileHover={uploading ? {} : { scale: 1.03, y: -1 }}
                   whileTap={uploading ? {} : { scale: 0.97 }}
-                  className="flex items-center gap-2 bg-[#BFDCE5] text-black px-4 py-2 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] font-semibold text-sm hover:bg-[#a8cdd8] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 bg-[#BFDCE5] text-black px-4 py-2 border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] font-[700] text-[14px] sm:text-[15px] md:text-[16px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {uploading ? (
                     <>
@@ -439,7 +488,7 @@ export default function EditProfileForm({
                   className={`${inputClass(errors.graduationYear)}${branchAutoFilled ? " bg-[#2a2a2a] cursor-not-allowed opacity-60" : ""}`}
                 />
                 {branchAutoFilled && (
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="mt-1 text-[11px] sm:text-[12px] md:text-[13px] text-gray-500">
                     Auto-detected from your roll number
                   </p>
                 )}
@@ -455,7 +504,7 @@ export default function EditProfileForm({
                       readOnly
                       className={`${inputClass()} bg-[#2a2a2a] cursor-not-allowed opacity-60`}
                     />
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-[11px] sm:text-[12px] md:text-[13px] text-gray-500">
                       Auto-detected from your roll number
                     </p>
                   </>
@@ -495,9 +544,9 @@ export default function EditProfileForm({
                                   updateField("branch", b);
                                   setBranchOpen(false);
                                 }}
-                                className={`w-full text-left px-4 py-2.5 text-sm transition-colors duration-100 ${
+                                className={`w-full text-left px-4 py-2.5 text-[13px] sm:text-[15px] md:text-[17px] lg:text-[18px] min-[1440px]:text-[20px] transition-colors duration-100 ${
                                   formData.branch === b
-                                    ? "bg-[#78C6E7]/20 text-[#78C6E7] font-semibold"
+                                    ? "bg-[#78C6E7]/20 text-[#78C6E7] font-[500]"
                                     : "text-white hover:bg-gray-700"
                                 }`}
                               >
@@ -534,22 +583,100 @@ export default function EditProfileForm({
             {/* ── Social Media Links ─────────────────────────── */}
             <div className="mb-2">
               <div className="flex items-center justify-between mb-4">
-                <label className="text-xs font-semibold text-[#78C6E7] uppercase tracking-wider">
+                <label className="text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] text-[#57CAFF] uppercase tracking-[0.11em] leading-[146%]">
                   Social Media Links
                 </label>
                 {canAddMore && (
-                  <motion.button
-                    type="button"
-                    onClick={addSocialLink}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-1 bg-[#BFDCE5] text-black px-3 py-1.5 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] font-semibold text-xs uppercase tracking-wide hover:bg-[#a8cdd8] transition-all duration-200"
-                  >
-                    <Plus size={12} />
-                    Add
-                  </motion.button>
+                  <div className="relative" ref={platformDropdownRef}>
+                    <motion.button
+                      type="button"
+                      onClick={() =>
+                        setPlatformDropdownOpen(!platformDropdownOpen)
+                      }
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center gap-1 bg-[#BFDCE5] text-black px-3 py-1.5 border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] font-[700] text-[13px] sm:text-[14px] md:text-[15px] uppercase tracking-wide hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200"
+                    >
+                      Add
+                      <ChevronDown
+                        size={12}
+                        className={`transition-transform duration-200 ${platformDropdownOpen ? "rotate-180" : ""}`}
+                      />
+                    </motion.button>
+                    <AnimatePresence>
+                      {platformDropdownOpen && (
+                        <motion.ul
+                          initial={{ opacity: 0, y: -6, scaleY: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                          exit={{ opacity: 0, y: -6, scaleY: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute z-20 right-0 mt-1 bg-[#1a1a1a] border border-gray-600 rounded-md shadow-xl min-w-[140px] origin-top"
+                        >
+                          {availablePlatforms.map((platform) => (
+                            <li key={platform}>
+                              <button
+                                type="button"
+                                onClick={() => addSocialLink(platform)}
+                                className="w-full text-left px-4 py-2.5 text-[13px] sm:text-[14px] md:text-[15px] text-white hover:bg-gray-700 transition-colors duration-100"
+                              >
+                                {platform === "OTHER"
+                                  ? "Other (Custom)"
+                                  : platform}
+                              </button>
+                            </li>
+                          ))}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 )}
               </div>
+
+              {/* Custom Platform Input */}
+              <AnimatePresence>
+                {showCustomInput && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mb-4 overflow-hidden"
+                  >
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={customPlatformName}
+                        onChange={(e) => setCustomPlatformName(e.target.value)}
+                        placeholder="Enter platform name (e.g., Instagram, YouTube)"
+                        className="flex-1 px-4 py-2.5 rounded-md border border-gray-500 bg-transparent text-white text-[13px] sm:text-[15px] md:text-[17px] outline-none focus:border-[#78C6E7] transition-colors duration-200"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            addCustomPlatform();
+                          }
+                        }}
+                      />
+                      <motion.button
+                        type="button"
+                        onClick={addCustomPlatform}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-4 py-2.5 bg-[#BFDCE5] text-black border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] font-[700] text-[13px] sm:text-[14px] uppercase hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200"
+                      >
+                        Add
+                      </motion.button>
+                      <motion.button
+                        type="button"
+                        onClick={() => {
+                          setShowCustomInput(false);
+                          setCustomPlatformName("");
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-4 py-2.5 bg-gray-700 text-white border-2 border-gray-600 font-[700] text-[13px] sm:text-[14px] uppercase hover:bg-gray-600 transition-all duration-200"
+                      >
+                        Cancel
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <div className="space-y-3">
                 <AnimatePresence mode="popLayout">
@@ -566,7 +693,7 @@ export default function EditProfileForm({
                         <div className="flex items-stretch gap-0">
                           {/* Platform label */}
                           <div className="flex items-center px-3 sm:px-4 py-2.5 border border-gray-500 rounded-l-md bg-[#121212] min-w-[90px] sm:min-w-[110px]">
-                            <span className="text-white text-xs font-bold uppercase tracking-wide">
+                            <span className="text-white text-[12px] sm:text-[13px] md:text-[14px] font-[700] uppercase tracking-wide">
                               {platform}
                             </span>
                           </div>
@@ -579,23 +706,22 @@ export default function EditProfileForm({
                               updateSocialLink(platform, e.target.value)
                             }
                             placeholder={`https://${platform.toLowerCase()}.com/...`}
-                            className="flex-1 px-3 sm:px-4 py-2.5 border-y border-gray-500 bg-transparent text-white text-sm outline-none focus:border-[#78C6E7] transition-colors duration-200 min-w-0"
+                            className="flex-1 px-3 sm:px-4 py-2.5 border-y border-gray-500 bg-transparent text-white text-[13px] sm:text-[15px] md:text-[17px] outline-none focus:border-[#78C6E7] transition-colors duration-200 min-w-0"
                           />
 
                           {/* Delete button */}
                           <motion.button
                             type="button"
                             onClick={() => removeSocialLink(platform)}
-                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="flex items-center justify-center w-10 border-2 border-[#1E1E1E] bg-[#121212] text-gray-400 shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] hover:bg-red-600 hover:text-white transition-colors duration-200"
+                            className="flex items-center justify-center w-10 border-2 border-[#1E1E1E] bg-[#121212] text-gray-400 shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none hover:bg-red-600 hover:text-white transition-all duration-200"
                           >
                             <X size={14} />
                           </motion.button>
                         </div>
 
                         {errors[`social_${platform}`] && (
-                          <p className="mt-1 text-xs text-red-400">
+                          <p className="mt-1 text-[11px] sm:text-[12px] md:text-[13px] text-red-400">
                             {errors[`social_${platform}`]}
                           </p>
                         )}
@@ -605,9 +731,8 @@ export default function EditProfileForm({
                 </AnimatePresence>
 
                 {Object.keys(formData.socialLinks).length === 0 && (
-                  <p className="text-gray-500 text-sm py-2">
-                    No social links added yet. Click &quot;+ Add&quot; to add
-                    one.
+                  <p className="text-gray-500 text-[13px] sm:text-[14px] md:text-[15px] py-2">
+                    No social links added yet. Click &quot;Add&quot; to add one.
                   </p>
                 )}
               </div>
@@ -617,9 +742,8 @@ export default function EditProfileForm({
             <motion.button
               type="submit"
               disabled={submitting}
-              whileHover={submitting ? {} : { y: -2 }}
               whileTap={submitting ? {} : { scale: 0.98 }}
-              className="w-full mt-8 py-3 px-6 bg-[#C3ECF6] text-black font-bold text-sm border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] hover:bg-[#a8cdd8] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed uppercase tracking-wider"
+              className="w-full mt-8 py-3 px-6 bg-[#C3ECF6] text-black font-[900] text-[16px] sm:text-[18px] md:text-[20px] border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed uppercase tracking-wider"
             >
               {submitting
                 ? "Saving…"
@@ -649,12 +773,16 @@ function FieldBlock({
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-[#78C6E7] mb-1.5 uppercase tracking-wider">
+      <label className="block text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] text-[#57CAFF] mb-1.5 uppercase tracking-[0.11em] leading-[146%]">
         {label}
         {required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && (
+        <p className="mt-1 text-[11px] sm:text-[12px] md:text-[13px] text-red-400">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -662,7 +790,7 @@ function FieldBlock({
 // ─── Input Class ────────────────────────────────────────────
 
 function inputClass(error?: string) {
-  return `w-full px-4 py-2.5 rounded-md border text-sm text-white bg-transparent outline-none transition-all duration-200 ${
+  return `w-full px-4 py-2.5 rounded-md border text-[13px] sm:text-[15px] md:text-[17px] lg:text-[18px] min-[1440px]:text-[20px] font-[400] text-white bg-transparent outline-none transition-all duration-200 ${
     error
       ? "border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-400/30"
       : "border-gray-500 focus:border-[#78C6E7] focus:ring-1 focus:ring-[#78C6E7]/30"

@@ -17,6 +17,11 @@ export const productSans = localFont({
       weight: "700",
       style: "normal",
     },
+    {
+      path: "../../public/fonts/ProductSans-Black.ttf",
+      weight: "900",
+      style: "normal",
+    },
   ],
   variable: "--font-product-sans",
   display: "swap",

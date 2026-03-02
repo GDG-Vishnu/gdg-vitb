@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, Lock } from "lucide-react";
+import { Mail } from "lucide-react";
 import {
   signInWithPopup,
   GoogleAuthProvider,
@@ -24,6 +24,7 @@ export default function LoginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -112,17 +113,17 @@ export default function LoginCard() {
 
       {/* Google Button */}
       <motion.button
-        whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={handleGoogleLogin}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-3 bg-[#1E1E1E] text-white py-3 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] hover:bg-[#2a2a2a] transition font-productSans font-medium disabled:opacity-60 cursor-pointer"
+        className="w-full flex items-center justify-center gap-3 bg-[#1E1E1E] text-white py-3 border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200 font-productSans font-medium disabled:opacity-60 cursor-pointer"
       >
         <Image
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
+          src="/chrome.png"
           alt="Google"
           width={20}
           height={20}
+          className="w-[20px] h-[20px] object-contain"
         />
         Continue with Google
       </motion.button>
@@ -159,23 +160,41 @@ export default function LoginCard() {
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black/50" />
+            <Image
+              src="/key.png"
+              alt="Password"
+              width={16}
+              height={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50"
+            />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border-2 border-black bg-transparent text-black placeholder:text-black/40 font-productSans text-sm focus:outline-none focus:ring-2 focus:ring-black/30"
+              className="w-full pl-10 pr-10 py-2.5 border-2 border-black bg-transparent text-black placeholder:text-black/40 font-productSans text-sm focus:outline-none focus:ring-2 focus:ring-black/30"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity"
+            >
+              <Image
+                src="/eye.png"
+                alt="Toggle password visibility"
+                width={16}
+                height={16}
+                className="w-4 h-4"
+              />
+            </button>
           </div>
         </div>
         <motion.button
           type="submit"
-          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           disabled={loading}
-          className="w-full py-3 bg-[#1E1E1E] text-white border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] font-productSans font-bold hover:bg-[#2a2a2a] transition disabled:opacity-60 cursor-pointer"
+          className="w-full py-3 bg-[#1E1E1E] text-white border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200 font-productSans font-bold disabled:opacity-60 cursor-pointer"
         >
           {loading ? "Signing in…" : "Login"}
         </motion.button>
