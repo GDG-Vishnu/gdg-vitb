@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogOut, User, ClipboardList, ChevronDown } from "lucide-react";
+import { LogOut, User, ClipboardList, ChevronDown, Share2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -36,7 +36,8 @@ interface MenuItem {
 
 const menuItems: (uid: string) => MenuItem[] = (uid) => [
   { label: "My Profile", href: `/profile/${uid}`, icon: User },
-  { label: "My Registrations", href: "/registrations", icon: ClipboardList },
+  { label: "Share Profile", href: `/profile-share/${uid}`, icon: Share2 },
+  // { label: "My Registrations", href: "/registrations", icon: ClipboardList },
 ];
 
 // ─── Component ──────────────────────────────────────────────

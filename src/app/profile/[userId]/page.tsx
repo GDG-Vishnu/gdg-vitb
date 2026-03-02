@@ -14,6 +14,7 @@ import {
 import { db } from "@/lib/firebase-client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import Image from "next/image";
 import Footer from "@/components/footer/Footer";
 import ProfileCard from "@/components/profile/ProfileCard";
 import RegisteredEvents from "@/components/profile/RegisteredEvents";
@@ -127,11 +128,7 @@ export default function ProfilePage() {
         branch: values.branch,
         graduationYear: values.graduationYear,
         phoneNumber: values.phoneNumber,
-        socialMedia: {
-          linkedin: values.socialMedia.linkedin,
-          github: values.socialMedia.github,
-          twitter: values.socialMedia.twitter,
-        },
+        socialMedia: values.socialMedia, // Save all social links including custom ones
         resumeUrl: values.resumeUrl,
         profileUrl: values.profileUrl,
         profileCompleted: true,
@@ -187,46 +184,77 @@ export default function ProfilePage() {
           backgroundSize: "20px 20px",
         }}
       >
-        <main className="py-6 sm:py-8 md:py-12 px-3 sm:px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* Outer container card */}
-            <div className="bg-[#111111] border border-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl">
-              {/* Header row: PROFILE title + EDIT button */}
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h1 className="text-gray-200 text-xl sm:text-2xl font-bold tracking-widest uppercase">
-                  Profile
-                </h1>
-                <button
-                  onClick={() => setMode("edit")}
-                  className="flex items-center gap-1.5 bg-[#FFE7A5] text-black text-sm font-bold px-5 py-2 border-2 border-[#1E1E1E] shadow-[2px_2px_0px_0px_#F0F0F0,2px_2px_0px_1px_#1E1E1E] hover:bg-[#ffd96e] transition-all duration-200"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                    <path d="m15 5 4 4" />
-                  </svg>
-                  EDIT
-                </button>
-              </div>
+        <main className="flex justify-center py-[16px] sm:py-[24px] md:py-[32px] min-[1440px]:py-[48px] px-[12px] sm:px-[16px] md:px-[20px]">
+          {/* ── MAIN PROFILE CONTAINER ──────────────────── */}
+          <div
+            className="
+              bg-[#111111]
+              w-full max-w-[1388px]
+              flex flex-col items-center
+              p-[16px] sm:p-[20px] md:p-[28px] lg:p-[36px]
+              min-[1440px]:py-[50px] min-[1440px]:px-[62px]
+              gap-[16px] sm:gap-[20px] md:gap-[24px] min-[1440px]:gap-[29px]
+              rounded-[14px] sm:rounded-[20px] md:rounded-[28px] min-[1440px]:rounded-[38px]
+            "
+          >
+            {/* ── PROFILE HEADER ROW ───────────────────── */}
+            <div
+              className="
+                w-full min-[1440px]:w-[1264px]
+                min-[1440px]:h-[51px]
+                flex items-center justify-between
+              "
+            >
+              {/* PROFILE TEXT */}
+              <h1
+                className="
+                  text-gray-200
+                  text-[22px] sm:text-[24px] md:text-[26px] min-[1440px]:text-[30px]
+                  font-[900]
+                  leading-[146%]
+                  tracking-[0.11em]
+                "
+              >
+                PROFILE
+              </h1>
 
-              {/* Profile details card */}
-              <ProfileCard user={userProfile} />
-
-              {/* Registered events card */}
-              <RegisteredEvents
-                events={registeredEvents}
-                loading={eventsLoading}
-              />
+              {/* EDIT BUTTON */}
+              <button
+                onClick={() => setMode("edit")}
+                className="
+                  flex items-center justify-center gap-[8px] sm:gap-[10px]
+                  bg-[#FFE7A5] text-black
+                  text-[16px] sm:text-[18px] min-[1440px]:text-[20px]
+                  font-[900]
+                  px-[20px] py-[10px]
+                  sm:px-[28px] sm:py-[12px]
+                  min-[1440px]:w-[165px] min-[1440px]:h-[55px]
+                  border-[1px] border-[#1E1E1E]
+                  shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]
+                  hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none
+                  transition-all duration-200
+                  cursor-pointer
+                "
+              >
+                <Image
+                  src="/edit.png"
+                  alt="Edit"
+                  width={22}
+                  height={22}
+                  className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] min-[1440px]:w-[22px] min-[1440px]:h-[22px] object-contain"
+                />
+                EDIT
+              </button>
             </div>
+
+            {/* ── PROFILE CARD ─────────────────────────── */}
+            <ProfileCard user={userProfile} />
+
+            {/* ── REGISTERED EVENTS ────────────────────── */}
+            <RegisteredEvents
+              events={registeredEvents}
+              loading={eventsLoading}
+            />
           </div>
         </main>
         <Footer />
