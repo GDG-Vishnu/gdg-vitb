@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, LogOut, User, ClipboardList } from "lucide-react";
+import { Sparkles, LogOut, User, ClipboardList, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
@@ -187,6 +187,25 @@ export const NavbarMobile = () => {
                         My Profile
                       </Link>
                     </motion.li>
+                    <motion.li
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{
+                        delay: (navItems.length + 1) * 0.1,
+                        duration: 0.3,
+                      }}
+                      className="border-t"
+                    >
+                      <Link
+                        href={`/profile-share/${firebaseUser.uid}`}
+                        prefetch={true}
+                        className="flex items-center gap-3 px-4 py-3 text-stone-950 hover:bg-gray-50 font-productSans font-semibold transition-colors duration-300"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <Share2 className="w-4 h-4" />
+                        Share Profile
+                      </Link>
+                    </motion.li>
                     {/* <motion.li
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
@@ -207,7 +226,7 @@ export const NavbarMobile = () => {
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{
-                        delay: (navItems.length + 1) * 0.1,
+                        delay: (navItems.length + 2) * 0.1,
                         duration: 0.3,
                       }}
                       className="border-t"
