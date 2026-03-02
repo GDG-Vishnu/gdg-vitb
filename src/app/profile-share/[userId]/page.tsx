@@ -274,7 +274,7 @@ export default function ProfileSharePage() {
               whileTap={{ scale: 0.98 }}
               className="bg-[#E6C6C6] p-[16px] sm:p-[20px] lg:p-[24px] rounded-[8px] flex items-center justify-center gap-[12px] sm:gap-[14px] lg:gap-[16px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 border-2 border-black"
             >
-              <Share2 className="w-5 h-5 sm:w-6 sm:h-6" />
+              <Share2 className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               <span className="text-[16px] sm:text-[18px] lg:text-[20px] font-[700] text-black">
                 Share Profile
               </span>
@@ -286,7 +286,7 @@ export default function ProfileSharePage() {
               whileTap={{ scale: 0.98 }}
               className="bg-[#B7D9B0] p-[16px] sm:p-[20px] lg:p-[24px] rounded-[8px] flex items-center justify-center gap-[12px] sm:gap-[14px] lg:gap-[16px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 border-2 border-black"
             >
-              <Download className="w-5 h-5 sm:w-6 sm:h-6" />
+              <Download className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               <span className="text-[16px] sm:text-[18px] lg:text-[20px] font-[700] text-black">
                 Download Profile
               </span>
