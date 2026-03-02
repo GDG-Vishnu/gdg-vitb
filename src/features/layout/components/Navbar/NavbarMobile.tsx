@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+
 import { Sparkles, LogOut, User, ClipboardList } from "lucide-react";
+import { Sparkles, User, ClipboardList, LogOut } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
@@ -131,7 +134,7 @@ export const NavbarMobile = () => {
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: index * 0.1, duration: 0.3 }}
-                      className="border-b last:border-b-0"
+                      className="border-b"
                     >
                       <Link
                         href={item.href ?? "#"}
