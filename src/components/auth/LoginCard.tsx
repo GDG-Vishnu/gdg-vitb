@@ -116,7 +116,7 @@ export default function LoginCard() {
         whileTap={{ scale: 0.98 }}
         onClick={handleGoogleLogin}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-3 bg-[#1E1E1E] text-white py-3 border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200 font-productSans font-medium disabled:opacity-60 cursor-pointer"
+        className="w-full flex items-center justify-center gap-3 bg-[#1E1E1E] text-white py-3 border-2 border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none transition-all duration-200 font-productSans font-medium disabled:opacity-60 cursor-pointer"
       >
         <Image
           src="/chrome.png"
@@ -194,7 +194,7 @@ export default function LoginCard() {
           type="submit"
           whileTap={{ scale: 0.98 }}
           disabled={loading}
-          className="w-full py-3 bg-[#1E1E1E] text-white border-2 border-[#1E1E1E] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-200 font-productSans font-bold disabled:opacity-60 cursor-pointer"
+          className="w-full py-3 bg-[#1E1E1E] text-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none transition-all duration-200 font-productSans font-bold disabled:opacity-60 cursor-pointer"
         >
           {loading ? "Signing in…" : "Login"}
         </motion.button>
