@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 //Navbar removed
 import Footer from "@/components/footer/Footer";
-import { MapPin, Mail, Linkedin, Instagram, Loader2 } from "lucide-react";
+import { MapPin, Mail, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,7 +55,7 @@ export default function ContactUsPage() {
   }, []);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -76,7 +76,7 @@ export default function ContactUsPage() {
         {
           method: "POST",
           body: formDataToSend,
-        }
+        },
       );
 
       if (response.ok) {
@@ -188,16 +188,28 @@ export default function ContactUsPage() {
                     </h4>
                     <div className="flex gap-4">
                       <a
-                        href="#"
+                        href="https://www.linkedin.com/company/gdg-vitb/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                       >
-                        <Linkedin className="w-5 h-5 text-white" />
+                        <img
+                          src="/linkedin.png"
+                          alt="LinkedIn"
+                          className="w-5 h-5 object-contain brightness-0 invert"
+                        />
                       </a>
                       <a
-                        href="#"
+                        href="https://www.instagram.com/gdgvitb/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                       >
-                        <Instagram className="w-5 h-5 text-white" />
+                        <img
+                          src="/instagram.png"
+                          alt="Instagram"
+                          className="w-5 h-5 object-contain brightness-0 invert"
+                        />
                       </a>
                     </div>
                   </div>
@@ -355,16 +367,28 @@ export default function ContactUsPage() {
                 </h4>
                 <div className="flex gap-3">
                   <a
-                    href="#"
+                    href="https://www.linkedin.com/company/gdg-vitb/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                   >
-                    <Linkedin className="w-4 h-4 text-white" />
+                    <img
+                      src="/linkedin.png"
+                      alt="LinkedIn"
+                      className="w-4 h-4 object-contain brightness-0 invert"
+                    />
                   </a>
                   <a
-                    href="#"
+                    href="https://www.instagram.com/gdgvitb/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
                   >
-                    <Instagram className="w-4 h-4 text-white" />
+                    <img
+                      src="/instagram.png"
+                      alt="Instagram"
+                      className="w-4 h-4 object-contain brightness-0 invert"
+                    />
                   </a>
                 </div>
               </div>
@@ -448,8 +472,6 @@ export default function ContactUsPage() {
         backgroundSize: "20px 20px",
       }}
     >
-    
-
       <motion.main
         variants={containerVariants}
         initial="hidden"

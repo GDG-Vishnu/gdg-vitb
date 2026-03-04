@@ -8,8 +8,6 @@ import Footer from "@/components/footer/Footer";
 import {
   Camera,
   User,
-  Calendar,
-  MapPin,
   Users,
   Tag,
   ArrowLeft,
@@ -338,6 +336,18 @@ export default function EventDetailPage() {
     >
       <main className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
+          {/* Back to Events */}
+          <div className="mb-4">
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-sm border border-stone-900 transition-all hover:opacity-80"
+              style={{ backgroundColor: theme.primary, color: "#ffffff" }}
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Events
+            </Link>
+          </div>
+
           {/* Event Image Banner */}
           {(event.coverUrl || event.imageUrl) && (
             <div
@@ -368,12 +378,16 @@ export default function EventDetailPage() {
               </picture>
             </div>
           )}
-          <div className="flex flex-col sm:flex-row sm:justify-start sm:items-start justify-start items-start w-full">
-            <div className="w-[300px] hidden lg:block"></div>
-
+          <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center justify-center items-center w-full">
             <ParticipantBadge
               text={`${event.membersParticipated}+`}
-              icon={<User className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />}
+              icon={
+                <img
+                  src="/User.png"
+                  alt="participants"
+                  className="w-6 h-6 object-contain"
+                />
+              }
               bgColor={theme.primary}
             />
 
@@ -381,18 +395,26 @@ export default function EventDetailPage() {
               text={formatDate(event.date)}
               className="mt-3 sm:mt-0 sm:ml-4"
               icon={
-                <Calendar className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />
+                <img
+                  src="/Calendar.png"
+                  alt="date"
+                  className="w-6 h-6 object-contain"
+                />
               }
-              bgColor={theme.secondary}
+              bgColor={theme.primary}
             />
 
             <ParticipantBadge
               text={event.venue || "TBA"}
               className="mt-3 sm:mt-0 sm:ml-4"
               icon={
-                <MapPin className="w-8 h-8 text-[#1a1a1a]" strokeWidth={2} />
+                <img
+                  src="/Location.png"
+                  alt="location"
+                  className="w-6 h-6 object-contain"
+                />
               }
-              bgColor={theme.accent}
+              bgColor={theme.primary}
             />
           </div>
         </div>

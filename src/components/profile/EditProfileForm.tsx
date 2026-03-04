@@ -149,7 +149,7 @@ export default function EditProfileForm({
   const [formData, setFormData] = useState<FormData>({
     name: user.name || "",
     email: user.email || "",
-    phoneNumber: user.phoneNumber || "",
+    phoneNumber: (user.phoneNumber || "").replace(/^\+91[\s-]?/, ""),
     graduationYear: user.graduationYear || rollInfo?.graduationYear || "",
     branch: user.branch || rollInfo?.branch || "",
     resumeUrl: user.resumeUrl || "",
@@ -313,7 +313,9 @@ export default function EditProfileForm({
       name: formData.name.trim(),
       branch: formData.branch,
       graduationYear: Number(formData.graduationYear),
-      phoneNumber: formData.phoneNumber.trim(),
+      phoneNumber: formData.phoneNumber.trim()
+        ? `+91${formData.phoneNumber.trim()}`
+        : "",
       resumeUrl: formData.resumeUrl.trim(),
       profileUrl,
       socialMedia,
@@ -431,7 +433,7 @@ export default function EditProfileForm({
             {/* ── Fields Grid ────────────────────────────────── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
               {/* Name (read-only — from Google account) */}
-              <FieldBlock label="Name">
+              <FieldBlock label="Name" required>
                 <input
                   type="text"
                   value={formData.name}
@@ -441,7 +443,7 @@ export default function EditProfileForm({
               </FieldBlock>
 
               {/* Email (readonly) */}
-              <FieldBlock label="Email">
+              <FieldBlock label="Email" required>
                 <input
                   type="email"
                   value={formData.email}
@@ -456,13 +458,33 @@ export default function EditProfileForm({
                 required
                 error={errors.phoneNumber}
               >
-                <input
-                  type="tel"
-                  value={formData.phoneNumber}
-                  onChange={(e) => updateField("phoneNumber", e.target.value)}
-                  placeholder="+91 9876543210"
-                  className={inputClass(errors.phoneNumber)}
-                />
+                <div
+                  className={`flex items-stretch rounded-md overflow-hidden border ${
+                    errors.phoneNumber
+                      ? "border-red-400 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-400/30"
+                      : "border-gray-500 focus-within:border-[#78C6E7] focus-within:ring-1 focus-within:ring-[#78C6E7]/30"
+                  } transition-all duration-200`}
+                >
+                  <div className="flex items-center px-3 py-2.5 bg-[#2a2a2a] border-r border-gray-500 shrink-0">
+                    <span className="text-white text-[13px] sm:text-[15px] md:text-[17px] font-[500] select-none">
+                      +91
+                    </span>
+                  </div>
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    value={formData.phoneNumber}
+                    onChange={(e) => {
+                      const digits = e.target.value
+                        .replace(/\D/g, "")
+                        .slice(0, 10);
+                      updateField("phoneNumber", digits);
+                    }}
+                    maxLength={10}
+                    placeholder="9876543210"
+                    className="flex-1 px-3 py-2.5 text-[13px] sm:text-[15px] md:text-[17px] lg:text-[18px] min-[1440px]:text-[20px] font-[400] text-white bg-transparent outline-none"
+                  />
+                </div>
               </FieldBlock>
 
               {/* Graduation Year */}
@@ -487,11 +509,6 @@ export default function EditProfileForm({
                   placeholder={`e.g. ${CURRENT_YEAR + 2}`}
                   className={`${inputClass(errors.graduationYear)}${branchAutoFilled ? " bg-[#2a2a2a] cursor-not-allowed opacity-60" : ""}`}
                 />
-                {branchAutoFilled && (
-                  <p className="mt-1 text-[11px] sm:text-[12px] md:text-[13px] text-gray-500">
-                    Auto-detected from your roll number
-                  </p>
-                )}
               </FieldBlock>
 
               {/* Branch (custom dropdown — read-only when auto-detected) */}
@@ -504,9 +521,6 @@ export default function EditProfileForm({
                       readOnly
                       className={`${inputClass()} bg-[#2a2a2a] cursor-not-allowed opacity-60`}
                     />
-                    <p className="mt-1 text-[11px] sm:text-[12px] md:text-[13px] text-gray-500">
-                      Auto-detected from your roll number
-                    </p>
                   </>
                 ) : (
                   <div ref={branchRef} className="relative">
@@ -751,6 +765,17 @@ export default function EditProfileForm({
                   ? "Complete Profile"
                   : "Save Changes"}
             </motion.button>
+
+            {/* ── Contact Note ──────────────────────────────── */}
+            <p className="mt-4 text-center text-gray-500 text-[12px] sm:text-[13px] md:text-[14px]">
+              If you face any issues, contact us at{" "}
+              <a
+                href="mailto:gdg.dev@vishnu.edu.in"
+                className="text-[#57CAFF] hover:underline"
+              >
+                gdg.dev@vishnu.edu.in
+              </a>
+            </p>
           </motion.form>
         </div>
       </div>
@@ -775,7 +800,11 @@ function FieldBlock({
     <div>
       <label className="block text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] text-[#57CAFF] mb-1.5 uppercase tracking-[0.11em] leading-[146%]">
         {label}
-        {required && <span className="text-red-400 ml-0.5">*</span>}
+        {!required && (
+          <span className="text-gray-500 text-[11px] sm:text-[12px] md:text-[13px] font-normal ml-1.5 normal-case tracking-normal">
+            (Optional)
+          </span>
+        )}
       </label>
       {children}
       {error && (

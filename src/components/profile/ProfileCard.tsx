@@ -91,10 +91,10 @@ export default function ProfileCard({ user }: ProfileCardProps) {
             src={profileUrl}
             alt={name}
             referrerPolicy="no-referrer"
-            className="w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px] lg:w-[300px] lg:h-[300px] min-[1440px]:w-[386px] min-[1440px]:h-[386px] rounded-[12px] object-cover"
+            className="w-[140px] h-[140px] sm:w-[240px] sm:h-[240px] md:w-[220px] md:h-[220px] lg:w-[300px] lg:h-[300px] min-[1440px]:w-[386px] min-[1440px]:h-[386px] rounded-[12px] object-cover"
           />
         ) : (
-          <div className="w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px] lg:w-[300px] lg:h-[300px] min-[1440px]:w-[386px] min-[1440px]:h-[386px] rounded-[12px] bg-gray-700 flex items-center justify-center text-[36px] sm:text-[42px] md:text-[48px] font-[700] text-white">
+          <div className="w-[140px] h-[140px] sm:w-[240px] sm:h-[240px] md:w-[220px] md:h-[220px] lg:w-[300px] lg:h-[300px] min-[1440px]:w-[386px] min-[1440px]:h-[386px] rounded-[12px] bg-gray-700 flex items-center justify-center text-[36px] sm:text-[56px] md:text-[48px] font-[700] text-white">
             {name?.charAt(0)?.toUpperCase() || "?"}
           </div>
         )}
@@ -102,66 +102,69 @@ export default function ProfileCard({ user }: ProfileCardProps) {
 
       {/* ── RIGHT CONTENT ──────────────────────────────── */}
       <div className="flex-1 min-w-0 w-full lg:w-auto flex flex-col items-center lg:items-start justify-center gap-[16px] sm:gap-[20px] lg:gap-[24px] min-[1440px]:w-[736px] min-[1440px]:gap-[47px]">
-        {/* ROW 1 — Name + Branch */}
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-x-[20px] gap-y-[12px] min-[1440px]:flex min-[1440px]:gap-[260px] min-[1440px]:items-start min-[1440px]:w-[736px]">
-          <div className="min-[1440px]:w-[399px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
-            <FieldBlock label="Name" value={name || "—"} />
+        {/* Mobile: single centered-block column. sm+: revert to full-width rows */}
+        <div className="flex flex-col items-start gap-[16px] sm:gap-[20px] lg:gap-[24px] w-fit sm:w-full mx-auto sm:mx-0">
+          {/* ROW 1 — Name + Branch */}
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-x-[20px] gap-y-[12px] min-[1440px]:flex min-[1440px]:gap-[260px] min-[1440px]:items-start min-[1440px]:w-[736px]">
+            <div className="min-[1440px]:w-[399px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
+              <FieldBlock label="Name" value={name || "—"} />
+            </div>
+            <div className="min-[1440px]:w-[193px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px] min-[1440px]:text-right">
+              <FieldBlock label="Branch" value={branch || "—"} />
+            </div>
           </div>
-          <div className="min-[1440px]:w-[193px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px] min-[1440px]:text-right">
-            <FieldBlock label="Branch" value={branch || "—"} />
-          </div>
-        </div>
 
-        {/* ROW 2 — Email / Phone / Graduation */}
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[12px] min-[1440px]:flex min-[1440px]:w-[736px] min-[1440px]:gap-[52px] min-[1440px]:items-start">
-          <div className="min-[1440px]:w-[320px] min-[1440px]:shrink-0 min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
-            <FieldBlock label="Email" value={email || "—"} breakAll />
+          {/* ROW 2 — Email / Phone / Graduation */}
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[12px] min-[1440px]:flex min-[1440px]:w-[736px] min-[1440px]:gap-[52px] min-[1440px]:items-start">
+            <div className="min-[1440px]:w-[320px] min-[1440px]:shrink-0 min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
+              <FieldBlock label="Email" value={email || "—"} breakAll />
+            </div>
+            <div className="min-[1440px]:w-[160px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
+              <FieldBlock label="Phone" value={phoneNumber || "—"} />
+            </div>
+            <div className="min-[1440px]:w-[160px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
+              <FieldBlock
+                label="Graduation"
+                value={graduationYear ? String(graduationYear) : "—"}
+              />
+            </div>
           </div>
-          <div className="min-[1440px]:w-[160px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
-            <FieldBlock label="Phone" value={phoneNumber || "—"} />
-          </div>
-          <div className="min-[1440px]:w-[160px] min-[1440px]:flex min-[1440px]:flex-col min-[1440px]:gap-[5px]">
-            <FieldBlock
-              label="Graduation"
-              value={graduationYear ? String(graduationYear) : "—"}
-            />
-          </div>
-        </div>
 
-        {/* ROW 3 — Socials + Resume */}
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-x-[24px] min-[1440px]:gap-x-0 gap-y-[12px] items-end min-[1440px]:flex min-[1440px]:w-[736px] min-[1440px]:justify-between min-[1440px]:items-center">
-          {/* Socials - Only show if there are social links */}
-          {hasSocialLinks && (
-            <div className="flex flex-col items-center sm:items-start gap-[8px] min-[1440px]:w-[195px] min-[1440px]:gap-[12px]">
-              <span className="text-[#FFD427] text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] leading-[146%] tracking-[0.11em] uppercase">
-                Socials
-              </span>
-              <div className="flex items-center justify-center sm:justify-start gap-[12px] min-[1440px]:gap-[14.88px] flex-wrap min-[1440px]:flex-nowrap">
-                {socialLinks.map(([platform, url]) => (
-                  <SocialIcon
-                    key={platform}
-                    href={url}
-                    icon={getSocialIcon(platform)}
-                    label={getSocialLabel(platform)}
-                  />
-                ))}
+          {/* ROW 3 — Socials + Resume */}
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-x-[24px] min-[1440px]:gap-x-0 gap-y-[12px] items-end min-[1440px]:flex min-[1440px]:w-[736px] min-[1440px]:justify-between min-[1440px]:items-center">
+            {/* Socials - Only show if there are social links */}
+            {hasSocialLinks && (
+              <div className="flex flex-col items-start gap-[8px] min-[1440px]:w-[195px] min-[1440px]:gap-[12px]">
+                <span className="text-[#FFD427] text-[14px] sm:text-[20px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] leading-[146%] tracking-[0.11em] uppercase">
+                  Socials
+                </span>
+                <div className="flex items-center justify-start gap-[12px] min-[1440px]:gap-[14.88px] flex-wrap min-[1440px]:flex-nowrap">
+                  {socialLinks.map(([platform, url]) => (
+                    <SocialIcon
+                      key={platform}
+                      href={url}
+                      icon={getSocialIcon(platform)}
+                      label={getSocialLabel(platform)}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Resume */}
-          {resumeUrl && (
-            <div className="flex items-center justify-center">
-              <a
-                href={resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-[#FFD427] text-[14px] sm:text-[16px] md:text-[18px] min-[1440px]:text-[20px] font-[500] leading-[146%] tracking-[0.04em] underline underline-offset-[4px] hover:text-[#ffd96e] transition-colors duration-200"
-              >
-                View Resume
-              </a>
-            </div>
-          )}
+            {/* Resume */}
+            {resumeUrl && (
+              <div className="flex items-center justify-start">
+                <a
+                  href={resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-[#FFD427] text-[14px] sm:text-[20px] md:text-[18px] min-[1440px]:text-[20px] font-[500] leading-[146%] tracking-[0.04em] underline underline-offset-[4px] hover:text-[#ffd96e] transition-colors duration-200"
+                >
+                  View Resume
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -180,12 +183,12 @@ function FieldBlock({
   breakAll?: boolean;
 }) {
   return (
-    <div className="min-w-0 flex flex-col items-center sm:items-start gap-[4px]">
-      <p className="text-[#FFD427] text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] leading-[146%] tracking-[0.11em] uppercase">
+    <div className="min-w-0 flex flex-col items-start gap-[4px]">
+      <p className="text-[#FFD427] text-[14px] sm:text-[20px] md:text-[18px] lg:text-[20px] min-[1440px]:text-[24px] font-[500] leading-[146%] tracking-[0.11em] uppercase">
         {label}
       </p>
       <p
-        className={`text-white text-[13px] sm:text-[15px] md:text-[17px] lg:text-[18px] min-[1440px]:text-[20px] font-[400] leading-[146%] tracking-[0.04em] ${breakAll ? "break-all" : ""}`}
+        className={`text-white text-[13px] sm:text-[19px] md:text-[17px] lg:text-[18px] min-[1440px]:text-[20px] font-[400] leading-[146%] tracking-[0.04em] ${breakAll ? "break-all" : ""}`}
       >
         {value}
       </p>

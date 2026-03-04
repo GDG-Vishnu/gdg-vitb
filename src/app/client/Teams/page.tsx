@@ -185,7 +185,7 @@ export default function TeamsPage() {
                   {/* Mobile: horizontal scroll */}
                   <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 md:hidden">
                     <div className="flex gap-6 px-4 min-w-max justify-center">
-                      {members.map((m) => (
+                      {members.map((m, i) => (
                         <div key={m.id} className="flex-shrink-0">
                           <MemberCard
                             id={m.id}
@@ -197,6 +197,7 @@ export default function TeamsPage() {
                             mail={m.mail || undefined}
                             bgColor={m.bgColor || undefined}
                             logo={m.logo || undefined}
+                            index={i}
                           />
                         </div>
                       ))}
@@ -222,7 +223,7 @@ export default function TeamsPage() {
                                 key={index}
                                 className="flex gap-6 justify-center"
                               >
-                                {rowMembers.map((m) => (
+                                {rowMembers.map((m, ri) => (
                                   <div key={m.id} className="flex-shrink-0">
                                     <MemberCard
                                       id={m.id}
@@ -234,6 +235,7 @@ export default function TeamsPage() {
                                       mail={m.mail || undefined}
                                       bgColor={m.bgColor || undefined}
                                       logo={m.logo || undefined}
+                                      index={ri}
                                     />
                                   </div>
                                 ))}
@@ -246,7 +248,7 @@ export default function TeamsPage() {
                       </div>
                     ) : (
                       <div className="flex gap-6 justify-center">
-                        {members.map((m) => (
+                        {members.map((m, i) => (
                           <div key={m.id} className="flex-shrink-0">
                             <MemberCard
                               id={m.id}
@@ -258,6 +260,7 @@ export default function TeamsPage() {
                               mail={m.mail || undefined}
                               bgColor={m.bgColor || undefined}
                               logo={m.logo || undefined}
+                              index={i}
                             />
                           </div>
                         ))}
