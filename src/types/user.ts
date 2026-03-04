@@ -53,7 +53,9 @@ export type UpdateUserInput = Partial<
 export interface UserEventRegistration {
   event_id: string;
   event_name: string;
-  event_url: string;
+  event_data: string;
   isAttended: boolean;
   certificationLink: string;
 }
+
+

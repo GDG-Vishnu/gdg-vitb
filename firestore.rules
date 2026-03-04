@@ -27,28 +27,49 @@ service cloud.firestore {
         || isAdmin();
       // Anyone authenticated can create their own profile
       allow create: if isOwner(userId)
-        && request.resource.data.role == 'user'
         && request.resource.data.isBlocked == false;
-      // Users can update their own profile (except role & isBlocked)
+      // Users can update their own profile (except isBlocked)
       allow update: if isOwner(userId)
-        && request.resource.data.role == resource.data.role
         && request.resource.data.isBlocked == resource.data.isBlocked;
-      // Admins can update any user (including role & isBlocked)
+      // Admins can update any user (including isBlocked)
       allow update: if isAdmin();
       // Only admins can delete users
       allow delete: if isAdmin();
+
+      // User's event registrations subcollection
+      match /registrations/{eventId} {
+        // Owner can create and read their own registrations
+        allow create, read: if isOwner(userId);
+        // Admins can read/update/delete any
+        allow read, update, delete: if isAdmin();
+      }
     }
 
-    // ── Events ─────────────────────────────────────────────
+    // ── Events (Legacy) ──────────────────────────────────────
     match /events/{eventId} {
       allow read: if true;
       allow create, delete: if isAdmin();
       // Admins can update any field
       allow update: if isAdmin();
-      // Authenticated users may only increment MembersParticipated by 1
-      allow update: if isAuthenticated()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['MembersParticipated'])
-        && request.resource.data.MembersParticipated == resource.data.MembersParticipated + 1;
+    }
+
+    // ── Managed Events ─────────────────────────────────────
+    match /managed_events/{eventId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+
+      // Registrations subcollection under each managed event
+      match /registrations/{regId} {
+        // Doc ID must be {userId}_{eventId} — enforce ownership via ID
+        allow create: if isAuthenticated()
+          && request.resource.data.userId == request.auth.uid
+          && regId.matches(request.auth.uid + '_.*');
+        // Users can read their own registrations
+        allow read: if isAuthenticated()
+          && (resource == null || resource.data.userId == request.auth.uid);
+        // Admins can read/update/delete any
+        allow read, update, delete: if isAdmin();
+      }
     }
 
     // ── Team Members ───────────────────────────────────────
@@ -61,19 +82,6 @@ service cloud.firestore {
     match /blogs/{blogId} {
       allow read: if resource == null || resource.data.published == true || isAdmin();
       allow create, update, delete: if isAdmin();
-    }
-
-    // ── Registrations ──────────────────────────────────────
-    match /registrations/{regId} {
-      // Doc ID must be {userId}_{eventId} — enforce ownership via ID
-      allow create: if isAuthenticated()
-        && request.resource.data.userId == request.auth.uid
-        && regId.matches(request.auth.uid + '_.*');
-      // Users can read their own registrations (or check if one exists)
-      allow read: if isAuthenticated()
-        && (resource == null || resource.data.userId == request.auth.uid);
-      // Admins can read/update/delete any
-      allow read, update, delete: if isAdmin();
     }
 
     // ── Gallery ────────────────────────────────────────────

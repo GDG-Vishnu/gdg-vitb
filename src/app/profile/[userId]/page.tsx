@@ -4,11 +4,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import {
   doc,
+  getDoc,
   updateDoc,
   serverTimestamp,
   collection,
-  query,
-  where,
   getDocs,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase-client";
@@ -41,6 +40,9 @@ export default function ProfilePage() {
   const [registeredEvents, setRegisteredEvents] = useState<EventSerialized[]>(
     [],
   );
+  const [registrationDates, setRegistrationDates] = useState<
+    Record<string, string>
+  >({});
   const [eventsLoading, setEventsLoading] = useState(true);
 
   // If profile isn't completed yet, force edit mode
@@ -63,7 +65,7 @@ export default function ProfilePage() {
     }
   }, [loading, firebaseUser, router, userId]);
 
-  // Fetch registered events from registrations collection
+  // Fetch registered events from user's registrations subcollection
   const fetchRegisteredEvents = useCallback(async () => {
     if (!firebaseUser) {
       setRegisteredEvents([]);
@@ -73,11 +75,14 @@ export default function ProfilePage() {
 
     setEventsLoading(true);
     try {
-      const regQuery = query(
-        collection(db, "registrations"),
-        where("userId", "==", firebaseUser.uid),
+      // Read from client_users/{uid}/registrations subcollection
+      const regCol = collection(
+        db,
+        "client_users",
+        firebaseUser.uid,
+        "registrations",
       );
-      const regSnap = await getDocs(regQuery);
+      const regSnap = await getDocs(regCol);
 
       if (regSnap.empty) {
         setRegisteredEvents([]);
@@ -85,20 +90,75 @@ export default function ProfilePage() {
         return;
       }
 
-      const registeredEventIds = regSnap.docs.map(
-        (d) => d.data().eventId as string,
-      );
+      // For each registration, fetch event details + registration date
+      const dates: Record<string, string> = {};
+      const eventPromises = regSnap.docs.map(async (regDoc) => {
+        const regData = regDoc.data();
+        const eventId = regData.event_id as string;
+        const eventRef = doc(db, "managed_events", eventId);
+        const eventSnap = await getDoc(eventRef);
 
-      const res = await fetch("/api/events/list");
-      if (!res.ok) throw new Error("Failed to fetch events");
-      const data = await res.json();
-      const allEvents: EventSerialized[] = data.events ?? data ?? [];
-      const registered = allEvents.filter((e) =>
-        registeredEventIds.includes(e.id),
-      );
-      setRegisteredEvents(registered);
+        if (!eventSnap.exists()) return null;
+
+        // Fetch registeredAt from managed_events/{eventId}/registrations/{uid}_{eventId}
+        try {
+          const regId = `${firebaseUser!.uid}_${eventId}`;
+          const eventRegRef = doc(
+            db,
+            "managed_events",
+            eventId,
+            "registrations",
+            regId,
+          );
+          const eventRegSnap = await getDoc(eventRegRef);
+          if (eventRegSnap.exists()) {
+            const rd = eventRegSnap.data();
+            const ts = rd.registeredAt;
+            if (ts?.toDate) {
+              dates[eventId] = ts.toDate().toISOString();
+            } else if (typeof ts === "string") {
+              dates[eventId] = ts;
+            }
+          }
+        } catch {
+          // Non-critical — date just won't show
+        }
+
+        const d = eventSnap.data();
+        return {
+          id: eventSnap.id,
+          title: d.title ?? "",
+          description: d.description ?? "",
+          bannerImage: d.bannerImage ?? "",
+          posterImage: d.posterImage ?? "",
+          startDate: d.startDate?.toDate?.().toISOString() ?? null,
+          endDate: d.endDate?.toDate?.().toISOString() ?? null,
+          venue: d.venue ?? "",
+          mode: d.mode ?? "OFFLINE",
+          status: d.status ?? "UPCOMING",
+          eventType: d.eventType ?? "WORKSHOP",
+          maxParticipants: d.maxParticipants ?? 0,
+          registrationStart:
+            d.registrationStart?.toDate?.().toISOString() ?? null,
+          registrationEnd: d.registrationEnd?.toDate?.().toISOString() ?? null,
+          isRegistrationOpen: d.isRegistrationOpen ?? false,
+          executiveBoard: d.executiveBoard ?? [],
+          eventOfficials: d.eventOfficials ?? [],
+          eligibilityCriteria: d.eligibilityCriteria ?? "",
+          faqs: d.faqs ?? [],
+          rules: d.rules ?? [],
+          tags: d.tags ?? [],
+          keyHighlights: d.keyHighlights ?? [],
+        } as EventSerialized;
+      });
+
+      const events = (await Promise.all(eventPromises)).filter(
+        Boolean,
+      ) as EventSerialized[];
+      setRegisteredEvents(events);
+      setRegistrationDates(dates);
     } catch (err) {
-      console.error("[Profile] Failed to fetch events:", err);
+      console.error("[Profile] Failed to fetch registered events:", err);
       setRegisteredEvents([]);
     } finally {
       setEventsLoading(false);
@@ -253,6 +313,7 @@ export default function ProfilePage() {
             {/* ── REGISTERED EVENTS ────────────────────── */}
             <RegisteredEvents
               events={registeredEvents}
+              registrationDates={registrationDates}
               loading={eventsLoading}
             />
           </div>

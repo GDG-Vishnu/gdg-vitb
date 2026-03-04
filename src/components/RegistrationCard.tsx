@@ -3,13 +3,7 @@
 import React, { useState } from "react";
 import { X, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import {
-  collection,
-  serverTimestamp,
-  doc,
-  runTransaction,
-  getDoc,
-} from "firebase/firestore";
+import { serverTimestamp, doc, runTransaction } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase-client";
 
 type Props = {
@@ -39,34 +33,51 @@ export default function RegistrationCard({
     // Save registration to Firestore on first external link click
     if (!saved && auth.currentUser && eventId) {
       try {
-        // Use deterministic doc ID to prevent duplicate registrations
         const regId = `${auth.currentUser.uid}_${eventId}`;
-        const regRef = doc(db, "registrations", regId);
-        const eventRef = doc(db, "events", eventId);
+        // Event's registrations subcollection
+        const eventRegRef = doc(
+          db,
+          "managed_events",
+          eventId,
+          "registrations",
+          regId,
+        );
+        // User's registrations subcollection
+        const userRegRef = doc(
+          db,
+          "client_users",
+          auth.currentUser.uid,
+          "registrations",
+          eventId,
+        );
 
-        // Atomic transaction: check duplicate + write + increment
+        // Atomic transaction: check duplicate + write to both subcollections
         await runTransaction(db, async (tx) => {
-          const regSnap = await tx.get(regRef);
-          if (regSnap.exists()) {
-            // Already registered — no-op inside transaction
+          const userRegSnap = await tx.get(userRegRef);
+          if (userRegSnap.exists()) {
+            // Already registered — no-op
             return;
           }
 
-          const eventSnap = await tx.get(eventRef);
-          const currentCount =
-            eventSnap.data()?.MembersParticipated ??
-            0;
-
-          tx.set(regRef, {
+          // Write to managed_events/{eventId}/registrations subcollection (event-centric)
+          tx.set(eventRegRef, {
             userId: auth.currentUser!.uid,
-            eventId,
-            eventTitle: eventTitle ?? "Unknown Event",
-            status: "registered",
+            name: auth.currentUser!.displayName ?? "",
+            email: auth.currentUser!.email ?? "",
+            phone: auth.currentUser!.phoneNumber ?? "",
+            registrationType: "Individual",
             registeredAt: serverTimestamp(),
+            isCheckedIn: false,
+            checkedInAt: null,
           });
 
-          tx.update(eventRef, {
-            MembersParticipated: currentCount + 1,
+          // Write to client_users/{userId}/registrations subcollection
+          tx.set(userRegRef, {
+            event_id: eventId,
+            event_name: eventTitle ?? "Unknown Event",
+            event_data: new Date().toISOString(),
+            isAttended: false,
+            certificationLink: "",
           });
         });
 

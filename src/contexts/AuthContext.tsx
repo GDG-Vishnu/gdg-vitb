@@ -16,6 +16,7 @@ import {
   User as FirebaseUser,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { useRouter, usePathname } from "next/navigation";
 import { auth, db } from "@/lib/firebase-client";
 import type { UserSerialized } from "@/types/user";
 import { isAllowedDomain } from "@/lib/auth-helpers";
@@ -71,7 +72,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           socialMedia: data.socialMedia ?? {},
           resumeUrl: data.resumeUrl ?? null,
           participations: data.participations ?? [],
-          role: data.role ?? "user",
           isBlocked: data.isBlocked ?? false,
           profileCompleted: data.profileCompleted ?? false,
           createdAt:
@@ -96,7 +96,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         socialMedia: {},
         resumeUrl: "",
         participations: [],
-        role: "user" as const,
         isBlocked: false,
         profileCompleted: false,
         createdAt: serverTimestamp(),
@@ -118,7 +117,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         socialMedia: {},
         resumeUrl: "",
         participations: [],
-        role: "user",
         isBlocked: false,
         profileCompleted: false,
         createdAt: now,
@@ -198,6 +196,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("[AuthContext] Failed to refresh profile:", err);
     }
   }, [firebaseUser, ensureUserDocument]);
+
+  // ── Redirect to profile page if profile is incomplete ───
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (loading || !firebaseUser || !userProfile) return;
+    if (userProfile.profileCompleted) return;
+
+    // Don't redirect if already on the profile page or auth pages
+    const isProfilePage = pathname.startsWith("/profile/");
+    const isAuthPage = pathname.startsWith("/auth/");
+    if (isProfilePage || isAuthPage) return;
+
+    router.replace(
+      `/profile/${firebaseUser.uid}?redirect=${encodeURIComponent(pathname)}`,
+    );
+  }, [loading, firebaseUser, userProfile, pathname, router]);
 
   // ── Value ────────────────────────────────────────────────
 

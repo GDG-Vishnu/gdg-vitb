@@ -1,29 +1,50 @@
 import { Timestamp } from "firebase/firestore";
 
-export type EventStatus = "upcoming" | "ongoing" | "completed";
+export type EventStatus = "UPCOMING" | "ONGOING" | "COMPLETED";
+export type EventMode = "ONLINE" | "OFFLINE" | "HYBRID";
+export type EventType = "WORKSHOP" | "HACKATHON";
+
+export interface EventOfficial {
+  role: "GUEST" | "SPEAKER" | "JURY";
+  name: string;
+  email: string;
+  bio?: string;
+  expertise?: string;
+  profileUrl?: string;
+  linkedinUrl?: string;
+}
 
 export interface Event {
-  id: string;
+  id: string; // eventId (Firestore doc ID)
   title: string;
   description: string;
-  imageUrl: string;
-  coverUrl: string;
-  date: Timestamp;
-  endDate: Timestamp;
+  bannerImage: string;
+  posterImage: string;
+  startDate: Timestamp | null;
+  endDate: Timestamp | null;
   venue: string;
-  organizer: string;
-  coOrganizer: string;
-  theme: string[];
+  mode: EventMode;
+  status: EventStatus;
+  eventType: EventType;
+  maxParticipants: number;
+  registrationStart: Timestamp | null;
+  registrationEnd: Timestamp | null;
+  isRegistrationOpen: boolean;
+  createdBy: string;
   tags: string[];
   keyHighlights: string[];
-  eventGallery: string[];
-  membersParticipated: number;
-  rank: number;
-  status: EventStatus;
-  isDone: boolean;
-  registrationEnabled: boolean;
-  teamSizeMin: number;
-  teamSizeMax: number;
+  eligibilityCriteria: {
+    yearOfGrad: boolean[];
+    Dept: string[];
+  };
+  executiveBoard: {
+    organiser: string;
+    coOrganiser: string;
+    facilitator: string;
+  };
+  eventOfficials: EventOfficial[];
+  faqs: { question: string; answer: string }[];
+  rules: { rule: string }[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -33,24 +54,33 @@ export interface EventSerialized {
   id: string;
   title: string;
   description: string;
-  imageUrl: string | null;
-  coverUrl: string | null;
-  date: string | null;
+  bannerImage: string | null;
+  posterImage: string | null;
+  startDate: string | null;
   endDate: string | null;
   venue: string;
-  organizer: string;
-  coOrganizer: string | null;
-  theme: string[];
+  mode: EventMode;
+  status: EventStatus;
+  eventType: EventType;
+  maxParticipants: number;
+  registrationStart: string | null;
+  registrationEnd: string | null;
+  isRegistrationOpen: boolean;
+  createdBy: string;
   tags: string[];
   keyHighlights: string[];
-  eventGallery: string[];
-  membersParticipated: number;
-  rank: number;
-  status: EventStatus;
-  isDone: boolean;
-  registrationEnabled: boolean;
-  teamSizeMin: number;
-  teamSizeMax: number;
+  eligibilityCriteria: {
+    yearOfGrad: boolean[];
+    Dept: string[];
+  };
+  executiveBoard: {
+    organiser: string;
+    coOrganiser: string;
+    facilitator: string;
+  };
+  eventOfficials: EventOfficial[];
+  faqs: { question: string; answer: string }[];
+  rules: { rule: string }[];
   createdAt?: string;
   updatedAt?: string;
 }

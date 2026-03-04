@@ -10,34 +10,19 @@ type Event = {
   id: string;
   title: string;
   description: string | null;
-  date: string | null;
+  startDate: string | null;
   endDate: string | null;
   venue: string | null;
-  organizer: string | null;
-  coOrganizer: string | null;
+  mode: string;
+  status: string;
+  eventType: string;
+  maxParticipants: number;
+  isRegistrationOpen: boolean;
   keyHighlights: string[] | null;
   tags: string[] | null;
-  status: string | null;
-  theme: string[] | null;
-  imageUrl?: string | null;
-  membersParticipated: number;
-  registrationEnabled: boolean;
-  isDone: boolean;
-  coverUrl?: string | null;
+  posterImage?: string | null;
+  bannerImage?: string | null;
 };
-
-// Theme color helper - extracts colors from event Theme array
-function getThemeColors(theme: string[] | null) {
-  const defaultTheme = ["#4285F4", "#34A853", "#FBBC05", "#EA4335", "#3D85C6"];
-  const colors = theme && theme.length >= 5 ? theme : defaultTheme;
-  return {
-    primary: colors[0],
-    secondary: colors[1],
-    accent: colors[2],
-    highlight: colors[3],
-    bgAccent: colors[4],
-  };
-}
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "TBA";
@@ -50,15 +35,10 @@ function formatDate(dateStr: string | null): string {
 }
 
 function EventCard({ event, isLive }: { event: Event; isLive?: boolean }) {
-  const theme = getThemeColors(event.theme);
-
-  // Get the primary theme color for the button
+  // Use a fixed accent color
   const getButtonStyle = () => {
-    const primaryColor =
-      event.theme && event.theme[0] ? event.theme[0] : "#FBBC05";
-
     return {
-      backgroundColor: primaryColor,
+      backgroundColor: "#4285F4",
       color: "#000000",
       borderColor: "#000000",
       borderWidth: "3px",
@@ -66,7 +46,7 @@ function EventCard({ event, isLive }: { event: Event; isLive?: boolean }) {
     };
   };
 
-  const startDate = event.date ? formatDate(event.date) : "TBA";
+  const startDate = event.startDate ? formatDate(event.startDate) : "TBA";
   const eventVenue = event.venue ? event.venue : "TBA";
 
   return (
@@ -91,10 +71,10 @@ function EventCard({ event, isLive }: { event: Event; isLive?: boolean }) {
       )}
 
       {/* Image Container */}
-      {event.imageUrl && (
+      {event.posterImage && (
         <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
           <img
-            src={event.imageUrl}
+            src={event.posterImage}
             alt={event.title}
             className="w-full h-full object-cover rounded-[24px] sm:rounded-[32px] lg:rounded-[40px]"
           />
@@ -251,9 +231,7 @@ export default function EventsPage() {
           {!loading && !error && events.length > 0 && (
             <>
               {/* ── Ongoing / Live Events ── */}
-              {events.filter(
-                (e) => e.status?.toLowerCase() === "ongoing" && !e.isDone,
-              ).length > 0 && (
+              {events.filter((e) => e.status === "ONGOING").length > 0 && (
                 <div className="mb-12">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="flex items-center gap-2 bg-green-100 border-3 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -268,10 +246,7 @@ export default function EventsPage() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                     {events
-                      .filter(
-                        (e) =>
-                          e.status?.toLowerCase() === "ongoing" && !e.isDone,
-                      )
+                      .filter((e) => e.status === "ONGOING")
                       .map((event) => (
                         <EventCard key={event.id} event={event} isLive />
                       ))}
@@ -280,13 +255,9 @@ export default function EventsPage() {
               )}
 
               {/* ── All Events ── */}
-              {events.filter(
-                (e) => !(e.status?.toLowerCase() === "ongoing" && !e.isDone),
-              ).length > 0 && (
+              {events.filter((e) => e.status !== "ONGOING").length > 0 && (
                 <div>
-                  {events.filter(
-                    (e) => e.status?.toLowerCase() === "ongoing" && !e.isDone,
-                  ).length > 0 && (
+                  {events.filter((e) => e.status === "ONGOING").length > 0 && (
                     <div className="flex items-center gap-3 mb-6">
                       <div className="bg-gray-100 border-3 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                         <h2 className="text-xl md:text-2xl font-bold text-black font-productSans">
@@ -297,10 +268,7 @@ export default function EventsPage() {
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                     {events
-                      .filter(
-                        (e) =>
-                          !(e.status?.toLowerCase() === "ongoing" && !e.isDone),
-                      )
+                      .filter((e) => e.status !== "ONGOING")
                       .map((event) => (
                         <EventCard key={event.id} event={event} />
                       ))}

@@ -9,17 +9,16 @@ type EventItem = {
   id: string;
   title: string;
   description?: string;
-  date?: string;
+  startDate?: string;
   endDate?: string;
-  theme?: string[];
   venue?: string;
-  organizer?: string;
-  coOrganizer?: string;
+  mode?: string;
+  status?: string;
+  eventType?: string;
   keyHighlights?: string[];
   tags?: string[];
-  status?: string;
-  imageUrl?: string;
-  rank: number;
+  posterImage?: string;
+  bannerImage?: string;
 };
 
 export default function EventsCarousel() {
@@ -141,35 +140,21 @@ export default function EventsCarousel() {
 }
 
 function EventCard({ event }: { event: EventItem }) {
-  // Get the primary theme color for the button
   const getButtonStyle = () => {
-    const primaryColor =
-      event.theme && event.theme[0] ? event.theme[0] : "#4285F4";
-    const isLightColor = (color: string) => {
-      const hex = color.replace("#", "");
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      return brightness > 155;
-    };
-
-    const textColor = isLightColor(primaryColor) ? "#000000" : "#ffffff";
-
     return {
-      backgroundColor: primaryColor,
-      color: textColor,
+      backgroundColor: "#4285F4",
+      color: "#ffffff",
       borderColor: "#000000",
     };
   };
 
   return (
     <article className="bg-transparent shadow-md snap-start overflow-hidden border border-black rounded-[28px] md:rounded-[50px] flex flex-col justify-between box-border w-[300px] sm:w-[350px] md:w-[400px] lg:w-[450px] xl:w-[500px] h-auto md:h-[472px]">
-      {event.imageUrl && (
+      {event.posterImage && (
         <div className="flex items-center justify-center p-4 md:p-5">
           <div className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[320px] rounded-2xl overflow-hidden">
             <img
-              src={event.imageUrl}
+              src={event.posterImage}
               alt={event.title}
               className="w-full h-full object-cover"
             />

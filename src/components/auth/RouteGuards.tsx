@@ -41,14 +41,19 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 // Redirects to / (home) if the user is already logged in.
 
 export function GuestRoute({ children }: { children: React.ReactNode }) {
-  const { firebaseUser, loading } = useAuth();
+  const { firebaseUser, userProfile, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && firebaseUser) {
-      router.replace("/");
+      // If profile is not completed, send to profile page first
+      if (userProfile && !userProfile.profileCompleted) {
+        router.replace(`/profile/${firebaseUser.uid}`);
+      } else {
+        router.replace("/");
+      }
     }
-  }, [loading, firebaseUser, router]);
+  }, [loading, firebaseUser, userProfile, router]);
 
   if (loading) {
     return <FullPageSpinner />;

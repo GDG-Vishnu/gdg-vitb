@@ -58,7 +58,6 @@ export async function ensureFirestoreUserDoc(
     socialMedia: {},
     resumeUrl: "",
     participations: [],
-    role: "user",
     isBlocked: false,
     profileCompleted: false,
     createdAt: serverTimestamp(),
