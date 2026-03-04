@@ -1,12 +1,12 @@
 // ─── Roll Number Parser ─────────────────────────────────────
 //
-// VIT Bhopal roll-number format (also the email prefix):
+// VIT B roll-number format (also the email prefix):
 //   YY PA X A BB RR
-//   │    │   │  │
-//   │    │   │  └─ Student roll within branch (2 digits)
-//   │    │   └──── Branch code (2 digits)
-//   │    └──────── 1 = Regular, 5 = Lateral Entry
-//   └───────────── Admission year (last 2 digits, e.g. 24 → 2024)
+//   │     │   │  │
+//   │     │   │  └─ Student roll within branch (2 digits)
+//   │     │   └──── Branch code (2 digits)
+//   │     └──────── 1 = Regular, 5 = Lateral Entry
+//   └───────────── Admission year (first 2 digits, e.g. 24 → 2024)
 //
 // Example: 24PA1A0501 → 2024, Regular, CSE (05), roll 01
 // Example: 25PA5A0412 → 2025, Lateral,  ECE (04), roll 12

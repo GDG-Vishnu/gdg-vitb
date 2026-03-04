@@ -3,12 +3,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2 } from "lucide-react";
-import {
-  FaLinkedinIn,
-  FaInstagram,
-  FaEnvelope,
-  FaWhatsapp,
-} from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -61,9 +55,9 @@ export default function Footer() {
   return (
     <footer className="bg-[#111214] text-gray-300 w-full pt-4 md:pt-8">
       <div className="w-full mx-auto px-3 sm:px-4 md:px-6">
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-4 md:gap-6">
+        <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-between gap-4 lg:gap-6">
           {/* Left: Logo */}
-          <div className="flex items-center gap-4 w-full md:w-auto justify-center md:justify-start mb-4 md:mb-0">
+          <div className="flex items-center gap-4 w-full lg:w-auto justify-center lg:justify-start flex-shrink-0 mb-4 lg:mb-0 lg:self-center">
             <img
               src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760613865/Logo_lc1hhc.png"
               alt="GDG VITB Logo"
@@ -72,9 +66,9 @@ export default function Footer() {
           </div>
 
           {/* Center: boxed sections */}
-          <div className="flex-1 flex items-center justify-center w-full">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 w-full max-w-[924px] px-0 sm:px-2 md:px-[56px] py-2 md:py-4">
-              <div className="border p-4 sm:p-5 md:p-4 flex flex-col items-center justify-center border-[#C3ECF6] rounded-lg md:rounded-none">
+          <div className="flex-1 flex items-center justify-center w-full min-w-0">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-[924px] py-2 lg:py-4">
+              <div className="border p-4 sm:p-5 lg:p-4 flex flex-col items-center justify-center border-[#C3ECF6] rounded-xl lg:rounded-none">
                 <h2 className="text-[#C3ECF6] text-xl sm:text-2xl md:text-2xl font-medium font-productSans text-center leading-tight">
                   © 2026 GDG VITB.
                 </h2>
@@ -83,79 +77,115 @@ export default function Footer() {
                 </h2>
               </div>
 
-              <div className="border p-4 sm:p-5 md:p-4 border-[#CCF6C5] rounded-lg md:rounded-none">
-                <div className="font-semibold text-[#CCF6C5] text-lg sm:text-xl font-productSans mb-3 text-center md:text-left">
+              <div className="border p-4 sm:p-5 lg:p-4 border-[#CCF6C5] rounded-xl lg:rounded-none">
+                <div className="font-semibold text-[#CCF6C5] text-lg sm:text-xl font-productSans mb-3 text-center lg:text-center">
                   Quick Links
                 </div>
-                <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-3 text-[#CCF6C5] text-base sm:text-lg md:text-base">
+                <div className="flex flex-wrap justify-center  gap-x-3 gap-y-1 lg:gap-x-6 text-[#CCF6C5] text-base sm:text-lg lg:text-lg">
                   <a
                     href="/"
-                    className="hover:underline font-productSans text-center md:text-left py-1"
+                    className="hover:underline font-productSans text-center lg:text-left py-1"
                   >
                     Home
                   </a>
                   <a
                     href="/gallery"
-                    className="hover:underline font-productSans text-center md:text-left py-1"
+                    className="hover:underline font-productSans text-center lg:text-left py-1"
                   >
                     Gallery
                   </a>
                   <a
                     href="/teams"
-                    className="hover:underline font-productSans text-center md:text-left py-1"
+                    className="hover:underline font-productSans text-center lg:text-left py-1"
                   >
                     Team
                   </a>
                   <a
                     href="/contactus"
-                    className="hover:underline font-productSans text-center md:text-left py-1 bg-transparent border-none cursor-pointer text-[#CCF6C5] text-base sm:text-lg md:text-base"
+                    className="hover:underline font-productSans text-center lg:text-left py-1"
                   >
                     Contact us
                   </a>
                   <a
                     href="/events"
-                    className="hover:underline font-productSans text-center md:text-left py-1"
+                    className="hover:underline font-productSans text-center lg:text-left py-1"
                   >
                     Events
                   </a>
                 </div>
               </div>
 
-              <div className="border w-full border-[#FFE7A5] p-4 sm:p-5 md:p-4 rounded-lg md:rounded-none">
-                <div className="font-semibold text-[#FFE7A5] text-lg sm:text-xl font-productSans mb-3 text-center md:text-left">
+              <div className="border w-full border-[#FFE7A5] p-4 sm:p-5 lg:p-4 rounded-xl lg:rounded-none">
+                <div className="font-semibold text-[#FFE7A5] text-lg sm:text-xl font-productSans mb-3 text-center lg:text-center">
                   Connect
                 </div>
-                <div className="mt-2 flex items-center justify-center md:justify-start gap-3 sm:gap-4">
+                <div className="mt-2 flex items-center justify-center lg:justify-center gap-3 sm:gap-4">
                   <a
                     href="https://www.linkedin.com/company/gdg-vitb/"
                     aria-label="LinkedIn"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 sm:w-11 sm:h-11 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:scale-105 transition-transform"
-                    style={{ backgroundColor: "#FFE7A5" }}
+                    className="flex-shrink-0 rounded-full flex items-center justify-center hover:scale-105 transition-transform lg:w-14 lg:h-14"
+                    style={{
+                      backgroundColor: "#FFE7A5",
+                      width: "clamp(2.5rem, 6vw, 3.5rem)",
+                      height: "clamp(2.5rem, 6vw, 3.5rem)",
+                    }}
                   >
-                    <FaLinkedinIn className="text-black w-5 h-5 sm:w-6 sm:h-6 md:w-5 md:h-5" />
+                    <img
+                      src="/linkedin.png"
+                      alt="LinkedIn"
+                      className="object-contain lg:w-9 lg:h-9"
+                      style={{
+                        width: "clamp(1.2rem, 3vw, 2.1rem)",
+                        height: "clamp(1.2rem, 3vw, 2.1rem)",
+                      }}
+                    />
                   </a>
                   <a
                     href="https://www.instagram.com/gdgvitb/"
                     aria-label="Instagram"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 sm:w-11 sm:h-11 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:scale-105 transition-transform"
-                    style={{ backgroundColor: "#FFE7A5" }}
+                    className="flex-shrink-0 rounded-full flex items-center justify-center hover:scale-105 transition-transform lg:w-14 lg:h-14"
+                    style={{
+                      backgroundColor: "#FFE7A5",
+                      width: "clamp(2.5rem, 6vw, 3.5rem)",
+                      height: "clamp(2.5rem, 6vw, 3.5rem)",
+                    }}
                   >
-                    <FaInstagram className="text-black w-5 h-5 sm:w-6 sm:h-6 md:w-5 md:h-5" />
+                    <img
+                      src="/instagram.png"
+                      alt="Instagram"
+                      className="object-contain lg:w-7 lg:h-7"
+                      style={{
+                        width: "clamp(1.2rem, 3vw, 1.75rem)",
+                        height: "clamp(1.2rem, 3vw, 1.75rem)",
+                      }}
+                    />
                   </a>
                   <a
                     href="mailto:gdg@vishnu.edu.in"
                     aria-label="Email"
-                    className="w-10 h-10 sm:w-11 sm:h-11 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:scale-105 transition-transform"
-                    style={{ backgroundColor: "#FFE7A5" }}
+                    className="flex-shrink-0 rounded-full flex items-center justify-center hover:scale-105 transition-transform lg:w-14 lg:h-14"
+                    style={{
+                      backgroundColor: "#FFE7A5",
+                      width: "clamp(2.5rem, 6vw, 3.5rem)",
+                      height: "clamp(2.5rem, 6vw, 3.5rem)",
+                    }}
                   >
-                    <FaEnvelope className="text-black w-5 h-5 sm:w-6 sm:h-6 md:w-5 md:h-5" />
+                    <img
+                      src="/mail.png"
+                      alt="Email"
+                      className="object-contain lg:w-7 lg:h-7"
+                      style={{
+                        width: "clamp(1.2rem, 3vw, 1.75rem)",
+                        height: "clamp(1.2rem, 3vw, 1.75rem)",
+                      }}
+                    />
                   </a>
                 </div>
-                <h2 className="text-[#FFE7A5] mt-3 text-sm sm:text-base md:text-base font-productSans text-center md:text-left leading-snug">
+                <h2 className="text-[#FFE7A5] mt-3 text-sm sm:text-base font-productSans text-center lg:text-center leading-snug">
                   Email us at{" "}
                   <a
                     href="mailto:gdg@vishnu.edu.in"

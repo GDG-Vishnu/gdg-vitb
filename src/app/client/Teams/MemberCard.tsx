@@ -2,6 +2,16 @@
 
 import React from "react";
 import { Mail, Linkedin } from "lucide-react";
+import { motion } from "framer-motion";
+
+// Darkens a hex color by a given factor (0–1)
+function darkenColor(hex: string, factor = 0.65): string {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
+  return `rgb(${Math.round(r * factor)},${Math.round(g * factor)},${Math.round(b * factor)})`;
+}
 
 export type MemberCardProps = {
   bgColor?: string | null;
@@ -16,6 +26,7 @@ export type MemberCardProps = {
   dept_logo?: string | null;
   linkedinUrl?: string | null;
   mail?: string | null;
+  index?: number;
 };
 
 export default function MemberCard({
@@ -28,9 +39,21 @@ export default function MemberCard({
   mail,
   logo,
   bgColor,
+  index = 0,
 }: MemberCardProps) {
   return (
-    <div className="w-[290px]  rounded-lg overflow-hidden border border-black shadow-sm bg-white mb-4">
+    <motion.div
+      className="w-[290px] rounded-lg overflow-hidden border border-black shadow-sm bg-white mb-4"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
+        delay: (index % 4) * 0.08,
+      }}
+      whileHover={{ y: -6, boxShadow: "0 12px 32px rgba(0,0,0,0.13)" }}
+    >
       {/* Header: position label */}
 
       <div className="flex items-center justify-between px-4 py-2 border-b border-black">
@@ -67,8 +90,8 @@ export default function MemberCard({
         </div>
         <div className="flex justify-between items-center ">
           <h1
-            className="text-[20px] text-green-600 font-semibold mt-1 font-productSans text-wrap"
-            style={{ color: bgColor || "#38a169" }}
+            className="text-[20px] font-semibold mt-1 font-productSans text-wrap"
+            style={{ color: bgColor ? darkenColor(bgColor) : "#1a6b4a" }}
           >
             {designation}
           </h1>
@@ -98,6 +121,6 @@ export default function MemberCard({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

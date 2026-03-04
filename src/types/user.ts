@@ -1,7 +1,5 @@
 import { Timestamp } from "firebase/firestore";
 
-export type UserRole = "user" | "admin";
-
 export interface UserSocialMedia {
   linkedin?: string;
   github?: string;
@@ -20,7 +18,6 @@ export interface User {
   socialMedia: UserSocialMedia;
   resumeUrl?: string;
   participations: string[];
-  role: UserRole;
   isBlocked: boolean;
   profileCompleted: boolean;
   createdAt: Timestamp;
@@ -39,7 +36,6 @@ export interface UserSerialized {
   socialMedia: UserSocialMedia;
   resumeUrl?: string | null;
   participations: string[];
-  role: UserRole;
   isBlocked: boolean;
   profileCompleted: boolean;
   createdAt: string;
@@ -53,3 +49,11 @@ export type CreateUserInput = Omit<User, "id" | "createdAt" | "updatedAt">;
 export type UpdateUserInput = Partial<
   Omit<User, "id" | "email" | "createdAt" | "updatedAt">
 >;
+
+export interface UserEventRegistration {
+  event_id: string;
+  event_name: string;
+  event_url: string;
+  isAttended: boolean;
+  certificationLink: string;
+}

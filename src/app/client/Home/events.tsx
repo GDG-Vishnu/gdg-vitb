@@ -166,12 +166,14 @@ function EventCard({ event }: { event: EventItem }) {
   return (
     <article className="bg-transparent shadow-md snap-start overflow-hidden border border-black rounded-[28px] md:rounded-[50px] flex flex-col justify-between box-border w-[300px] sm:w-[350px] md:w-[400px] lg:w-[450px] xl:w-[500px] h-auto md:h-[472px]">
       {event.imageUrl && (
-        <div className="h-[240px] md:h-[350px] flex items-center justify-center bg-transparent overflow-hidden p-4 md:p-5">
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="max-w-full max-h-full object-contain"
-          />
+        <div className="flex items-center justify-center p-4 md:p-5">
+          <div className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[320px] rounded-2xl overflow-hidden">
+            <img
+              src={event.imageUrl}
+              alt={event.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       )}
 
