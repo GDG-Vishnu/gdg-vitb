@@ -5,6 +5,7 @@ import { X, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { serverTimestamp, doc, runTransaction } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase-client";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Props = {
   visible: boolean;
@@ -26,6 +27,8 @@ export default function RegistrationCard({
   formLink = "https://forms.gle/1yhQcDpzFVR9jQkd8",
 }: Props) {
   const [saved, setSaved] = useState(false);
+  // Phone number already fetched by AuthContext — no extra Firestore read needed
+  const { userProfile } = useAuth();
 
   if (!visible) return null;
 
@@ -33,7 +36,12 @@ export default function RegistrationCard({
     // Save registration to Firestore on first external link click
     if (!saved && auth.currentUser && eventId) {
       try {
-        const regId = `${auth.currentUser.uid}_${eventId}`;
+        const currentUser = auth.currentUser!;
+        const regId = `${currentUser.uid}_${eventId}`;
+
+        // Phone number is already in the AuthContext profile — no extra fetch needed
+        const phoneNumber: string = userProfile?.phoneNumber ?? "";
+
         // Event's registrations subcollection
         const eventRegRef = doc(
           db,
@@ -46,7 +54,7 @@ export default function RegistrationCard({
         const userRegRef = doc(
           db,
           "client_users",
-          auth.currentUser.uid,
+          currentUser.uid,
           "registrations",
           eventId,
         );
@@ -61,10 +69,10 @@ export default function RegistrationCard({
 
           // Write to managed_events/{eventId}/registrations subcollection (event-centric)
           tx.set(eventRegRef, {
-            userId: auth.currentUser!.uid,
-            name: auth.currentUser!.displayName ?? "",
-            email: auth.currentUser!.email ?? "",
-            phone: auth.currentUser!.phoneNumber ?? "",
+            userId: currentUser.uid,
+            name: currentUser.displayName ?? "",
+            email: currentUser.email ?? "",
+            phone: phoneNumber,
             registrationType: "Individual",
             registeredAt: serverTimestamp(),
             isCheckedIn: false,

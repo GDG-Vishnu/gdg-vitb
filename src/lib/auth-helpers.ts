@@ -28,7 +28,9 @@ export function isAllowedDomain(email: string): boolean {
 /**
  * Creates a Firestore user document if one doesn't already exist.
  * Uses the user's UID as the document ID to prevent duplicates.
- * Returns true if a new document was created, false if it already existed.
+ * Returns { isNew: true } if a new document was created, or
+ * { isNew: false, profileCompleted } if it already existed — so callers
+ * never need a second getDoc to check profileCompleted.
  */
 export async function ensureFirestoreUserDoc(
   db: Firestore,
@@ -38,12 +40,15 @@ export async function ensureFirestoreUserDoc(
     email: string;
     profileUrl?: string;
   },
-): Promise<boolean> {
+): Promise<{ isNew: boolean; profileCompleted: boolean }> {
   const ref = doc(db, USERS_COLLECTION, uid);
   const snap = await getDoc(ref);
 
   if (snap.exists()) {
-    return false; // Document already exists — no duplicate
+    return {
+      isNew: false,
+      profileCompleted: snap.data().profileCompleted ?? false,
+    };
   }
 
   const rollInfo = parseRollNumber(data.email);
@@ -64,7 +69,7 @@ export async function ensureFirestoreUserDoc(
     updatedAt: serverTimestamp(),
   });
 
-  return true;
+  return { isNew: true, profileCompleted: false };
 }
 
 // ─── Provider Check & Credential Linking ────────────────────

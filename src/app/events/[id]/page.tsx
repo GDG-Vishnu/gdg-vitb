@@ -89,7 +89,7 @@ const EventClosed = [
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { firebaseUser, signInWithGoogle } = useAuth();
+  const { firebaseUser, userProfile, signInWithGoogle } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -137,6 +137,10 @@ export default function EventDetailPage() {
 
     const eventId = params.id as string;
     const regId = `${user.uid}_${eventId}`;
+
+    // Phone number is already in the AuthContext profile — no extra fetch needed
+    const phoneNumber: string = userProfile?.phoneNumber ?? "";
+
     // Event's registrations subcollection
     const eventRegRef = doc(
       db,
@@ -167,7 +171,7 @@ export default function EventDetailPage() {
         userId: user.uid,
         name: user.displayName ?? "",
         email: user.email ?? "",
-        phone: "",
+        phone: phoneNumber,
         registrationType: "Individual",
         registeredAt: serverTimestamp(),
         isCheckedIn: false,

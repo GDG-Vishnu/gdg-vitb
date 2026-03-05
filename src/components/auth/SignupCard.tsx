@@ -49,7 +49,7 @@ export default function SignupCard() {
       }
 
       // Ensure Firestore user document exists (won't duplicate)
-      const isNew = await ensureFirestoreUserDoc(db, result.user.uid, {
+      const { isNew } = await ensureFirestoreUserDoc(db, result.user.uid, {
         name: result.user.displayName ?? "",
         email: userEmail,
         profileUrl: result.user.photoURL ?? "",

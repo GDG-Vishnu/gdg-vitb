@@ -90,39 +90,21 @@ export default function ProfilePage() {
         return;
       }
 
-      // For each registration, fetch event details + registration date
+      // For each registration, fetch event details + use registration date from user subcollection
       const dates: Record<string, string> = {};
       const eventPromises = regSnap.docs.map(async (regDoc) => {
         const regData = regDoc.data();
         const eventId = regData.event_id as string;
+
+        // Use event_data from user's subcollection as registration date (already an ISO string)
+        if (regData.event_data) {
+          dates[eventId] = regData.event_data as string;
+        }
+
         const eventRef = doc(db, "managed_events", eventId);
         const eventSnap = await getDoc(eventRef);
 
         if (!eventSnap.exists()) return null;
-
-        // Fetch registeredAt from managed_events/{eventId}/registrations/{uid}_{eventId}
-        try {
-          const regId = `${firebaseUser!.uid}_${eventId}`;
-          const eventRegRef = doc(
-            db,
-            "managed_events",
-            eventId,
-            "registrations",
-            regId,
-          );
-          const eventRegSnap = await getDoc(eventRegRef);
-          if (eventRegSnap.exists()) {
-            const rd = eventRegSnap.data();
-            const ts = rd.registeredAt;
-            if (ts?.toDate) {
-              dates[eventId] = ts.toDate().toISOString();
-            } else if (typeof ts === "string") {
-              dates[eventId] = ts;
-            }
-          }
-        } catch {
-          // Non-critical — date just won't show
-        }
 
         const d = eventSnap.data();
         return {

@@ -40,15 +40,24 @@ export default function LoginCard() {
         return;
       }
 
-      // Ensure Firestore user document exists (won't duplicate)
-      await ensureFirestoreUserDoc(db, result.user.uid, {
-        name: result.user.displayName ?? "",
-        email: userEmail,
-        profileUrl: result.user.photoURL ?? "",
-      });
+      // Ensure Firestore user document exists — returns profileCompleted so
+      // we avoid a second getDoc for the same document.
+      const { profileCompleted } = await ensureFirestoreUserDoc(
+        db,
+        result.user.uid,
+        {
+          name: result.user.displayName ?? "",
+          email: userEmail,
+          profileUrl: result.user.photoURL ?? "",
+        },
+      );
 
       toast.success("Signed in successfully!");
-      router.replace("/");
+      if (!profileCompleted) {
+        router.replace(`/profile/${result.user.uid}`);
+      } else {
+        router.replace("/");
+      }
     } catch (err) {
       const msg = getAuthErrorMessage(err);
       if (!msg.includes("popup was closed")) {
@@ -75,16 +84,24 @@ export default function LoginCard() {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
 
-      // Ensure Firestore doc exists (handles case where user was created
-      // via Google and later linked email/password — doc already exists)
-      await ensureFirestoreUserDoc(db, result.user.uid, {
-        name: result.user.displayName ?? "",
-        email: result.user.email ?? email,
-        profileUrl: result.user.photoURL ?? "",
-      });
+      // Ensure Firestore doc exists — also returns profileCompleted so
+      // we avoid a second getDoc for the same document.
+      const { profileCompleted } = await ensureFirestoreUserDoc(
+        db,
+        result.user.uid,
+        {
+          name: result.user.displayName ?? "",
+          email: result.user.email ?? email,
+          profileUrl: result.user.photoURL ?? "",
+        },
+      );
 
       toast.success("Signed in successfully!");
-      router.replace("/");
+      if (!profileCompleted) {
+        router.replace(`/profile/${result.user.uid}`);
+      } else {
+        router.replace("/");
+      }
     } catch (err) {
       toast.error(getAuthErrorMessage(err));
     } finally {
