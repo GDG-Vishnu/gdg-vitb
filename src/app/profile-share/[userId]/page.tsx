@@ -100,9 +100,38 @@ export default function ProfileSharePage() {
   const handleDownload = async () => {
     if (!cardRef.current || !profile) return;
 
-    try {
-      toast.loading("Generating image...");
+    toast.loading("Generating image...");
 
+    // ── Pre-convert external profile image to data URL via server proxy ──
+    // html-to-image can't fetch cross-origin images in the browser (CORS).
+    // We swap the src to a data URL before capture, then restore it after.
+    const imgEl = cardRef.current.querySelector(
+      "img[data-profile-photo]",
+    ) as HTMLImageElement | null;
+    const originalSrc = imgEl?.src ?? "";
+
+    if (imgEl && profile.profileUrl) {
+      try {
+        const proxyRes = await fetch(
+          `/api/proxy-image?url=${encodeURIComponent(profile.profileUrl)}`,
+        );
+        if (proxyRes.ok) {
+          const blob = await proxyRes.blob();
+          const dataUrl = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(blob);
+          });
+          imgEl.src = dataUrl;
+          // Let the browser paint the new src before capture
+          await new Promise((r) => setTimeout(r, 60));
+        }
+      } catch {
+        // Fall back to original src — capture may miss the photo but won't crash
+      }
+    }
+
+    try {
       const dataUrl = await toPng(cardRef.current, {
         quality: 1,
         pixelRatio: 2,
@@ -121,6 +150,9 @@ export default function ProfileSharePage() {
       console.error("Download error:", error);
       toast.dismiss();
       toast.error("Failed to download profile");
+    } finally {
+      // Always restore original src
+      if (imgEl && originalSrc) imgEl.src = originalSrc;
     }
   };
 
@@ -188,6 +220,7 @@ export default function ProfileSharePage() {
                 <img
                   src={profile.profileUrl}
                   alt={profile.name}
+                  data-profile-photo
                   referrerPolicy="no-referrer"
                   className="w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] lg:w-[386px] lg:h-[386px] rounded-[12px] sm:rounded-[16px] lg:rounded-[20px] object-cover border-[2px] lg:border-[3px] border-black shadow-lg"
                 />

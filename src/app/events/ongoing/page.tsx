@@ -292,10 +292,10 @@ function OngoingEventCard({
   return (
     <AnimatedSection delay={index * 0.1}>
       <div
-        className={`bg-white border-4 border-black rounded-3xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 ${
+        className={`bg-white border-4 border-black rounded-3xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ${
           expanded
-            ? "hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
-            : "hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]"
+            ? "translate-x-[3px] translate-y-[3px] shadow-none"
+            : "hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
         }`}
       >
         {/* ── Hero Banner ─────────────────────────────────── */}
