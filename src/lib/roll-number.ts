@@ -25,8 +25,8 @@ const BRANCH_CODE_MAP: Record<string, string> = {
   "04": "ECE",
   "05": "CSE",
   "12": "IT",
-  "42": "CSE (AI & ML)",
-  "45": "CSE (AI & DS)",
+  "42": "AIML",
+  "45": "AIDS",
   "57": "CSBS",
 };
 

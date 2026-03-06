@@ -10,8 +10,8 @@ import { parseRollNumber, getCurrentYearOfStudy } from "@/lib/roll-number";
 
 const BRANCHES = [
   "CSE",
-  "CSE (AI & ML)",
-  "CSE (AI & DS)",
+  "AIML",
+  "AIDS",
   "IT",
   "ECE",
   "EEE",
