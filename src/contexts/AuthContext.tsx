@@ -67,6 +67,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           admissionYear > 0
             ? getCurrentYearOfStudy(admissionYear, isLateralEntry)
             : 0;
+
+        // Persist updated currentYearOfStudy back to Firestore if it changed
+        if (currentYearOfStudy !== (data.currentYearOfStudy ?? 0)) {
+          await setDoc(
+            ref,
+            { currentYearOfStudy, updatedAt: serverTimestamp() },
+            { merge: true },
+          );
+        }
+
         return {
           id: snap.id,
           name: data.name,

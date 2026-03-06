@@ -3,7 +3,13 @@
 import React, { useState } from "react";
 import { X, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { serverTimestamp, doc, runTransaction } from "firebase/firestore";
+import {
+  serverTimestamp,
+  doc,
+  runTransaction,
+  collection,
+  getCountFromServer,
+} from "firebase/firestore";
 import { db, auth } from "@/lib/firebase-client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -15,6 +21,7 @@ type Props = {
   eventTitle?: string;
   hack2skillLink?: string;
   formLink?: string;
+  maxParticipants?: number;
 };
 
 export default function RegistrationCard({
@@ -25,6 +32,7 @@ export default function RegistrationCard({
   eventTitle,
   hack2skillLink = "https://vision.hack2skill.com/event/gdgoc-25-gdgvitb",
   formLink = "https://forms.gle/1yhQcDpzFVR9jQkd8",
+  maxParticipants = 0,
 }: Props) {
   const [saved, setSaved] = useState(false);
   // Phone number already fetched by AuthContext — no extra Firestore read needed
@@ -41,6 +49,21 @@ export default function RegistrationCard({
 
         // Phone number is already in the AuthContext profile — no extra fetch needed
         const phoneNumber: string = userProfile?.phoneNumber ?? "";
+
+        // ── Check maxParticipants via server-side count (no doc downloads) ──
+        if (maxParticipants > 0) {
+          const regColRef = collection(
+            db,
+            "managed_events",
+            eventId,
+            "registrations",
+          );
+          const countSnap = await getCountFromServer(regColRef);
+          if (countSnap.data().count >= maxParticipants) {
+            console.warn("[RegistrationCard] Max participants reached.");
+            return;
+          }
+        }
 
         // Event's registrations subcollection
         const eventRegRef = doc(

@@ -513,35 +513,6 @@ export default function EditProfileForm({
                 />
               </FieldBlock>
 
-              {/* Current Year of Study (auto-computed, read-only) */}
-              {rollInfo && (
-                <FieldBlock label="Current Year of Study">
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="text"
-                      value={`${getCurrentYearOfStudy(rollInfo.admissionYear, rollInfo.isLateralEntry)}${
-                        ["st", "nd", "rd", "th"][
-                          Math.min(
-                            getCurrentYearOfStudy(
-                              rollInfo.admissionYear,
-                              rollInfo.isLateralEntry,
-                            ) - 1,
-                            3,
-                          )
-                        ]
-                      } Year`}
-                      readOnly
-                      className={`${inputClass()} bg-[#2a2a2a] cursor-not-allowed opacity-60`}
-                    />
-                    {rollInfo.isLateralEntry && (
-                      <span className="shrink-0 text-[11px] sm:text-[13px] font-[700] uppercase tracking-wider bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 px-2 py-1 rounded">
-                        Lateral Entry
-                      </span>
-                    )}
-                  </div>
-                </FieldBlock>
-              )}
-
               {/* Branch (custom dropdown — read-only when auto-detected) */}
               <FieldBlock label="Branch" required error={errors.branch}>
                 {branchAutoFilled ? (

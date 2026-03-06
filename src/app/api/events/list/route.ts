@@ -56,6 +56,7 @@ export async function GET() {
         eventOfficials: Array.isArray(d.eventOfficials) ? d.eventOfficials : [],
         faqs: Array.isArray(d.faqs) ? d.faqs : [],
         rules: Array.isArray(d.rules) ? d.rules : [],
+        eventGallery: Array.isArray(d.eventGallery) ? d.eventGallery : [],
         createdAt: parseTimestamp(d.createdAt) ?? undefined,
         updatedAt: parseTimestamp(d.updatedAt) ?? undefined,
       };

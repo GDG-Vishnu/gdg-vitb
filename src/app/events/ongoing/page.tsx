@@ -9,6 +9,7 @@ import LoadingEvents from "@/components/loadingPage/loading_events";
 import { motion, useInView } from "framer-motion";
 import { checkRegistrationEligibility } from "@/services/registration.service";
 import { useAuth } from "@/contexts/AuthContext";
+import { getCurrentYearOfStudy } from "@/lib/roll-number";
 import { toast } from "sonner";
 import {
   doc,
@@ -273,12 +274,16 @@ function OngoingEventCard({
   registering,
   alreadyRegistered,
   onRegisterClick,
+  isEligible,
+  eligibilityChecking,
 }: {
   event: OngoingEvent;
   index: number;
   registering: boolean;
   alreadyRegistered: boolean;
   onRegisterClick: () => void;
+  isEligible: boolean;
+  eligibilityChecking: boolean;
 }) {
   const [expanded, setExpanded] = useState(index === 0);
 
@@ -297,10 +302,18 @@ function OngoingEventCard({
         <div className="relative">
           {(event.bannerImage || event.posterImage) && (
             <div className="w-full h-48 sm:h-64 lg:h-72 overflow-hidden">
+              {/* Mobile: show posterImage, Desktop: show bannerImage */}
+              {event.posterImage && (
+                <img
+                  src={event.posterImage}
+                  alt={event.title}
+                  className="w-full h-full object-cover sm:hidden"
+                />
+              )}
               <img
                 src={event.bannerImage || event.posterImage || ""}
                 alt={event.title}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover ${event.posterImage ? "hidden sm:block" : ""}`}
               />
             </div>
           )}
@@ -356,16 +369,34 @@ function OngoingEventCard({
             </div>
 
             <div className="flex items-center gap-3 flex-shrink-0">
-              {event.isRegistrationOpen && !alreadyRegistered && (
-                <Button
-                  variant="default"
-                  size="lg"
-                  onClick={onRegisterClick}
-                  disabled={registering}
-                >
-                  {registering ? "Checking…" : "Register Now"}
-                </Button>
-              )}
+              {event.isRegistrationOpen &&
+                !alreadyRegistered &&
+                eligibilityChecking && (
+                  <div className="flex items-center gap-1.5 px-4 py-2 bg-yellow-100 border-2 border-black rounded-xl text-yellow-800 font-bold text-sm font-productSans shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] animate-pulse">
+                    Checking…
+                  </div>
+                )}
+              {event.isRegistrationOpen &&
+                !alreadyRegistered &&
+                !eligibilityChecking &&
+                !isEligible && (
+                  <div className="flex items-center gap-1.5 px-4 py-2 bg-red-100 border-2 border-black rounded-xl text-red-800 font-bold text-sm font-productSans shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                    Not Eligible
+                  </div>
+                )}
+              {event.isRegistrationOpen &&
+                !alreadyRegistered &&
+                !eligibilityChecking &&
+                isEligible && (
+                  <Button
+                    variant="default"
+                    size="lg"
+                    onClick={onRegisterClick}
+                    disabled={registering}
+                  >
+                    {registering ? "Checking…" : "Register Now"}
+                  </Button>
+                )}
               {alreadyRegistered && (
                 <div className="flex items-center gap-1.5 px-4 py-2 bg-green-100 border-2 border-black rounded-xl text-green-800 font-bold text-sm font-productSans shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
                   <CheckCircle className="w-4 h-4" />
@@ -666,17 +697,37 @@ function OngoingEventCard({
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div>
                     <h3 className="text-xl sm:text-2xl font-bold text-black font-productSans">
-                      {event.isRegistrationOpen
-                        ? "Don't miss out! Register now 🎉"
-                        : "Stay tuned for updates!"}
+                      {eligibilityChecking
+                        ? "Checking eligibility…"
+                        : event.isRegistrationOpen && isEligible
+                          ? "Don't miss out! Register now 🎉"
+                          : event.isRegistrationOpen && !isEligible
+                            ? "You are not eligible for this event"
+                            : "Stay tuned for updates!"}
                     </h3>
                     <p className="text-stone-600 text-sm font-productSans mt-1">
-                      {event.isRegistrationOpen
-                        ? "Secure your spot before registrations close."
-                        : "Follow us for the latest announcements."}
+                      {eligibilityChecking
+                        ? "Please wait while we verify your eligibility."
+                        : event.isRegistrationOpen && isEligible
+                          ? "Secure your spot before registrations close."
+                          : event.isRegistrationOpen && !isEligible
+                            ? "This event is restricted based on eligibility criteria."
+                            : "Follow us for the latest announcements."}
                     </p>
                   </div>
-                  {event.isRegistrationOpen && !alreadyRegistered ? (
+                  {eligibilityChecking ? (
+                    <div className="flex items-center gap-1.5 px-4 py-2 bg-yellow-100 border-2 border-black rounded-xl text-yellow-800 font-bold text-sm font-productSans shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] animate-pulse">
+                      Checking…
+                    </div>
+                  ) : event.isRegistrationOpen &&
+                    !alreadyRegistered &&
+                    !isEligible ? (
+                    <div className="flex items-center gap-1.5 px-4 py-2 bg-red-100 border-2 border-black rounded-xl text-red-800 font-bold text-sm font-productSans shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                      Not Eligible
+                    </div>
+                  ) : event.isRegistrationOpen &&
+                    !alreadyRegistered &&
+                    isEligible ? (
                     <Button
                       variant="default"
                       size="lg"
@@ -717,7 +768,12 @@ function OngoingEventCard({
 
 export default function OngoingEventsPage() {
   const router = useRouter();
-  const { firebaseUser, userProfile, signInWithGoogle } = useAuth();
+  const {
+    firebaseUser,
+    userProfile,
+    signInWithGoogle,
+    loading: authLoading,
+  } = useAuth();
   const [events, setEvents] = useState<OngoingEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -787,47 +843,18 @@ export default function OngoingEventsPage() {
     const regId = `${user.uid}_${eventId}`;
     const phoneNumber: string = userProfile?.phoneNumber ?? "";
 
-    if (!event.isRegistrationOpen) {
-      toast.error("Registrations are closed for this event.");
+    if (!isUserEligibleForEvent(event, userProfile)) {
+      toast.error("You are not eligible for this event.");
       return;
     }
 
-    // ── Eligibility: Year of Study ──
-    const yearOfGrad = event.eligibilityCriteria?.yearOfGrad ?? [];
-    console.log("[Registration] Year check:", {
-      yearOfGrad,
-      userYear: userProfile?.currentYearOfStudy,
-    });
-    if (yearOfGrad.length > 0 && userProfile?.currentYearOfStudy != null) {
-      const idx = userProfile.currentYearOfStudy - 1; // 0-based
-      if (idx >= 0 && idx < yearOfGrad.length && !yearOfGrad[idx]) {
-        const eligible = yearOfGrad
-          .map((ok, i) => (ok ? `${i + 1}` : null))
-          .filter(Boolean)
-          .join(", ");
-        toast.error(
-          `This event is only for Year ${eligible} students. You are in Year ${userProfile.currentYearOfStudy}.`,
-        );
-        return;
-      }
-    }
+    // Registration open check removed — always allow registration
+    // if (!event.isRegistrationOpen) {
+    //   toast.error("Registrations are closed for this event.");
+    //   return;
+    // }
 
-    // ── Eligibility: Department ──
-    const eligibleDepts =
-      event.eligibilityCriteria?.Dept?.filter(Boolean) ?? [];
-    console.log("[Registration] Dept check:", {
-      eligibleDepts,
-      userBranch: userProfile?.branch,
-    });
-    if (eligibleDepts.length > 0 && userProfile?.branch) {
-      if (!eligibleDepts.includes(userProfile.branch)) {
-        toast.error(
-          `This event is only for ${eligibleDepts.join(", ")} students. Your department is ${userProfile.branch}.`,
-        );
-        return;
-      }
-    }
-
+    // ── Check maxParticipants via server-side count (no doc downloads) ──
     if (event.maxParticipants > 0) {
       const regColRef = collection(
         db,
@@ -971,6 +998,33 @@ export default function OngoingEventsPage() {
     } finally {
       setRegisteringEventId(null);
     }
+  }
+
+  function isUserEligibleForEvent(
+    event: OngoingEvent,
+    userProfile: any,
+  ): boolean {
+    // Compute fresh currentYearOfStudy from admission data
+    const admissionYear = userProfile?.admissionYear ?? 0;
+    const isLateralEntry = userProfile?.isLateralEntry ?? false;
+    const currentYearOfStudy =
+      admissionYear > 0
+        ? getCurrentYearOfStudy(admissionYear, isLateralEntry)
+        : null;
+
+    // Year eligibility
+    const yearOfGrad = event.eligibilityCriteria?.yearOfGrad ?? [];
+    if (yearOfGrad.length > 0 && currentYearOfStudy != null) {
+      const idx = currentYearOfStudy - 1;
+      if (idx < 0 || idx >= yearOfGrad.length || !yearOfGrad[idx]) return false;
+    }
+    // Dept eligibility
+    const eligibleDepts =
+      event.eligibilityCriteria?.Dept?.filter(Boolean) ?? [];
+    if (eligibleDepts.length > 0 && userProfile?.branch) {
+      if (!eligibleDepts.includes(userProfile.branch)) return false;
+    }
+    return true;
   }
 
   useEffect(() => {
@@ -1129,6 +1183,8 @@ export default function OngoingEventsPage() {
                   registering={registeringEventId === event.id}
                   alreadyRegistered={registeredEventIds.has(event.id)}
                   onRegisterClick={() => handleRegisterClick(event)}
+                  isEligible={isUserEligibleForEvent(event, userProfile)}
+                  eligibilityChecking={authLoading}
                 />
               ))}
             </div>

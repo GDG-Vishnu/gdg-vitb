@@ -27,6 +27,7 @@ const BRANCH_CODE_MAP: Record<string, string> = {
   "12": "IT",
   "42": "CSE (AI & ML)",
   "45": "CSE (AI & DS)",
+  "57": "CSBS",
 };
 
 // ─── Types ──────────────────────────────────────────────────
@@ -118,4 +119,13 @@ export function getBranchFromEmail(email: string): string {
  */
 export function getGraduationYearFromEmail(email: string): number {
   return parseRollNumber(email)?.graduationYear ?? 0;
+}
+
+// Test: parse CSBS roll number
+if (typeof window === "undefined") {
+  // Node.js test mode
+  const testCSBS = parseRollNumber("24pa1a5762");
+  if (!testCSBS || testCSBS.branch !== "CSBS") {
+    throw new Error("CSBS branch code parsing failed");
+  }
 }

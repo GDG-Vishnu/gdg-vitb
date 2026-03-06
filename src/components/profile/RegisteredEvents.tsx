@@ -72,7 +72,7 @@ export default function RegisteredEvents({
       ) : (
         <div className="flex flex-col gap-[12px] sm:gap-[16px] md:gap-[20px] min-[1440px]:gap-[25px]">
           {events.map((event, idx) => (
-            <Link key={event.id} href={`/events/${event.id}`}>
+            <Link key={event.id} href="/events/ongoing">
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}

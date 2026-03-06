@@ -45,6 +45,7 @@ export interface Event {
   eventOfficials: EventOfficial[];
   faqs: { question: string; answer: string }[];
   rules: { rule: string }[];
+  eventGallery: string[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -81,6 +82,7 @@ export interface EventSerialized {
   eventOfficials: EventOfficial[];
   faqs: { question: string; answer: string }[];
   rules: { rule: string }[];
+  eventGallery: string[];
   createdAt?: string;
   updatedAt?: string;
 }

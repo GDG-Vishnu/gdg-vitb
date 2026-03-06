@@ -12,9 +12,15 @@ import {
   Clock,
   Star,
   CheckCircle,
+  Images,
 } from "lucide-react";
+import Lightbox from "yet-another-react-lightbox";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
+import NextJsImage from "@/components/NextJsImage";
+import Image from "next/image";
 import { LoadingEventDetail } from "@/components/loadingPage";
 import { checkRegistrationEligibility } from "@/services/registration.service";
 import { useAuth } from "@/contexts/AuthContext";
@@ -65,6 +71,7 @@ type Event = {
   }[];
   faqs: { question: string; answer: string }[];
   rules: { rule: string }[];
+  eventGallery: string[];
 };
 
 // Default accent color (no more theme array)
@@ -101,6 +108,8 @@ export default function EventDetailPage() {
   const [registrationCount, setRegistrationCount] = useState<number | null>(
     null,
   );
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   // ── Check if user already registered for this event ─────
 
@@ -701,6 +710,55 @@ export default function EventDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Register / CTA Section */}
+
+        {/* ── Event Gallery ── */}
+        {event.eventGallery && event.eventGallery.length > 0 && (
+          <div className="max-w-7xl mx-auto px-4 py-8 mt-4">
+            <div className="text-center mb-8">
+              <div className="flex justify-center items-center gap-3 mb-2">
+                <Images className="w-10 h-10 text-blue-600" />
+                <h2 className="text-3xl md:text-4xl font-bold text-stone-900 font-productSans">
+                  Event Gallery
+                </h2>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {event.eventGallery.map((url, index) => (
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => {
+                    setLightboxIndex(index);
+                    setLightboxOpen(true);
+                  }}
+                >
+                  <Image
+                    src={url}
+                    alt={`${event.title} gallery ${index + 1}`}
+                    width={400}
+                    height={300}
+                    className="w-full h-60 object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <Lightbox
+              open={lightboxOpen}
+              close={() => setLightboxOpen(false)}
+              index={lightboxIndex}
+              slides={event.eventGallery.map((url) => ({
+                src: url,
+                width: 1600,
+                height: 900,
+              }))}
+              plugins={[Thumbnails]}
+              render={{ slide: NextJsImage }}
+            />
+          </div>
+        )}
 
         {/* Register / CTA Section */}
         <div

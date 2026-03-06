@@ -281,6 +281,7 @@ export default function EventsPage() {
               )}
 
               {/* ── Upcoming Events ── */}
+              {/*
               {events.filter((e) => e.status === "UPCOMING").length > 0 && (
                 <section className="mb-14">
                   <motion.div
@@ -308,6 +309,7 @@ export default function EventsPage() {
                   </div>
                 </section>
               )}
+              */}
 
               {/* ── Past Events ── */}
               {events.filter((e) => e.status === "COMPLETED").length > 0 && (
