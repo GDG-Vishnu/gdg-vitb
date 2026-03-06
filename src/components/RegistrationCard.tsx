@@ -4,13 +4,14 @@ import React, { useState } from "react";
 import { X, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import {
-  collection,
   serverTimestamp,
   doc,
   runTransaction,
-  getDoc,
+  collection,
+  getCountFromServer,
 } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase-client";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Props = {
   visible: boolean;
@@ -20,6 +21,7 @@ type Props = {
   eventTitle?: string;
   hack2skillLink?: string;
   formLink?: string;
+  maxParticipants?: number;
 };
 
 export default function RegistrationCard({
@@ -30,8 +32,11 @@ export default function RegistrationCard({
   eventTitle,
   hack2skillLink = "https://vision.hack2skill.com/event/gdgoc-25-gdgvitb",
   formLink = "https://forms.gle/1yhQcDpzFVR9jQkd8",
+  maxParticipants = 0,
 }: Props) {
   const [saved, setSaved] = useState(false);
+  // Phone number already fetched by AuthContext — no extra Firestore read needed
+  const { userProfile } = useAuth();
 
   if (!visible) return null;
 
@@ -39,34 +44,71 @@ export default function RegistrationCard({
     // Save registration to Firestore on first external link click
     if (!saved && auth.currentUser && eventId) {
       try {
-        // Use deterministic doc ID to prevent duplicate registrations
-        const regId = `${auth.currentUser.uid}_${eventId}`;
-        const regRef = doc(db, "registrations", regId);
-        const eventRef = doc(db, "events", eventId);
+        const currentUser = auth.currentUser!;
+        const regId = `${currentUser.uid}_${eventId}`;
 
-        // Atomic transaction: check duplicate + write + increment
+        // Phone number is already in the AuthContext profile — no extra fetch needed
+        const phoneNumber: string = userProfile?.phoneNumber ?? "";
+
+        // ── Check maxParticipants via server-side count (no doc downloads) ──
+        if (maxParticipants > 0) {
+          const regColRef = collection(
+            db,
+            "managed_events",
+            eventId,
+            "registrations",
+          );
+          const countSnap = await getCountFromServer(regColRef);
+          if (countSnap.data().count >= maxParticipants) {
+            console.warn("[RegistrationCard] Max participants reached.");
+            return;
+          }
+        }
+
+        // Event's registrations subcollection
+        const eventRegRef = doc(
+          db,
+          "managed_events",
+          eventId,
+          "registrations",
+          regId,
+        );
+        // User's registrations subcollection
+        const userRegRef = doc(
+          db,
+          "client_users",
+          currentUser.uid,
+          "registrations",
+          eventId,
+        );
+
+        // Atomic transaction: check duplicate + write to both subcollections
         await runTransaction(db, async (tx) => {
-          const regSnap = await tx.get(regRef);
-          if (regSnap.exists()) {
-            // Already registered — no-op inside transaction
+          const userRegSnap = await tx.get(userRegRef);
+          if (userRegSnap.exists()) {
+            // Already registered — no-op
             return;
           }
 
-          const eventSnap = await tx.get(eventRef);
-          const currentCount =
-            eventSnap.data()?.MembersParticipated ??
-            0;
-
-          tx.set(regRef, {
-            userId: auth.currentUser!.uid,
-            eventId,
-            eventTitle: eventTitle ?? "Unknown Event",
-            status: "registered",
+          // Write to managed_events/{eventId}/registrations subcollection (event-centric)
+          tx.set(eventRegRef, {
+            userId: currentUser.uid,
+            name: currentUser.displayName ?? "",
+            email: currentUser.email ?? "",
+            phone: phoneNumber,
+            registrationType: "Individual",
             registeredAt: serverTimestamp(),
+            isCheckedIn: false,
+            checkedInAt: null,
           });
 
-          tx.update(eventRef, {
-            MembersParticipated: currentCount + 1,
+          // Write to client_users/{userId}/registrations subcollection
+          tx.set(userRegRef, {
+            event_id: eventId,
+            event_name: eventTitle ?? "Unknown Event",
+            event_data: new Date().toISOString(),
+            isAttended: false,
+            certificationLink: "",
           });
         });
 

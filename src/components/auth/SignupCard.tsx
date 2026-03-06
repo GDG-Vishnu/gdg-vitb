@@ -49,7 +49,7 @@ export default function SignupCard() {
       }
 
       // Ensure Firestore user document exists (won't duplicate)
-      const isNew = await ensureFirestoreUserDoc(db, result.user.uid, {
+      const { isNew } = await ensureFirestoreUserDoc(db, result.user.uid, {
         name: result.user.displayName ?? "",
         email: userEmail,
         profileUrl: result.user.photoURL ?? "",
@@ -57,11 +57,10 @@ export default function SignupCard() {
 
       if (isNew) {
         toast.success("Account created successfully!");
-        router.push(`/profile/${result.user.uid}`);
       } else {
         toast.success("Welcome back! You already have an account.");
-        router.push("/");
       }
+      router.push("/");
     } catch (err) {
       const msg = getAuthErrorMessage(err);
       if (!msg.includes("popup was closed")) {
@@ -158,7 +157,7 @@ export default function SignupCard() {
       });
 
       toast.success("Account created successfully!");
-      router.push(`/profile/${result.user.uid}`);
+      router.push("/");
     } catch (err) {
       toast.error(getAuthErrorMessage(err));
     } finally {

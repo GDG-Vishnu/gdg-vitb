@@ -40,7 +40,7 @@ export default function LoginCard() {
         return;
       }
 
-      // Ensure Firestore user document exists (won't duplicate)
+      // Ensure Firestore user document exists.
       await ensureFirestoreUserDoc(db, result.user.uid, {
         name: result.user.displayName ?? "",
         email: userEmail,
@@ -75,8 +75,7 @@ export default function LoginCard() {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
 
-      // Ensure Firestore doc exists (handles case where user was created
-      // via Google and later linked email/password — doc already exists)
+      // Ensure Firestore doc exists.
       await ensureFirestoreUserDoc(db, result.user.uid, {
         name: result.user.displayName ?? "",
         email: result.user.email ?? email,

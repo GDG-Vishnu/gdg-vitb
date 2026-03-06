@@ -13,6 +13,9 @@ export interface User {
   email: string;
   branch: string;
   graduationYear: number;
+  admissionYear: number;
+  isLateralEntry: boolean;
+  currentYearOfStudy: number;
   phoneNumber: string;
   profileUrl: string;
   socialMedia: UserSocialMedia;
@@ -31,6 +34,9 @@ export interface UserSerialized {
   email: string;
   branch: string;
   graduationYear: number;
+  admissionYear: number;
+  isLateralEntry: boolean;
+  currentYearOfStudy: number;
   phoneNumber: string;
   profileUrl: string;
   socialMedia: UserSocialMedia;
@@ -53,7 +59,7 @@ export type UpdateUserInput = Partial<
 export interface UserEventRegistration {
   event_id: string;
   event_name: string;
-  event_url: string;
+  event_data: string;
   isAttended: boolean;
   certificationLink: string;
 }
