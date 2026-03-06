@@ -22,6 +22,8 @@ import { toast } from "sonner";
 import {
   doc,
   getDoc,
+  collection,
+  getCountFromServer,
   runTransaction,
   serverTimestamp,
 } from "firebase/firestore";
@@ -96,6 +98,9 @@ export default function EventDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [registering, setRegistering] = useState(false);
   const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  const [registrationCount, setRegistrationCount] = useState<number | null>(
+    null,
+  );
 
   // ── Check if user already registered for this event ─────
 
@@ -140,6 +145,29 @@ export default function EventDetailPage() {
 
     // Phone number is already in the AuthContext profile — no extra fetch needed
     const phoneNumber: string = userProfile?.phoneNumber ?? "";
+
+    // ── Check isRegistrationOpen (from already-loaded event state) ──
+    if (!event?.isRegistrationOpen) {
+      toast.error("Registrations are closed for this event.");
+      return;
+    }
+
+    // ── Check maxParticipants via server-side count (no doc downloads) ──
+    if (event?.maxParticipants > 0) {
+      const regColRef = collection(
+        db,
+        "managed_events",
+        eventId,
+        "registrations",
+      );
+      const countSnap = await getCountFromServer(regColRef);
+      if (countSnap.data().count >= event.maxParticipants) {
+        toast.error(
+          `Maximum participants (${event.maxParticipants}) reached. Registrations are full.`,
+        );
+        return;
+      }
+    }
 
     // Event's registrations subcollection
     const eventRegRef = doc(
@@ -189,6 +217,7 @@ export default function EventDetailPage() {
     });
 
     setAlreadyRegistered(true);
+    setRegistrationCount((prev) => (prev ?? 0) + 1);
     toast.success("You're registered! 🎉");
   }
 
@@ -277,6 +306,21 @@ export default function EventDetailPage() {
     };
   }, [params.id]);
 
+  // ── Fetch live registration count ───────────────────────
+
+  useEffect(() => {
+    // Don't fetch count for completed events — it won't be shown
+    if (!params.id || !event || event.status === "COMPLETED") return;
+    const eventId = params.id as string;
+    getCountFromServer(
+      collection(db, "managed_events", eventId, "registrations"),
+    )
+      .then((snap) => setRegistrationCount(snap.data().count))
+      .catch(() => {
+        /* non-critical, silently ignore */
+      });
+  }, [params.id, event]);
+
   const statusColors: Record<string, string> = {
     COMPLETED: "bg-green-100 text-green-800 border-green-200",
     UPCOMING: "bg-blue-100 text-blue-800 border-blue-200",
@@ -286,14 +330,19 @@ export default function EventDetailPage() {
   if (loading) {
     return (
       <div
-        className="min-h-screen bg-white relative overflow-hidden"
+        className="min-h-screen bg-white relative overflow-hidden flex flex-col"
         style={{
           backgroundColor: "white",
           backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`,
           backgroundSize: "20px 20px",
         }}
       >
-        <LoadingEventDetail variant="page" message="Loading Event Details..." />
+        <div className="flex-1 flex items-center justify-center">
+          <LoadingEventDetail
+            variant="page"
+            message="Loading Event Details..."
+          />
+        </div>
         <Footer />
       </div>
     );
@@ -638,6 +687,24 @@ export default function EventDetailPage() {
               <p className="text-white/90 text-lg md:text-xl mb-8 max-w-2xl">
                 {event.status === "COMPLETED" ? EventClosed[1] : EventOpen[1]}
               </p>
+
+              {/* Live registration count — only for ongoing/upcoming events */}
+              {registrationCount !== null && event.status !== "COMPLETED" && (
+                <div className="flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white font-semibold text-base">
+                  <Users className="w-5 h-5" />
+                  <span>
+                    {registrationCount}
+                    {event.maxParticipants > 0 && (
+                      <span className="font-normal opacity-80">
+                        {" "}
+                        / {event.maxParticipants}
+                      </span>
+                    )}{" "}
+                    registered
+                  </span>
+                </div>
+              )}
+
               <div className="flex wrap justify-center gap-4">
                 {event.status !== "COMPLETED" && !alreadyRegistered && (
                   <button

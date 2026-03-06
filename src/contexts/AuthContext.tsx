@@ -16,7 +16,6 @@ import {
   User as FirebaseUser,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { useRouter, usePathname } from "next/navigation";
 import { auth, db } from "@/lib/firebase-client";
 import type { UserSerialized } from "@/types/user";
 import { isAllowedDomain } from "@/lib/auth-helpers";
@@ -196,25 +195,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("[AuthContext] Failed to refresh profile:", err);
     }
   }, [firebaseUser, ensureUserDocument]);
-
-  // ── Redirect to profile page if profile is incomplete ───
-
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (loading || !firebaseUser || !userProfile) return;
-    if (userProfile.profileCompleted) return;
-
-    // Don't redirect if already on the profile page or auth pages
-    const isProfilePage = pathname.startsWith("/profile/");
-    const isAuthPage = pathname.startsWith("/auth/");
-    if (isProfilePage || isAuthPage) return;
-
-    router.replace(
-      `/profile/${firebaseUser.uid}?redirect=${encodeURIComponent(pathname)}`,
-    );
-  }, [loading, firebaseUser, userProfile, pathname, router]);
 
   // ── Value ────────────────────────────────────────────────
 

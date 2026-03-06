@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogOut, User, ClipboardList, ChevronDown, Share2 } from "lucide-react";
@@ -52,7 +52,6 @@ export default function UserMenu({
   className = "",
 }: UserMenuProps) {
   const { firebaseUser, userProfile, loading, signOut } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -62,18 +61,6 @@ export default function UserMenu({
   const isOnLoginPage = pathname === "/auth/login";
   const authButtonLabel = isOnLoginPage ? "Sign Up" : "Login";
   const authButtonHref = isOnLoginPage ? "/auth/signup" : "/auth/login";
-
-  // Redirect to profile page when profileCompleted is false
-  useEffect(() => {
-    if (
-      !loading &&
-      firebaseUser &&
-      userProfile &&
-      !userProfile.profileCompleted
-    ) {
-      router.push(`/profile/${firebaseUser.uid}`);
-    }
-  }, [loading, firebaseUser, userProfile, router]);
 
   // Close dropdown on outside click
   useEffect(() => {

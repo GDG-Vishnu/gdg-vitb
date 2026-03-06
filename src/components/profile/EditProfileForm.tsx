@@ -314,7 +314,7 @@ export default function EditProfileForm({
       branch: formData.branch,
       graduationYear: Number(formData.graduationYear),
       phoneNumber: formData.phoneNumber.trim()
-        ? `+91${formData.phoneNumber.trim()}`
+        ? formData.phoneNumber.trim()
         : "",
       resumeUrl: formData.resumeUrl.trim(),
       profileUrl,
@@ -352,12 +352,6 @@ export default function EditProfileForm({
               <h1 className="text-gray-200 text-[22px] sm:text-[24px] md:text-[26px] min-[1440px]:text-[30px] font-[900] leading-[146%] tracking-[0.11em] uppercase">
                 {isFirstSetup ? "Complete Your Profile" : "Edit Profile"}
               </h1>
-              {isFirstSetup && (
-                <p className="text-gray-500 text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] min-[1440px]:text-[16px] mt-1">
-                  Fill in the required details to get started with GDG on Campus
-                  VITB.
-                </p>
-              )}
 
               {!isFirstSetup && (
                 <motion.button

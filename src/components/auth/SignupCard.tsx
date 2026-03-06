@@ -57,11 +57,10 @@ export default function SignupCard() {
 
       if (isNew) {
         toast.success("Account created successfully!");
-        router.push(`/profile/${result.user.uid}`);
       } else {
         toast.success("Welcome back! You already have an account.");
-        router.push("/");
       }
+      router.push("/");
     } catch (err) {
       const msg = getAuthErrorMessage(err);
       if (!msg.includes("popup was closed")) {
@@ -158,7 +157,7 @@ export default function SignupCard() {
       });
 
       toast.success("Account created successfully!");
-      router.push(`/profile/${result.user.uid}`);
+      router.push("/");
     } catch (err) {
       toast.error(getAuthErrorMessage(err));
     } finally {

@@ -6,7 +6,7 @@ import { Providers } from "@/components/providers";
 import { productSans } from "./font";
 import CursorSpark from "./client/CursorSpark";
 import BackToTop from "@/components/ui/back_to_top";
-// import ChatBox from "@/components/chat/ChatBox";
+import ChatBot from "@/components/chat/ChatBot";
 import Navbar from "@/features/layout/components/Navbar/Navbar";
 
 const geistSans = Geist({
@@ -26,8 +26,7 @@ const redHatDisplay = Red_Hat_Display({
 
 export const metadata: Metadata = {
   title: {
-    default:
-      "GDG OnCampus VITB ",
+    default: "GDG OnCampus VITB ",
     template: "%s | GDG VITB",
   },
   description:
@@ -160,7 +159,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <BackToTop />
-          {/* <ChatBox /> */}
+          <ChatBot />
         </Providers>
       </body>
     </html>
