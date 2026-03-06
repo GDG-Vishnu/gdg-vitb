@@ -19,7 +19,7 @@ import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase-client";
 import type { UserSerialized } from "@/types/user";
 import { isAllowedDomain } from "@/lib/auth-helpers";
-import { parseRollNumber } from "@/lib/roll-number";
+import { parseRollNumber, getCurrentYearOfStudy } from "@/lib/roll-number";
 
 // ─── Constants ──────────────────────────────────────────────
 
@@ -60,12 +60,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (snap.exists()) {
         const data = snap.data();
+        // Recompute current year of study on every load so it stays fresh
+        const admissionYear = data.admissionYear ?? 0;
+        const isLateralEntry = data.isLateralEntry ?? false;
+        const currentYearOfStudy =
+          admissionYear > 0
+            ? getCurrentYearOfStudy(admissionYear, isLateralEntry)
+            : 0;
         return {
           id: snap.id,
           name: data.name,
           email: data.email,
           branch: data.branch ?? "",
           graduationYear: data.graduationYear ?? 0,
+          admissionYear,
+          isLateralEntry,
+          currentYearOfStudy,
           phoneNumber: data.phoneNumber ?? "",
           profileUrl: data.profileUrl ?? "",
           socialMedia: data.socialMedia ?? {},
@@ -91,6 +101,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         profileUrl: user.photoURL ?? "",
         branch: rollInfo?.branch ?? "",
         graduationYear: rollInfo?.graduationYear ?? 0,
+        admissionYear: rollInfo?.admissionYear ?? 0,
+        isLateralEntry: rollInfo?.isLateralEntry ?? false,
+        currentYearOfStudy: rollInfo
+          ? getCurrentYearOfStudy(
+              rollInfo.admissionYear,
+              rollInfo.isLateralEntry,
+            )
+          : 0,
         phoneNumber: "",
         socialMedia: {},
         resumeUrl: "",
@@ -112,6 +130,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         profileUrl: newUser.profileUrl,
         branch: rollInfo?.branch ?? "",
         graduationYear: rollInfo?.graduationYear ?? 0,
+        admissionYear: rollInfo?.admissionYear ?? 0,
+        isLateralEntry: rollInfo?.isLateralEntry ?? false,
+        currentYearOfStudy: newUser.currentYearOfStudy,
         phoneNumber: "",
         socialMedia: {},
         resumeUrl: "",

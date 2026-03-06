@@ -3,13 +3,14 @@
 // VIT B roll-number format (also the email prefix):
 //   YY PA X A BB RR
 //   │     │   │  │
-//   │     │   │  └─ Student roll within branch (2 digits)
+//   │     │   │  └─ Student roll within branch (2 alphanumeric chars)
 //   │     │   └──── Branch code (2 digits)
 //   │     └──────── 1 = Regular, 5 = Lateral Entry
 //   └───────────── Admission year (first 2 digits, e.g. 24 → 2024)
 //
 // Example: 24PA1A0501 → 2024, Regular, CSE (05), roll 01
 // Example: 25PA5A0412 → 2025, Lateral,  ECE (04), roll 12
+// Example: 24PA1A05M6 → 2024, Regular, CSE (05), roll M6
 //
 // Graduation year:
 //   Regular (1A) → admissionYear + 4
@@ -41,9 +42,9 @@ export interface RollNumberInfo {
 
 // ─── Regex ──────────────────────────────────────────────────
 
-// Matches: YY P A (1|5) A BBNN
-// e.g. 24PA1A0501  or  25pa5a0412
-const ROLL_NUMBER_REGEX = /^(\d{2})pa([15])a(\d{2})(\d{2})$/i;
+// Matches: YY P A (1|5) A BB RR (where RR is 2 alphanumeric chars)
+// e.g. 24PA1A0501  or  25pa5a0412  or  24pa1a05m6
+const ROLL_NUMBER_REGEX = /^(\d{2})pa([15])a(\d{2})([a-z0-9]{2})$/i;
 
 // ─── Parser ─────────────────────────────────────────────────
 
@@ -51,7 +52,7 @@ const ROLL_NUMBER_REGEX = /^(\d{2})pa([15])a(\d{2})(\d{2})$/i;
  * Extracts branch, graduation year, and admission info from a
  * VIT Bhopal email address (or just the roll-number prefix).
  *
- * @param email — full email (e.g. "24pa1a0501@vishnu.edu.in") or just the roll number
+ * @param email — full email (e.g. "24pa1a0501@vishnu.edu.in" or "24pa1a05m6@vishnu.edu.in") or just the roll number
  * @returns parsed info, or `null` if the format doesn't match
  */
 export function parseRollNumber(email: string): RollNumberInfo | null {
@@ -78,6 +79,31 @@ export function parseRollNumber(email: string): RollNumberInfo | null {
     isLateralEntry,
     rollNumber: localPart.toUpperCase(),
   };
+}
+
+/**
+ * Computes current year of study (1–4) based on admission year and
+ * lateral-entry status.
+ *
+ * Indian academic year starts around June:
+ *   - If today is June or later  → academic year = calendar year
+ *   - If today is before June    → academic year = calendar year − 1
+ *
+ * Regular  → year 1 in admission year
+ * Lateral  → year 2 in admission year (they skip 1st year)
+ */
+export function getCurrentYearOfStudy(
+  admissionYear: number,
+  isLateralEntry: boolean,
+): number {
+  const now = new Date();
+  const academicYear =
+    now.getMonth() >= 5 ? now.getFullYear() : now.getFullYear() - 1;
+
+  const year = academicYear - admissionYear + 1 + (isLateralEntry ? 1 : 0);
+
+  // Clamp between 1 and 4
+  return Math.max(1, Math.min(year, 4));
 }
 
 /**

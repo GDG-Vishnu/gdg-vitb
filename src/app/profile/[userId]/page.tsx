@@ -169,6 +169,9 @@ export default function ProfilePage() {
         name: values.name,
         branch: values.branch,
         graduationYear: values.graduationYear,
+        admissionYear: values.admissionYear,
+        isLateralEntry: values.isLateralEntry,
+        currentYearOfStudy: values.currentYearOfStudy,
         phoneNumber: values.phoneNumber,
         socialMedia: values.socialMedia, // Save all social links including custom ones
         resumeUrl: values.resumeUrl,

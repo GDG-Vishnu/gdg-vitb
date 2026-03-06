@@ -219,6 +219,36 @@ export default function EventDetailPage() {
     setAlreadyRegistered(true);
     setRegistrationCount((prev) => (prev ?? 0) + 1);
     toast.success("You're registered! 🎉");
+
+    // ── Send confirmation email after successful registration ──
+    try {
+      // Format event date for email
+      const eventDate = event?.startDate
+        ? new Date(event.startDate).toLocaleDateString("en-US", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+        : "TBA";
+
+      // Send email via local API route (avoids CORS issues)
+      await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mail: user.email ?? "",
+          name: user.displayName ?? "",
+          event_name: event?.title ?? "Event",
+          date: eventDate,
+        }),
+      });
+      // Email sent successfully (non-blocking, no user feedback needed)
+    } catch (emailError) {
+      // Log email error but don't interrupt registration flow
+      console.error("Failed to send confirmation email:", emailError);
+    }
   }
 
   async function handleRegisterClick() {
