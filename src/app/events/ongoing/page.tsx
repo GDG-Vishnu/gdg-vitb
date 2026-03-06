@@ -343,29 +343,6 @@ function OngoingEventCard({
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black font-productSans leading-tight">
                 {event.title}
               </h2>
-              <div className="flex flex-wrap items-center gap-3 mt-3">
-                <span className="flex items-center gap-1.5 text-sm text-stone-700 font-productSans font-medium">
-                  <Calendar className="w-4 h-4 text-blue-500" />
-                  {formatDate(event.startDate)}
-                  {event.endDate && ` – ${formatDate(event.endDate)}`}
-                </span>
-                {formatTime(event.startDate) && (
-                  <span className="flex items-center gap-1.5 text-sm text-stone-700 font-productSans font-medium">
-                    <Clock className="w-4 h-4 text-red-500" />
-                    {formatTime(event.startDate)}
-                  </span>
-                )}
-                <span className="flex items-center gap-1.5 text-sm text-stone-700 font-productSans font-medium">
-                  <MapPin className="w-4 h-4 text-green-500" />
-                  {event.venue || "TBA"}
-                </span>
-                {event.maxParticipants > 0 && (
-                  <span className="flex items-center gap-1.5 text-sm text-stone-700 font-productSans font-medium">
-                    <Users className="w-4 h-4 text-yellow-600" />
-                    Max {event.maxParticipants}
-                  </span>
-                )}
-              </div>
             </div>
 
             <div className="flex items-center gap-3 flex-shrink-0">
@@ -417,20 +394,6 @@ function OngoingEventCard({
               </Button>
             </div>
           </div>
-
-          {/* Tags strip */}
-          {event.tags && event.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              {event.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 bg-stone-100 border-2 border-black rounded-full text-xs font-bold text-stone-700 font-productSans shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* ── Collapsible Detail Section ──────────────────── */}
