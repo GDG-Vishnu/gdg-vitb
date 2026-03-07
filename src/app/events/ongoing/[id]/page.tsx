@@ -100,16 +100,6 @@ function formatTime(dateStr: string | null): string {
   });
 }
 
-function getModeIcon(mode: string) {
-  switch (mode) {
-    case "ONLINE":
-      return <Globe className="w-4 h-4" />;
-    case "HYBRID":
-      return <Wifi className="w-4 h-4" />;
-    default:
-      return <Monitor className="w-4 h-4" />;
-  }
-}
 
 function getRoleBadgeColor(role: string) {
   switch (role) {

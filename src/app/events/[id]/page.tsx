@@ -72,10 +72,10 @@ type Event = {
   faqs: { question: string; answer: string }[];
   rules: { rule: string }[];
   eventGallery: string[];
+  Theme: string[];
 };
 
-// Default accent color (no more theme array)
-const ACCENT_COLOR = "#4285F4";
+const DEFAULT_ACCENT = "#4285F4";
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "TBA";
@@ -330,6 +330,18 @@ export default function EventDetailPage() {
         const data = await res.json();
         if (!mounted) return;
         setEvent(data);
+        // Immediately fire count fetch — avoids a separate effect+render cycle
+        if (data.status !== "COMPLETED") {
+          getCountFromServer(
+            collection(db, "managed_events", eventId, "registrations"),
+          )
+            .then((snap) => {
+              if (mounted) setRegistrationCount(snap.data().count);
+            })
+            .catch(() => {
+              /* non-critical */
+            });
+        }
       } catch (err: unknown) {
         console.error(err);
         if (mounted) {
@@ -344,27 +356,6 @@ export default function EventDetailPage() {
       mounted = false;
     };
   }, [params.id]);
-
-  // ── Fetch live registration count ───────────────────────
-
-  useEffect(() => {
-    // Don't fetch count for completed events — it won't be shown
-    if (!params.id || !event || event.status === "COMPLETED") return;
-    const eventId = params.id as string;
-    getCountFromServer(
-      collection(db, "managed_events", eventId, "registrations"),
-    )
-      .then((snap) => setRegistrationCount(snap.data().count))
-      .catch(() => {
-        /* non-critical, silently ignore */
-      });
-  }, [params.id, event]);
-
-  const statusColors: Record<string, string> = {
-    COMPLETED: "bg-green-100 text-green-800 border-green-200",
-    UPCOMING: "bg-blue-100 text-blue-800 border-blue-200",
-    ONGOING: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  };
 
   if (loading) {
     return (
@@ -415,9 +406,7 @@ export default function EventDetailPage() {
     );
   }
 
-  const statusClass =
-    statusColors[event.status || ""] ||
-    "bg-gray-100 text-gray-800 border-gray-200";
+  const ACCENT_COLOR = event.Theme?.[0] || DEFAULT_ACCENT;
 
   return (
     <div
@@ -476,7 +465,7 @@ export default function EventDetailPage() {
               </picture>
             </div>
           )}
-          <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center justify-center items-center w-full">
+          <div className="flex flex-col flex-wrap sm:flex-row sm:justify-center sm:items-center w-full">
             <ParticipantBadge
               text={event.eventType}
               icon={
@@ -484,6 +473,7 @@ export default function EventDetailPage() {
                   src="/User.png"
                   alt="event type"
                   className="w-6 h-6 object-contain"
+                  style={{ filter: "brightness(0) invert(1)" }}
                 />
               }
               bgColor={ACCENT_COLOR}
@@ -497,6 +487,7 @@ export default function EventDetailPage() {
                   src="/Calendar.png"
                   alt="date"
                   className="w-6 h-6 object-contain"
+                  style={{ filter: "brightness(0) invert(1)" }}
                 />
               }
               bgColor={ACCENT_COLOR}
@@ -510,12 +501,76 @@ export default function EventDetailPage() {
                   src="/Location.png"
                   alt="location"
                   className="w-6 h-6 object-contain"
+                  style={{ filter: "brightness(0) invert(1)" }}
                 />
               }
               bgColor={ACCENT_COLOR}
             />
           </div>
         </div>
+
+        {/* ── Event Gallery ── */}
+        {event.eventGallery && event.eventGallery.length > 0 && (
+          <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
+            <div className="relative rounded-[32px]">
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)`,
+                  backgroundSize: "20px 20px, 40px 40px",
+                  backgroundPosition: "0 0, 10px 10px",
+                  opacity: 1,
+                  pointerEvents: "none",
+                  borderRadius: 28,
+                }}
+              />
+              <div className="relative z-10">
+                <div className="flex items-center mb-6">
+                  <Images
+                    className="w-10 h-10"
+                    style={{ color: ACCENT_COLOR }}
+                  />
+                  <h2 className="text-3xl md:text-4xl font-bold text-white font-productSans ml-3">
+                    Event Gallery
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {event.eventGallery.map((url, index) => (
+                    <div
+                      key={index}
+                      className="overflow-hidden rounded-xl cursor-pointer hover:opacity-90 transition-opacity"
+                      onClick={() => {
+                        setLightboxIndex(index);
+                        setLightboxOpen(true);
+                      }}
+                    >
+                      <Image
+                        src={url}
+                        alt={`${event.title} gallery ${index + 1}`}
+                        width={400}
+                        height={300}
+                        className="w-full h-60 object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <Lightbox
+                  open={lightboxOpen}
+                  close={() => setLightboxOpen(false)}
+                  index={lightboxIndex}
+                  slides={event.eventGallery.map((url) => ({
+                    src: url,
+                    width: 1600,
+                    height: 900,
+                  }))}
+                  plugins={[Thumbnails]}
+                  render={{ slide: NextJsImage }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
           <div className="relative rounded-[32px]">
@@ -533,6 +588,13 @@ export default function EventDetailPage() {
             />
 
             <div className="relative z-10 flex flex-col items-center gap-6">
+              {/* Top-left eye decoration */}
+              <img
+                src="/about_page_eye.png"
+                alt=""
+                aria-hidden
+                className="absolute -top-6 left-0 w-30 h-30 object-contain pointer-events-none select-none"
+              />
               <h1 className="text-3xl font-bold text-white font-productSans">
                 About the Event{" "}
               </h1>
@@ -543,8 +605,10 @@ export default function EventDetailPage() {
               </div>
               <div className="flex justify-end items-end">
                 <img
-                  src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1764655440/Group_6_mczuk3.png"
+                  src="/green_shape.png"
                   alt=""
+                  aria-hidden
+                  className="absolute bottom-4 right-1 w-10 h-10 object-contain pointer-events-none select-none"
                 />
               </div>
             </div>
@@ -592,7 +656,7 @@ export default function EventDetailPage() {
                         }
                       >
                         <span
-                          className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-[#1a1a1a] rounded-full text-sm font-bold"
+                          className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white rounded-full text-sm font-bold"
                           style={{ backgroundColor: ACCENT_COLOR }}
                         >
                           {index + 1}
@@ -626,7 +690,12 @@ export default function EventDetailPage() {
                             className="w-12 h-12 rounded-full flex items-center justify-center"
                             style={{ backgroundColor: ACCENT_COLOR }}
                           >
-                            <User className="w-6 h-6 text-[#1a1a1a]" />
+                            <img
+                              src="/User.png"
+                              alt="organizer"
+                              className="w-6 h-6 object-contain"
+                              style={{ filter: "brightness(0) invert(1)" }}
+                            />
                           </div>
                           <div>
                             <p className="text-stone-400 text-xs">Organizer</p>
@@ -642,7 +711,12 @@ export default function EventDetailPage() {
                             className="w-12 h-12 rounded-full flex items-center justify-center"
                             style={{ backgroundColor: ACCENT_COLOR }}
                           >
-                            <User className="w-6 h-6 text-[#1a1a1a]" />
+                            <img
+                              src="/User.png"
+                              alt="co-organizer"
+                              className="w-6 h-6 object-contain"
+                              style={{ filter: "brightness(0) invert(1)" }}
+                            />
                           </div>
                           <div>
                             <p className="text-stone-400 text-xs">
@@ -660,7 +734,12 @@ export default function EventDetailPage() {
                             className="w-12 h-12 rounded-full flex items-center justify-center"
                             style={{ backgroundColor: ACCENT_COLOR }}
                           >
-                            <User className="w-6 h-6 text-[#1a1a1a]" />
+                            <img
+                              src="/User.png"
+                              alt="facilitator"
+                              className="w-6 h-6 object-contain"
+                              style={{ filter: "brightness(0) invert(1)" }}
+                            />
                           </div>
                           <div>
                             <p className="text-stone-400 text-xs">
@@ -710,55 +789,6 @@ export default function EventDetailPage() {
             </div>
           </div>
         </div>
-
-        {/* Register / CTA Section */}
-
-        {/* ── Event Gallery ── */}
-        {event.eventGallery && event.eventGallery.length > 0 && (
-          <div className="max-w-7xl mx-auto px-4 py-8 mt-4">
-            <div className="text-center mb-8">
-              <div className="flex justify-center items-center gap-3 mb-2">
-                <Images className="w-10 h-10 text-blue-600" />
-                <h2 className="text-3xl md:text-4xl font-bold text-stone-900 font-productSans">
-                  Event Gallery
-                </h2>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {event.eventGallery.map((url, index) => (
-                <div
-                  key={index}
-                  className="overflow-hidden rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                  onClick={() => {
-                    setLightboxIndex(index);
-                    setLightboxOpen(true);
-                  }}
-                >
-                  <Image
-                    src={url}
-                    alt={`${event.title} gallery ${index + 1}`}
-                    width={400}
-                    height={300}
-                    className="w-full h-60 object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-
-            <Lightbox
-              open={lightboxOpen}
-              close={() => setLightboxOpen(false)}
-              index={lightboxIndex}
-              slides={event.eventGallery.map((url) => ({
-                src: url,
-                width: 1600,
-                height: 900,
-              }))}
-              plugins={[Thumbnails]}
-              render={{ slide: NextJsImage }}
-            />
-          </div>
-        )}
 
         {/* Register / CTA Section */}
         <div
@@ -860,10 +890,7 @@ function ParticipantBadge({
         {icon ? (
           icon
         ) : (
-          <User
-            className="w-6 h-6 md:w-8 md:h-8 text-[#1a1a1a]"
-            strokeWidth={2}
-          />
+          <User className="w-6 h-6 md:w-8 md:h-8 text-white" strokeWidth={2} />
         )}
       </div>
 

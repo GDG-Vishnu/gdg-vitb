@@ -98,35 +98,32 @@ export default function ChatBot() {
         {open && (
           <motion.div
             key="chat-window"
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-[calc(100vw-2rem)] max-w-[360px] sm:w-[360px] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-            style={{ background: "#1E1E1E" }}
+            className="w-[calc(100vw-2rem)] max-w-[360px] sm:w-[360px] overflow-hidden border-[3px] border-black bg-white"
+            style={{ boxShadow: "6px 6px 0px 0px #000" }}
           >
             {/* Header */}
-            <div
-              className="flex items-center gap-3 px-4 py-3 border-b border-white/10"
-              style={{ background: "#111" }}
-            >
+            <div className="flex items-center gap-3 px-4 py-3 border-b-[3px] border-black bg-[#FFE7A5]">
               <GDGDotIcon size={32} />
               <div className="flex-1 min-w-0">
-                <p className="text-white font-semibold text-[0.95rem] leading-tight">
+                <p className="text-black font-bold text-[0.95rem] leading-tight font-productSans tracking-wide">
                   GDG VITB
                 </p>
-                <p className="text-[#34A853] text-[0.72rem] font-medium">
+                <p className="text-[#34A853] text-[0.72rem] font-bold font-productSans">
                   ● Online
                 </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-white/50 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+                className="text-black hover:bg-black hover:text-white transition-colors p-1 border-2 border-black"
                 aria-label="Close chat"
               >
                 <svg
-                  width="16"
-                  height="16"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -140,7 +137,14 @@ export default function ChatBot() {
             </div>
 
             {/* Messages */}
-            <div className="h-[300px] overflow-y-auto px-4 py-3 flex flex-col gap-3 scrollbar-custom">
+            <div
+              className="h-[300px] overflow-y-auto px-4 py-3 flex flex-col gap-3 scrollbar-custom"
+              style={{
+                backgroundImage:
+                  "linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)",
+                backgroundSize: "20px 20px",
+              }}
+            >
               {messages.map((msg, i) => (
                 <div
                   key={i}
@@ -152,14 +156,12 @@ export default function ChatBot() {
                     </div>
                   )}
                   <div
-                    className={`max-w-[80%] px-3 py-2 rounded-2xl text-[0.85rem] leading-relaxed whitespace-pre-wrap break-words ${
+                    className={`max-w-[80%] px-3 py-2 text-[0.85rem] leading-relaxed whitespace-pre-wrap break-words border-[2px] border-black font-productSans ${
                       msg.role === "user"
-                        ? "rounded-br-sm text-black font-medium"
-                        : "rounded-bl-sm text-white/90 border border-white/10"
+                        ? "text-black font-semibold bg-[#FFD427]"
+                        : "text-black bg-white"
                     }`}
-                    style={{
-                      background: msg.role === "user" ? "#FFD427" : "#2a2a2a",
-                    }}
+                    style={{ boxShadow: "3px 3px 0px 0px #000" }}
                   >
                     {msg.text}
                   </div>
@@ -171,14 +173,14 @@ export default function ChatBot() {
                 <div className="flex justify-start items-center gap-2">
                   <GDGDotIcon size={22} />
                   <div
-                    className="px-3 py-2 rounded-2xl rounded-bl-sm border border-white/10"
-                    style={{ background: "#2a2a2a" }}
+                    className="px-3 py-2 border-[2px] border-black bg-white"
+                    style={{ boxShadow: "3px 3px 0px 0px #000" }}
                   >
                     <div className="flex gap-1 items-center h-4">
                       {[0, 1, 2].map((i) => (
                         <span
                           key={i}
-                          className="w-1.5 h-1.5 rounded-full animate-bounce"
+                          className="w-2 h-2 border-[1.5px] border-black animate-bounce"
                           style={{
                             background: GDG_COLORS[i],
                             animationDelay: `${i * 0.15}s`,
@@ -193,10 +195,7 @@ export default function ChatBot() {
             </div>
 
             {/* Input */}
-            <div
-              className="px-3 py-3 border-t border-white/10 flex gap-2 items-center"
-              style={{ background: "#111" }}
-            >
+            <div className="px-3 py-3 border-t-[3px] border-black flex gap-2 items-center bg-white">
               <input
                 ref={inputRef}
                 value={input}
@@ -204,18 +203,18 @@ export default function ChatBot() {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask me anything..."
                 disabled={loading}
-                className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-[0.85rem] placeholder:text-white/30 outline-none focus:border-[#FFD427]/60 transition-colors disabled:opacity-50"
+                className="flex-1 min-w-0 bg-white border-[2px] border-black px-3 py-2 text-black text-[0.85rem] placeholder:text-stone-400 outline-none focus:shadow-[2px_2px_0px_0px_#000] transition-all disabled:opacity-50 font-productSans"
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || loading}
                 aria-label="Send message"
-                className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-30"
-                style={{ background: "#FFD427" }}
+                className="shrink-0 w-9 h-9 flex items-center justify-center border-[2px] border-black bg-[#FFD427] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-30"
+                style={{ boxShadow: "3px 3px 0px 0px #000" }}
               >
                 <svg
-                  width="16"
-                  height="16"
+                  width="15"
+                  height="15"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#000"
@@ -235,11 +234,11 @@ export default function ChatBot() {
       {/* ── Floating Trigger Button ── */}
       <motion.button
         onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.94 }}
+        whileHover={{ x: -2, y: -2 }}
+        whileTap={{ x: 2, y: 2 }}
         aria-label="Open GDG chatbot"
-        className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center border border-white/10 relative"
-        style={{ background: "#1E1E1E" }}
+        className="w-13 h-13 p-2.5 flex items-center justify-center border-[3px] border-black bg-[#FFE7A5] relative"
+        style={{ boxShadow: "4px 4px 0px 0px #000" }}
       >
         <AnimatePresence mode="wait">
           {open ? (
@@ -253,7 +252,7 @@ export default function ChatBot() {
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#FFD427"
+              stroke="#000"
               strokeWidth={2.5}
               strokeLinecap="round"
             >

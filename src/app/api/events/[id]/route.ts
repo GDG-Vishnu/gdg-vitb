@@ -41,7 +41,8 @@ export async function GET(
     if (cached && Date.now() < cached.expiresAt) {
       return NextResponse.json(cached.event, {
         headers: {
-          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "Cache-Control":
+            "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
           "X-Cache": "HIT",
         },
       });
@@ -88,6 +89,17 @@ export async function GET(
       faqs: Array.isArray(d.faqs) ? d.faqs : [],
       rules: Array.isArray(d.rules) ? d.rules : [],
       eventGallery: Array.isArray(d.eventGallery) ? d.eventGallery : [],
+      Theme: (() => {
+        if (Array.isArray(d.Theme)) return d.Theme;
+        if (typeof d.Theme === "string") {
+          try {
+            return JSON.parse(d.Theme);
+          } catch {
+            return [];
+          }
+        }
+        return [];
+      })(),
       createdAt: parseTimestamp(d.createdAt) ?? undefined,
       updatedAt: parseTimestamp(d.updatedAt) ?? undefined,
     };
@@ -97,7 +109,8 @@ export async function GET(
 
     return NextResponse.json(event, {
       headers: {
-        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        "Cache-Control":
+          "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
         "X-Cache": "MISS",
       },
     });
@@ -111,7 +124,8 @@ export async function GET(
       );
       return NextResponse.json(stale.event, {
         headers: {
-          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "Cache-Control":
+            "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
           "X-Cache": "STALE",
         },
       });

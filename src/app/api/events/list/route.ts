@@ -9,7 +9,7 @@ export const revalidate = 60; // ISR: revalidate every 60 seconds
 // keeping Firestore reads to ~1 per TTL window instead of 1 per user.
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 let _cachedEvents: EventSerialized[] | null = null;
-let _cacheExpiresAt = 0;
+let _cacheExpiresAt = 0; // starts expired — forces fresh fetch on first request
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -53,6 +53,7 @@ const DEV_MOCK_EVENTS: EventSerialized[] = [
       yearOfGrad: [false, true, true, false],
       Dept: ["CSE", "IT"],
     },
+    Theme: ["#4285F4", "#34A853"],
     executiveBoard: {
       organiser: "Dev User",
       coOrganiser: "Dev Co",
@@ -92,6 +93,7 @@ const DEV_MOCK_EVENTS: EventSerialized[] = [
     eventType: "HACKATHON",
     maxParticipants: 200,
     registrationStart: new Date().toISOString(),
+    Theme: ["#FFFFFF", "#000000"],
     registrationEnd: new Date(
       Date.now() + 2 * 24 * 60 * 60 * 1000,
     ).toISOString(),
@@ -129,6 +131,7 @@ const LIST_FIELDS = [
   "isRegistrationOpen",
   "tags",
   "keyHighlights",
+  "Theme",
   "createdAt",
 ] as const;
 
@@ -137,7 +140,8 @@ export async function GET() {
   if (_cachedEvents && Date.now() < _cacheExpiresAt) {
     return NextResponse.json(_cachedEvents, {
       headers: {
-        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        "Cache-Control":
+          "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
         "X-Cache": "HIT",
       },
     });
@@ -175,6 +179,17 @@ export async function GET() {
         createdBy: "",
         tags: Array.isArray(d.tags) ? d.tags : [],
         keyHighlights: Array.isArray(d.keyHighlights) ? d.keyHighlights : [],
+        Theme: (() => {
+          if (Array.isArray(d.Theme)) return d.Theme;
+          if (typeof d.Theme === "string") {
+            try {
+              return JSON.parse(d.Theme);
+            } catch {
+              return [];
+            }
+          }
+          return [];
+        })(),
         eligibilityCriteria: { yearOfGrad: [], Dept: [] },
         executiveBoard: { organiser: "", coOrganiser: "", facilitator: "" },
         eventOfficials: [],
@@ -192,7 +207,8 @@ export async function GET() {
 
     return NextResponse.json(events, {
       headers: {
-        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        "Cache-Control":
+          "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
         "X-Cache": "MISS",
       },
     });
@@ -204,7 +220,8 @@ export async function GET() {
       console.warn("Serving stale cache due to Firestore error");
       return NextResponse.json(_cachedEvents, {
         headers: {
-          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "Cache-Control":
+            "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
           "X-Cache": "STALE",
         },
       });

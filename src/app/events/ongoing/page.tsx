@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
+import { fetchEventList } from "@/lib/events-list-cache";
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -61,7 +62,7 @@ function EventListCard({
     >
       {/* Live badge */}
       {isLive && (
-        <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-productSans">
+        <div className="absolute top-2 right-3 z-10 flex items-center gap-1.5 bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-productSans">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
@@ -72,7 +73,7 @@ function EventListCard({
 
       {/* Upcoming badge */}
       {!isLive && (
-        <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-blue-500 text-white text-xs font-bold px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-productSans">
+        <div className="absolute top-1 right-4 z-10 flex items-center gap-1.5 bg-blue-500 text-white text-xs font-bold px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-productSans">
           <Clock className="w-3 h-3" />
           UPCOMING
         </div>
@@ -114,6 +115,7 @@ function EventListCard({
                 src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                 alt=""
                 className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
+                style={{ filter: "brightness(0) invert(1)" }}
               />
             </div>
           </div>
@@ -137,17 +139,12 @@ export default function OngoingEventsPage() {
 
     (async () => {
       try {
-        const res = await fetch("/api/events/list");
-        if (!res.ok) throw new Error("Failed to fetch events");
-        const data = await res.json();
+        const data = await fetchEventList<OngoingEvent>();
         if (!mounted) return;
 
-        const filtered: OngoingEvent[] = (Array.isArray(data) ? data : [])
-          .filter(
-            (e: OngoingEvent) =>
-              e.status === "UPCOMING" || e.status === "ONGOING",
-          )
-          .sort((a: OngoingEvent, b: OngoingEvent) => {
+        const filtered: OngoingEvent[] = data
+          .filter((e) => e.status === "UPCOMING" || e.status === "ONGOING")
+          .sort((a, b) => {
             if (a.status === "ONGOING" && b.status !== "ONGOING") return -1;
             if (a.status !== "ONGOING" && b.status === "ONGOING") return 1;
             const dateA = a.startDate ? new Date(a.startDate).getTime() : 0;
