@@ -356,7 +356,7 @@ function SpeakerCard({
 
   return (
     <div
-      className={`flex flex-col gap-10 p-5 border-[2px] border-black bg-white shadow-[6px_6px_0px_#000] ${
+      className={`flex flex-col gap-10 p-1 border-[2px] border-black bg-white shadow-[6px_6px_0px_#000] ${
         reverse ? "sm:flex-row-reverse" : "sm:flex-row"
       } items-center`}
     >
@@ -436,7 +436,7 @@ function SpeakerCard({
 function SpeakersSection({ officials }: { officials: EventOfficial[] }) {
   if (!officials || officials.length === 0) return null;
   return (
-    <div className="flex flex-col items-center gap-10 p-10 border-[2px] border-black bg-[#FFE7A5] shadow-[6px_6px_0px_#000]">
+    <div className="flex flex-col items-center gap-10 p-2 border-[2px] border-black bg-[#FFE7A5] shadow-[6px_6px_0px_#000]">
       <h3 className="text-[28px] font-bold tracking-wide text-center font-productSans text-[#1E1E1E]">
         SPEAKERS & GUESTS
       </h3>
