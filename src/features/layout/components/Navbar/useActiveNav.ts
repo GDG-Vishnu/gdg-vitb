@@ -19,13 +19,20 @@ export const useActiveNav = () => {
         "/hack-a-tron-3.0",
       ];
       const isNested = nested.includes(href);
-      if (isNested)
+      if (isNested) {
+        // "/events" should NOT highlight when on /events/ongoing/**
+        if (href === "/events" && pathname.startsWith("/events/ongoing"))
+          return false;
         return (
           pathname.startsWith(href) ||
           pathname.startsWith(legacy) ||
           (legacyAlt ? pathname.startsWith(legacyAlt) : false)
         );
+      }
       if (href === "/") return pathname === "/" || pathname === legacy;
+      // "/events/ongoing" should highlight on detail pages too
+      if (href === "/events/ongoing")
+        return pathname.startsWith("/events/ongoing");
       return (
         pathname === href ||
         pathname === legacy ||

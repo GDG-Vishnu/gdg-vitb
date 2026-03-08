@@ -83,6 +83,7 @@ export interface EventSerialized {
   faqs: { question: string; answer: string }[];
   rules: { rule: string }[];
   eventGallery: string[];
+  Theme: string[];
   createdAt?: string;
   updatedAt?: string;
 }

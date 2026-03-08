@@ -6,6 +6,7 @@ import Footer from "@/components/footer/Footer";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 import { motion } from "framer-motion";
+import { fetchEventList } from "@/lib/events-list-cache";
 
 type Event = {
   id: string;
@@ -23,29 +24,13 @@ type Event = {
   tags: string[] | null;
   posterImage?: string | null;
   bannerImage?: string | null;
+  Theme?: string[];
 };
 
-function formatDate(dateStr: string | null): string {
-  if (!dateStr) return "TBA";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function EventCard({
-  event,
-  isLive,
-  index = 0,
-}: {
-  event: Event;
-  isLive?: boolean;
-  index?: number;
-}) {
+function EventCard({ event, index = 0 }: { event: Event; index?: number }) {
+  const accentColor = event.Theme?.[0] ?? "#4285F4";
   const getButtonStyle = () => ({
-    backgroundColor: "#4285F4",
+    backgroundColor: accentColor,
     color: "#000000",
     borderColor: "#000000",
     borderWidth: "3px",
@@ -57,25 +42,10 @@ function EventCard({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06, ease: "easeOut" }}
-      className={`relative bg-white shadow-md snap-start overflow-hidden w-full border flex flex-col justify-between
+      className={`relative bg-white shadow-md snap-start overflow-hidden w-full border border-black flex flex-col justify-between
         rounded-[30px] sm:rounded-[40px] lg:rounded-[50px]
-        h-[380px] sm:h-[420px] lg:h-[472px] ${
-          isLive
-            ? "border-2 border-green-500 ring-2 ring-green-300/50"
-            : "border-black"
-        }`}
+        h-[380px] sm:h-[420px] lg:h-[472px]`}
     >
-      {/* Live badge */}
-      {isLive && (
-        <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-productSans">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-          </span>
-          LIVE
-        </div>
-      )}
-
       {/* Image Container */}
       {event.posterImage && (
         <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
@@ -111,6 +81,7 @@ function EventCard({
                   src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
                   alt=""
                   className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
+                  style={{ filter: "brightness(0) invert(1)" }}
                 />
               </Link>
             </Button>
@@ -129,14 +100,11 @@ export default function EventsPage() {
   useEffect(() => {
     let mounted = true;
 
-    // Fetch fresh data from API
     (async () => {
       try {
-        const res = await fetch("/api/events/list");
-        if (!res.ok) throw new Error("Failed to fetch events");
-        const data = await res.json();
+        const data = await fetchEventList<Event>();
         if (!mounted) return;
-        const eventsList: Event[] = Array.isArray(data) ? data : [];
+        const eventsList: Event[] = [...data];
         // Sort each group: ONGOING/UPCOMING by soonest startDate first,
         // COMPLETED by most recent startDate first
         eventsList.sort((a, b) => {
@@ -245,73 +213,43 @@ export default function EventsPage() {
 
           {!loading && !error && events.length > 0 && (
             <>
-              {/* ── Happening Now ── */}
-              {events.filter((e) => e.status === "ONGOING").length > 0 && (
-                <section className="mb-14">
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="flex items-center gap-3 mb-7"
+              {/* ── Live / Upcoming banner → redirect to /events/ongoing ── */}
+              {events.some(
+                (e) => e.status === "ONGOING" || e.status === "UPCOMING",
+              ) && (
+                <motion.div
+                  initial={{ opacity: 0, y: -12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="mb-12"
+                >
+                  <Link
+                    href="/events/ongoing"
+                    className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 sm:p-6 border-2 border-black bg-green-100 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150"
                   >
-                    <div className="flex items-center gap-2.5 bg-green-100 border-2 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      <span className="relative flex h-3 w-3">
+                    <div className="flex items-center gap-3">
+                      <span className="relative flex h-4 w-4 flex-shrink-0">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-600" />
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-green-600" />
                       </span>
-                      <h2 className="text-xl md:text-2xl font-bold text-green-800 font-productSans">
-                        Happening Now
-                      </h2>
+                      <div>
+                        <p className="font-bold text-green-900 font-productSans text-base sm:text-lg leading-tight">
+                          There are live / upcoming events right now!
+                        </p>
+                        <p className="text-green-800 font-productSans text-sm mt-0.5">
+                          Visit the Ongoing Events section to register and see
+                          details.
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1 h-0.5 bg-green-200 rounded-full" />
-                  </motion.div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events
-                      .filter((e) => e.status === "ONGOING")
-                      .map((event, i) => (
-                        <EventCard
-                          key={event.id}
-                          event={event}
-                          isLive
-                          index={i}
-                        />
-                      ))}
-                  </div>
-                </section>
+                    <span className="flex-shrink-0 px-5 py-2.5 bg-green-500 text-white font-bold border-2 border-black font-productSans text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap">
+                      View Now →
+                    </span>
+                  </Link>
+                </motion.div>
               )}
 
-              {/* ── Upcoming Events ── */}
-              {/*
-              {events.filter((e) => e.status === "UPCOMING").length > 0 && (
-                <section className="mb-14">
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 0.1 }}
-                    className="flex items-center gap-3 mb-7"
-                  >
-                    <div className="flex items-center gap-2.5 bg-blue-100 border-2 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      <span className="text-blue-600 text-lg leading-none">
-                        🗓
-                      </span>
-                      <h2 className="text-xl md:text-2xl font-bold text-blue-800 font-productSans">
-                        Upcoming Events
-                      </h2>
-                    </div>
-                    <div className="flex-1 h-0.5 bg-blue-200 rounded-full" />
-                  </motion.div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events
-                      .filter((e) => e.status === "UPCOMING")
-                      .map((event, i) => (
-                        <EventCard key={event.id} event={event} index={i} />
-                      ))}
-                  </div>
-                </section>
-              )}
-              */}
-
-              {/* ── Past Events ── */}
+              {/* ── ALL Events ── */}
               {events.filter((e) => e.status === "COMPLETED").length > 0 && (
                 <section>
                   <motion.div
