@@ -11,6 +11,7 @@ const _eventCache = new Map<
   string,
   { event: EventSerialized; expiresAt: number }
 >();
+const _inflightById = new Map<string, Promise<EventSerialized>>();
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -48,64 +49,77 @@ export async function GET(
       });
     }
 
-    const docRef = adminDb.collection("managed_events").doc(id);
-    const snap = await docRef.get();
+    if (!_inflightById.has(id)) {
+      const fetchPromise = (async () => {
+        const docRef = adminDb.collection("managed_events").doc(id);
+        const snap = await docRef.get();
 
-    if (!snap.exists) {
-      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+        if (!snap.exists) {
+          throw new Error("EVENT_NOT_FOUND");
+        }
+
+        const d = snap.data()!;
+
+        const event: EventSerialized = {
+          id: snap.id,
+          title: d.title ?? "",
+          description: d.description ?? "",
+          bannerImage: d.bannerImage ?? null,
+          posterImage: d.posterImage ?? null,
+          startDate: parseTimestamp(d.startDate),
+          endDate: parseTimestamp(d.endDate),
+          venue: d.venue ?? "",
+          mode: d.mode ?? "OFFLINE",
+          status: d.status ?? "UPCOMING",
+          eventType: d.eventType ?? "WORKSHOP",
+          maxParticipants: d.maxParticipants ?? 0,
+          registrationStart: parseTimestamp(d.registrationStart),
+          registrationEnd: parseTimestamp(d.registrationEnd),
+          isRegistrationOpen: d.isRegistrationOpen ?? false,
+          createdBy: d.createdBy ?? "",
+          tags: Array.isArray(d.tags) ? d.tags : [],
+          keyHighlights: Array.isArray(d.keyHighlights) ? d.keyHighlights : [],
+          eligibilityCriteria: d.eligibilityCriteria ?? {
+            yearOfGrad: [],
+            Dept: [],
+          },
+          executiveBoard: d.executiveBoard ?? {
+            organiser: "",
+            coOrganiser: "",
+            facilitator: "",
+          },
+          eventOfficials: Array.isArray(d.eventOfficials)
+            ? d.eventOfficials
+            : [],
+          faqs: Array.isArray(d.faqs) ? d.faqs : [],
+          rules: Array.isArray(d.rules) ? d.rules : [],
+          eventGallery: Array.isArray(d.eventGallery) ? d.eventGallery : [],
+          Theme: (() => {
+            if (Array.isArray(d.Theme)) return d.Theme;
+            if (typeof d.Theme === "string") {
+              try {
+                return JSON.parse(d.Theme);
+              } catch {
+                return [];
+              }
+            }
+            return [];
+          })(),
+          createdAt: parseTimestamp(d.createdAt) ?? undefined,
+          updatedAt: parseTimestamp(d.updatedAt) ?? undefined,
+        };
+
+        // Populate cache
+        _eventCache.set(id, { event, expiresAt: Date.now() + CACHE_TTL_MS });
+        return event;
+      })().finally(() => {
+        _inflightById.delete(id);
+      });
+
+      _inflightById.set(id, fetchPromise);
     }
 
-    const d = snap.data()!;
-
-    const event: EventSerialized = {
-      id: snap.id,
-      title: d.title ?? "",
-      description: d.description ?? "",
-      bannerImage: d.bannerImage ?? null,
-      posterImage: d.posterImage ?? null,
-      startDate: parseTimestamp(d.startDate),
-      endDate: parseTimestamp(d.endDate),
-      venue: d.venue ?? "",
-      mode: d.mode ?? "OFFLINE",
-      status: d.status ?? "UPCOMING",
-      eventType: d.eventType ?? "WORKSHOP",
-      maxParticipants: d.maxParticipants ?? 0,
-      registrationStart: parseTimestamp(d.registrationStart),
-      registrationEnd: parseTimestamp(d.registrationEnd),
-      isRegistrationOpen: d.isRegistrationOpen ?? false,
-      createdBy: d.createdBy ?? "",
-      tags: Array.isArray(d.tags) ? d.tags : [],
-      keyHighlights: Array.isArray(d.keyHighlights) ? d.keyHighlights : [],
-      eligibilityCriteria: d.eligibilityCriteria ?? {
-        yearOfGrad: [],
-        Dept: [],
-      },
-      executiveBoard: d.executiveBoard ?? {
-        organiser: "",
-        coOrganiser: "",
-        facilitator: "",
-      },
-      eventOfficials: Array.isArray(d.eventOfficials) ? d.eventOfficials : [],
-      faqs: Array.isArray(d.faqs) ? d.faqs : [],
-      rules: Array.isArray(d.rules) ? d.rules : [],
-      eventGallery: Array.isArray(d.eventGallery) ? d.eventGallery : [],
-      Theme: (() => {
-        if (Array.isArray(d.Theme)) return d.Theme;
-        if (typeof d.Theme === "string") {
-          try {
-            return JSON.parse(d.Theme);
-          } catch {
-            return [];
-          }
-        }
-        return [];
-      })(),
-      createdAt: parseTimestamp(d.createdAt) ?? undefined,
-      updatedAt: parseTimestamp(d.updatedAt) ?? undefined,
-    };
-
-    // Populate cache
-    _eventCache.set(id, { event, expiresAt: Date.now() + CACHE_TTL_MS });
+    const event = await _inflightById.get(id)!;
 
     return NextResponse.json(event, {
       headers: {
@@ -115,6 +129,9 @@ export async function GET(
       },
     });
   } catch (err) {
+    if (err instanceof Error && err.message === "EVENT_NOT_FOUND") {
+      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+    }
     console.error("Failed to fetch event:", err);
     // If quota is exhausted but we have a stale entry for this id, serve it.
     const stale = _eventCache.get(id);

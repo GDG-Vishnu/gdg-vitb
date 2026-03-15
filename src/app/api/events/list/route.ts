@@ -10,6 +10,7 @@ export const revalidate = 60; // ISR: revalidate every 60 seconds
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 let _cachedEvents: EventSerialized[] | null = null;
 let _cacheExpiresAt = 0; // starts expired — forces fresh fetch on first request
+let _inflight: Promise<EventSerialized[]> | null = null;
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -148,62 +149,77 @@ export async function GET() {
   }
 
   try {
-    // .select() projects only list-view fields — skips fetching faqs, rules,
-    // eventGallery, eventOfficials, executiveBoard, eligibilityCriteria, createdBy.
-    const snap = await adminDb
-      .collection("managed_events")
-      .select(...LIST_FIELDS)
-      .orderBy("createdAt", "desc")
-      .get();
+    if (!_inflight) {
+      _inflight = (async () => {
+        // .select() projects only list-view fields — skips fetching faqs, rules,
+        // eventGallery, eventOfficials, executiveBoard, eligibilityCriteria, createdBy.
+        const snap = await adminDb
+          .collection("managed_events")
+          .select(...LIST_FIELDS)
+          .orderBy("createdAt", "desc")
+          .get();
 
-    const events: EventSerialized[] = snap.docs.map((doc) => {
-      const d = doc.data();
+        const events: EventSerialized[] = snap.docs.map((doc) => {
+          const d = doc.data();
 
-      return {
-        id: doc.id,
-        title: d.title ?? "",
-        description: d.description ?? "",
-        bannerImage: d.bannerImage ?? null,
-        posterImage: d.posterImage ?? null,
-        startDate: parseTimestamp(d.startDate),
-        endDate: parseTimestamp(d.endDate),
-        venue: d.venue ?? "",
-        mode: d.mode ?? "OFFLINE",
-        status: d.status ?? "UPCOMING",
-        eventType: d.eventType ?? "WORKSHOP",
-        maxParticipants: d.maxParticipants ?? 0,
-        registrationStart: parseTimestamp(d.registrationStart),
-        registrationEnd: parseTimestamp(d.registrationEnd),
-        isRegistrationOpen: d.isRegistrationOpen ?? false,
-        // Fields not in projection — return empty defaults
-        createdBy: "",
-        tags: Array.isArray(d.tags) ? d.tags : [],
-        keyHighlights: Array.isArray(d.keyHighlights) ? d.keyHighlights : [],
-        Theme: (() => {
-          if (Array.isArray(d.Theme)) return d.Theme;
-          if (typeof d.Theme === "string") {
-            try {
-              return JSON.parse(d.Theme);
-            } catch {
+          return {
+            id: doc.id,
+            title: d.title ?? "",
+            description: d.description ?? "",
+            bannerImage: d.bannerImage ?? null,
+            posterImage: d.posterImage ?? null,
+            startDate: parseTimestamp(d.startDate),
+            endDate: parseTimestamp(d.endDate),
+            venue: d.venue ?? "",
+            mode: d.mode ?? "OFFLINE",
+            status: d.status ?? "UPCOMING",
+            eventType: d.eventType ?? "WORKSHOP",
+            maxParticipants: d.maxParticipants ?? 0,
+            registrationStart: parseTimestamp(d.registrationStart),
+            registrationEnd: parseTimestamp(d.registrationEnd),
+            isRegistrationOpen: d.isRegistrationOpen ?? false,
+            // Fields not in projection — return empty defaults
+            createdBy: "",
+            tags: Array.isArray(d.tags) ? d.tags : [],
+            keyHighlights: Array.isArray(d.keyHighlights)
+              ? d.keyHighlights
+              : [],
+            Theme: (() => {
+              if (Array.isArray(d.Theme)) return d.Theme;
+              if (typeof d.Theme === "string") {
+                try {
+                  return JSON.parse(d.Theme);
+                } catch {
+                  return [];
+                }
+              }
               return [];
-            }
-          }
-          return [];
-        })(),
-        eligibilityCriteria: { yearOfGrad: [], Dept: [] },
-        executiveBoard: { organiser: "", coOrganiser: "", facilitator: "" },
-        eventOfficials: [],
-        faqs: [],
-        rules: [],
-        eventGallery: [],
-        createdAt: parseTimestamp(d.createdAt) ?? undefined,
-        updatedAt: undefined,
-      };
-    });
+            })(),
+            eligibilityCriteria: { yearOfGrad: [], Dept: [] },
+            executiveBoard: {
+              organiser: "",
+              coOrganiser: "",
+              facilitator: "",
+            },
+            eventOfficials: [],
+            faqs: [],
+            rules: [],
+            eventGallery: [],
+            createdAt: parseTimestamp(d.createdAt) ?? undefined,
+            updatedAt: undefined,
+          };
+        });
 
-    // Populate cache
-    _cachedEvents = events;
-    _cacheExpiresAt = Date.now() + CACHE_TTL_MS;
+        // Populate cache
+        _cachedEvents = events;
+        _cacheExpiresAt = Date.now() + CACHE_TTL_MS;
+        return events;
+      })().finally(() => {
+        _inflight = null;
+      });
+    }
+
+    const events = await _inflight;
 
     return NextResponse.json(events, {
       headers: {

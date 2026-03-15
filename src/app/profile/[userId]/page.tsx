@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import {
   doc,
-  getDoc,
   updateDoc,
   serverTimestamp,
   collection,
@@ -20,6 +19,7 @@ import RegisteredEvents from "@/components/profile/RegisteredEvents";
 import EditProfileForm from "@/components/profile/EditProfileForm";
 import type { EditProfileSubmitData } from "@/components/profile/EditProfileForm";
 import type { EventSerialized } from "@/types/event";
+import { fetchEventList } from "@/lib/events-list-cache";
 
 // ─── Page ───────────────────────────────────────────────────
 
@@ -75,7 +75,9 @@ export default function ProfilePage() {
 
     setEventsLoading(true);
     try {
-      // Read from client_users/{uid}/registrations subcollection
+      // Read from client_users/{uid}/registrations subcollection — 1 read total.
+      // Each doc stores a snapshot of the event fields written at registration time,
+      // so there is NO follow-up getDoc per event (eliminates N+1).
       const regCol = collection(
         db,
         "client_users",
@@ -90,55 +92,71 @@ export default function ProfilePage() {
         return;
       }
 
-      // For each registration, fetch event details + use registration date from user subcollection
       const dates: Record<string, string> = {};
-      const eventPromises = regSnap.docs.map(async (regDoc) => {
-        const regData = regDoc.data();
-        const eventId = regData.event_id as string;
+      const events: EventSerialized[] = [];
 
-        // Use event_data from user's subcollection as registration date (already an ISO string)
-        if (regData.event_data) {
-          dates[eventId] = regData.event_data as string;
+      for (const regDoc of regSnap.docs) {
+        const r = regDoc.data();
+        const eventId = r.event_id as string;
+        if (!eventId) continue;
+
+        if (r.event_data) {
+          dates[eventId] = r.event_data as string;
         }
 
-        const eventRef = doc(db, "managed_events", eventId);
-        const eventSnap = await getDoc(eventRef);
+        // Use the snapshot fields stored at registration time.
+        // Falls back gracefully for older registrations that lack snapshot_ fields.
+        events.push({
+          id: eventId,
+          title: r.snapshot_title ?? r.event_name ?? "",
+          description: "",
+          bannerImage: r.snapshot_bannerImage ?? "",
+          posterImage: r.snapshot_posterImage ?? "",
+          startDate: r.snapshot_startDate ?? null,
+          endDate: r.snapshot_endDate ?? null,
+          venue: r.snapshot_venue ?? "",
+          mode: r.snapshot_mode ?? "OFFLINE",
+          status: r.snapshot_status ?? "UPCOMING",
+          eventType: r.snapshot_eventType ?? "WORKSHOP",
+          maxParticipants: 0,
+          registrationStart: null,
+          registrationEnd: null,
+          isRegistrationOpen: false,
+          createdBy: "",
+          executiveBoard: { organiser: "", coOrganiser: "", facilitator: "" },
+          eventOfficials: [],
+          eligibilityCriteria: { yearOfGrad: [], Dept: [] },
+          faqs: [],
+          rules: [],
+          tags: [],
+          keyHighlights: [],
+          eventGallery: [],
+          Theme: [],
+        } as EventSerialized);
+      }
 
-        if (!eventSnap.exists()) return null;
-
-        const d = eventSnap.data();
-        return {
-          id: eventSnap.id,
-          title: d.title ?? "",
-          description: d.description ?? "",
-          bannerImage: d.bannerImage ?? "",
-          posterImage: d.posterImage ?? "",
-          startDate: d.startDate?.toDate?.().toISOString() ?? null,
-          endDate: d.endDate?.toDate?.().toISOString() ?? null,
-          venue: d.venue ?? "",
-          mode: d.mode ?? "OFFLINE",
-          status: d.status ?? "UPCOMING",
-          eventType: d.eventType ?? "WORKSHOP",
-          maxParticipants: d.maxParticipants ?? 0,
-          registrationStart:
-            d.registrationStart?.toDate?.().toISOString() ?? null,
-          registrationEnd: d.registrationEnd?.toDate?.().toISOString() ?? null,
-          isRegistrationOpen: d.isRegistrationOpen ?? false,
-          executiveBoard: d.executiveBoard ?? [],
-          eventOfficials: d.eventOfficials ?? [],
-          eligibilityCriteria: d.eligibilityCriteria ?? "",
-          faqs: d.faqs ?? [],
-          rules: d.rules ?? [],
-          tags: d.tags ?? [],
-          keyHighlights: d.keyHighlights ?? [],
-        } as EventSerialized;
-      });
-
-      const events = (await Promise.all(eventPromises)).filter(
-        Boolean,
-      ) as EventSerialized[];
       setRegisteredEvents(events);
       setRegistrationDates(dates);
+
+      // ── Merge current status from the cached events list ──
+      // snapshot_status is written at registration time and goes stale
+      // (e.g. event moves UPCOMING → COMPLETED). The events-list-cache
+      // uses an in-memory + API cache, so this costs 0 extra Firestore reads.
+      fetchEventList<{ id: string; status: string }>()
+        .then((allEvents) => {
+          const statusMap = new Map(allEvents.map((e) => [e.id, e.status]));
+          setRegisteredEvents((prev) =>
+            prev.map((ev) => {
+              const current = statusMap.get(ev.id);
+              return current && current !== ev.status
+                ? { ...ev, status: current as EventSerialized["status"] }
+                : ev;
+            }),
+          );
+        })
+        .catch(() => {
+          // Non-critical — snapshot status is used as fallback
+        });
     } catch (err) {
       console.error("[Profile] Failed to fetch registered events:", err);
       setRegisteredEvents([]);

@@ -22,7 +22,11 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import NextJsImage from "@/components/NextJsImage";
 import Image from "next/image";
 import { LoadingEventDetail } from "@/components/loadingPage";
-import { checkRegistrationEligibility } from "@/services/registration.service";
+import {
+  checkRegistrationEligibility,
+  fetchAndCheckEligibility,
+} from "@/services/registration.service";
+import { fetchEventDetail } from "@/lib/event-detail-cache";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
@@ -216,12 +220,23 @@ export default function EventDetailPage() {
       });
 
       // Write to client_users/{userId}/registrations subcollection
+      // Store a snapshot of the event so the profile page never needs extra reads.
       tx.set(userRegRef, {
         event_id: eventId,
         event_name: event?.title ?? "Unknown Event",
         event_data: new Date().toISOString(),
         isAttended: false,
         certificationLink: "",
+        // ── Event snapshot (for profile page — avoids N+1 reads) ──
+        snapshot_title: event?.title ?? "",
+        snapshot_bannerImage: event?.bannerImage ?? "",
+        snapshot_posterImage: event?.posterImage ?? "",
+        snapshot_startDate: event?.startDate ?? null,
+        snapshot_endDate: event?.endDate ?? null,
+        snapshot_status: event?.status ?? "UPCOMING",
+        snapshot_venue: event?.venue ?? "",
+        snapshot_mode: event?.mode ?? "OFFLINE",
+        snapshot_eventType: event?.eventType ?? "WORKSHOP",
       });
     });
 
@@ -263,7 +278,8 @@ export default function EventDetailPage() {
   async function handleRegisterClick() {
     setRegistering(true);
     try {
-      const result = await checkRegistrationEligibility();
+      // Sync check — uses already-loaded userProfile, no Firestore read.
+      const result = checkRegistrationEligibility(userProfile);
 
       if (result.allowed) {
         await registerDirectly();
@@ -275,8 +291,8 @@ export default function EventDetailPage() {
           toast.info("Please sign in to register for this event.");
           try {
             await signInWithGoogle();
-            // Re-check after sign-in
-            const recheck = await checkRegistrationEligibility();
+            // Post-sign-in recheck: state may not have re-rendered yet so fetch fresh.
+            const recheck = await fetchAndCheckEligibility(db);
             if (recheck.allowed) {
               await registerDirectly();
             } else if (
@@ -322,16 +338,12 @@ export default function EventDetailPage() {
 
     (async () => {
       try {
-        const res = await fetch(`/api/events/${eventId}`);
-        if (!res.ok) {
-          if (res.status === 404) throw new Error("Event not found");
-          throw new Error("Failed to fetch event");
-        }
-        const data = await res.json();
+        // Uses in-memory JS cache (5 min TTL) — no network round-trip on repeat visits.
+        const data = await fetchEventDetail(eventId);
         if (!mounted) return;
-        setEvent(data);
+        setEvent(data as Event);
         // Immediately fire count fetch — avoids a separate effect+render cycle
-        if (data.status !== "COMPLETED") {
+        if ((data as Event).status !== "COMPLETED") {
           getCountFromServer(
             collection(db, "managed_events", eventId, "registrations"),
           )

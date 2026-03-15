@@ -103,12 +103,23 @@ export default function RegistrationCard({
           });
 
           // Write to client_users/{userId}/registrations subcollection
+          // Store a snapshot of the event so the profile page never needs extra reads.
           tx.set(userRegRef, {
             event_id: eventId,
             event_name: eventTitle ?? "Unknown Event",
             event_data: new Date().toISOString(),
             isAttended: false,
             certificationLink: "",
+            // ── Event snapshot (for profile page — avoids N+1 reads) ──
+            snapshot_title: eventTitle ?? "",
+            snapshot_bannerImage: "",
+            snapshot_posterImage: "",
+            snapshot_startDate: null,
+            snapshot_endDate: null,
+            snapshot_status: "UPCOMING",
+            snapshot_venue: "",
+            snapshot_mode: "OFFLINE",
+            snapshot_eventType: "WORKSHOP",
           });
         });
 

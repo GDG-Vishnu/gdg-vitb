@@ -7,7 +7,11 @@ import Footer from "@/components/footer/Footer";
 import { Button } from "@/components/ui/button";
 import { LoadingEventDetail } from "@/components/loadingPage";
 import { motion } from "framer-motion";
-import { checkRegistrationEligibility } from "@/services/registration.service";
+import {
+  checkRegistrationEligibility,
+  fetchAndCheckEligibility,
+} from "@/services/registration.service";
+import { fetchEventDetail } from "@/lib/event-detail-cache";
 import { useAuth } from "@/contexts/AuthContext";
 import { getCurrentYearOfStudy } from "@/lib/roll-number";
 import { toast } from "sonner";
@@ -99,7 +103,6 @@ function formatTime(dateStr: string | null): string {
     minute: "2-digit",
   });
 }
-
 
 function getRoleBadgeColor(role: string) {
   switch (role) {
@@ -619,13 +622,9 @@ export default function OngoingEventDetailPage() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch(`/api/events/${eventId}`);
-        if (!res.ok)
-          throw new Error(
-            res.status === 404 ? "Event not found" : "Failed to fetch event",
-          );
-        const data = await res.json();
-        if (mounted) setEvent(data);
+        // Uses in-memory JS cache (5 min TTL) — no network round-trip on repeat visits.
+        const data = await fetchEventDetail(eventId);
+        if (mounted) setEvent(data as OngoingEvent);
       } catch (err: unknown) {
         if (mounted)
           setError(err instanceof Error ? err.message : "Unknown error");
@@ -718,6 +717,16 @@ export default function OngoingEventDetailPage() {
         event_data: new Date().toISOString(),
         isAttended: false,
         certificationLink: "",
+        // ── Event snapshot (for profile page — avoids N+1 reads) ──
+        snapshot_title: event.title ?? "",
+        snapshot_bannerImage: event.bannerImage ?? "",
+        snapshot_posterImage: event.posterImage ?? "",
+        snapshot_startDate: event.startDate ?? null,
+        snapshot_endDate: event.endDate ?? null,
+        snapshot_status: event.status ?? "ONGOING",
+        snapshot_venue: event.venue ?? "",
+        snapshot_mode: event.mode ?? "OFFLINE",
+        snapshot_eventType: event.eventType ?? "WORKSHOP",
       });
     });
 
@@ -750,7 +759,8 @@ export default function OngoingEventDetailPage() {
   async function handleRegisterClick() {
     setRegistering(true);
     try {
-      const result = await checkRegistrationEligibility();
+      // Sync check — uses already-loaded userProfile, no Firestore read.
+      const result = checkRegistrationEligibility(userProfile);
       if (result.allowed) {
         await registerDirectly();
         return;
@@ -760,7 +770,8 @@ export default function OngoingEventDetailPage() {
           toast.info("Please sign in to register.");
           try {
             await signInWithGoogle();
-            const recheck = await checkRegistrationEligibility();
+            // Post-sign-in recheck: state may not have re-rendered yet so fetch fresh.
+            const recheck = await fetchAndCheckEligibility(db);
             if (recheck.allowed) await registerDirectly();
             else if (recheck.reason === "profile-incomplete") {
               toast.info("Complete your profile first.");
