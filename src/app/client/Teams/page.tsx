@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 //Navbar removed
 import { LoadingTeam } from "@/components/loadingPage";
 import Footer from "@/components/footer/Footer";
+import { fetchTeamList } from "@/lib/teams-cache";
 import MemberCard from "./MemberCard";
 
 type TeamMember = {
@@ -27,15 +28,12 @@ export default function TeamsPage() {
   useEffect(() => {
     let mounted = true;
 
-    // Fetch team data directly from API
+    // fetchTeamList uses a 1-hour in-memory browser cache — no repeat network calls.
     (async () => {
       try {
-        const res = await fetch("/api/teams/list");
-        if (!res.ok) throw new Error("Failed to fetch team members");
-        const data = await res.json();
-        // console.log("team data:", data);
+        const data = await fetchTeamList<TeamMember>();
         if (!mounted) return;
-        setTeam(data || []);
+        setTeam(data);
       } catch (err) {
         console.error("Failed to fetch team members:", err);
       } finally {

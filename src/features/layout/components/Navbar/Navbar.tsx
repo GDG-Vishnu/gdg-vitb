@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useRef } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -8,13 +8,47 @@ import { useResponsive } from "./useResponsive";
 import { NavbarDesktop } from "./NavbarDesktop";
 import { NavbarTablet } from "./NavbarTablet";
 import { NavbarMobile } from "./NavbarMobile";
+import { navItems } from "./constants";
+import { fetchEventList } from "@/lib/events-list-cache";
+import { NavItem } from "./types";
 
 interface NavbarProps {
   className?: string;
 }
 
+type NavbarEvent = {
+  status?: string;
+};
+
 function Navbar({ className }: NavbarProps) {
   const { isMobile, isTablet, mounted } = useResponsive();
+  const [showOngoingTab, setShowOngoingTab] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchEventList<NavbarEvent>()
+      .then((events) => {
+        if (!isMounted) return;
+        const hasLiveOrUpcoming = events.some(
+          (event) => event.status === "ONGOING" || event.status === "UPCOMING",
+        );
+        setShowOngoingTab(hasLiveOrUpcoming);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        // Keep the tab visible on fetch failures to avoid hiding valid navigation.
+        setShowOngoingTab(true);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const visibleNavItems: NavItem[] = showOngoingTab
+    ? navItems
+    : navItems.filter((item) => item.href !== "/events/ongoing");
 
   // Track whether this is the first mount — animate only once
   const hasAnimated = useRef(false);
@@ -78,11 +112,11 @@ function Navbar({ className }: NavbarProps) {
         }}
       >
         {isMobile ? (
-          <NavbarMobile />
+          <NavbarMobile navItems={visibleNavItems} />
         ) : isTablet ? (
-          <NavbarTablet />
+          <NavbarTablet navItems={visibleNavItems} />
         ) : (
-          <NavbarDesktop />
+          <NavbarDesktop navItems={visibleNavItems} />
         )}
       </motion.nav>
     </motion.header>

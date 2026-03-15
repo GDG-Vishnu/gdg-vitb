@@ -3,12 +3,16 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, LogOut, User, ClipboardList, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { NavItem } from "./types";
 
-export const NavbarMobile = () => {
+interface NavbarMobileProps {
+  navItems: NavItem[];
+}
+
+export const NavbarMobile = ({ navItems }: NavbarMobileProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isActive = useActiveNav();
   const { firebaseUser, userProfile, loading, signOut } = useAuth();

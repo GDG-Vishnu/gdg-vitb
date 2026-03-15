@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LoadingEvents } from "@/components/loadingPage";
+import { fetchEventList } from "@/lib/events-list-cache";
 
 type EventItem = {
   id: string;
@@ -28,22 +29,20 @@ export default function EventsCarousel() {
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [scrollDirection, setScrollDirection] = useState(1); // 1 for right, -1 for left
 
-  // Fetch events from database
+  // Fetch events — uses the shared in-memory browser cache (2 min TTL).
+  // Sort by startDate ascending so the carousel flows oldest → newest (latest event is at the right end).
   useEffect(() => {
-    async function fetchEvents() {
-      try {
-        const res = await fetch("/api/events/list");
-        if (res.ok) {
-          const data = await res.json();
-          setEvents(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch events:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchEvents();
+    fetchEventList<EventItem>()
+      .then((data) => {
+        const sorted = [...data].sort((a, b) => {
+          const ta = a.startDate ? new Date(a.startDate).getTime() : 0;
+          const tb = b.startDate ? new Date(b.startDate).getTime() : 0;
+          return tb - ta; // ascending: oldest left, latest right
+        });
+        setEvents(sorted);
+      })
+      .catch((err) => console.error("Failed to fetch events:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   // Auto-scroll functionality

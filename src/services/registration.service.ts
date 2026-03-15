@@ -1,5 +1,7 @@
 import { doc, getDoc } from "firebase/firestore";
-import { db, auth } from "@/lib/firebase-client";
+import type { Firestore } from "firebase/firestore";
+import { auth } from "@/lib/firebase-client";
+import type { UserSerialized } from "@/types/user";
 
 export type RegistrationGuardResult =
   | { allowed: true }
@@ -9,36 +11,48 @@ export type RegistrationGuardResult =
     };
 
 /**
- * Checks whether the current user is eligible to register for an event.
- *
- * 1. Not logged in → not allowed ("not-logged-in")
- * 2. Blocked → not allowed ("blocked")
- * 3. profileCompleted === false → not allowed ("profile-incomplete")
- * 4. Otherwise → allowed
- *
- * Always fetches the latest user document from Firestore (bypasses cache).
+ * Sync eligibility check using the already-loaded userProfile from AuthContext.
+ * Saves 1 Firestore read per registration attempt in the normal (logged-in) flow.
  */
-export async function checkRegistrationEligibility(): Promise<RegistrationGuardResult> {
+export function checkRegistrationEligibility(
+  userProfile: UserSerialized | null,
+): RegistrationGuardResult {
   const user = auth.currentUser;
 
-  if (!user) {
+  if (!user || !userProfile) {
     return { allowed: false, reason: "not-logged-in" };
   }
 
-  // Fetch the latest user document from Firestore
-  const ref = doc(db, "client_users", user.uid);
-  const snap = await getDoc(ref);
-
-  if (!snap.exists()) {
-    // User doc missing — treat as not logged in
-    return { allowed: false, reason: "not-logged-in" };
+  if (userProfile.isBlocked === true) {
+    return { allowed: false, reason: "blocked" };
   }
+
+  if (userProfile.profileCompleted !== true) {
+    return { allowed: false, reason: "profile-incomplete" };
+  }
+
+  return { allowed: true };
+}
+
+/**
+ * Async fallback — fetches the latest user profile from Firestore directly.
+ * Use ONLY for the post-sign-in recheck where the component state may not
+ * have re-rendered with the new userProfile yet.
+ */
+export async function fetchAndCheckEligibility(
+  db: Firestore,
+): Promise<RegistrationGuardResult> {
+  const user = auth.currentUser;
+
+  if (!user) return { allowed: false, reason: "not-logged-in" };
+
+  const snap = await getDoc(doc(db, "client_users", user.uid));
+
+  if (!snap.exists()) return { allowed: false, reason: "not-logged-in" };
 
   const data = snap.data();
 
-  if (data.isBlocked === true) {
-    return { allowed: false, reason: "blocked" };
-  }
+  if (data.isBlocked === true) return { allowed: false, reason: "blocked" };
 
   if (data.profileCompleted !== true) {
     return { allowed: false, reason: "profile-incomplete" };

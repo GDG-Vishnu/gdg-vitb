@@ -3,11 +3,15 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { navItems } from "./constants";
 import { useActiveNav } from "./useActiveNav";
 import UserMenu from "@/components/auth/UserMenu";
+import { NavItem } from "./types";
 
-export const NavbarDesktop = () => {
+interface NavbarDesktopProps {
+  navItems: NavItem[];
+}
+
+export const NavbarDesktop = ({ navItems }: NavbarDesktopProps) => {
   const isActive = useActiveNav();
 
   return (
