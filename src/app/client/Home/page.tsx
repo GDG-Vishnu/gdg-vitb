@@ -13,6 +13,7 @@ import Footer from "@/components/footer/Footer";
 
 import ExtensionSection from "./extension_section";
 import CursorSpark from "../CursorSpark";
+import AchievementsSection from "./achievements";
 
 const HomePage = () => {
   const session = null as any;
@@ -619,6 +620,16 @@ const HomePage = () => {
         {/* Events carousel component insertion */}
         <Events />
         {/* Admin button n check if the user is logged in - removed stray characters above */}
+      </motion.div>
+
+      <motion.div
+        initial={{ y: 70, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="w-full"
+      >
+        <AchievementsSection />
       </motion.div>
 
       {/* FAQs section */}
