@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import TeamsPage from "@/app/client/Teams/page";
+import TeamsPage from "@/features/teams/components/TeamsPage";
 
 export const metadata: Metadata = {
   title: "Our Team",

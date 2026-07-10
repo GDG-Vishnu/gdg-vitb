@@ -4,7 +4,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "@/components/providers";
 import { productSans } from "./font";
-import CursorSpark from "./client/CursorSpark";
+import CursorSpark from "@/components/ui/CursorSpark";
 import BackToTop from "@/components/ui/back_to_top";
 import Navbar from "@/features/layout/components/Navbar/Navbar";
 
