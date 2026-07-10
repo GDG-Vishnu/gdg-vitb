@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import Footer from "@/components/footer/Footer";
 
 import ExtensionSection from "./extension_section";
-import CursorSpark from "../CursorSpark";
+import CursorSpark from "@/components/ui/CursorSpark";
 import AchievementsSection from "./achievements";
 
 const HomePage = () => {

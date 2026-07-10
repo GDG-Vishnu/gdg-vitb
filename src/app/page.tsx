@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import ClientPage from "./client/page";
+import HomePage from "@/features/home/components/HomePage";
 
 export const metadata: Metadata = {
   description:
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <ClientPage />;
+  return <HomePage />;
 }

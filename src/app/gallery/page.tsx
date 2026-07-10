@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import GalleryPage from "@/app/client/gallery/page";
+import GalleryPage from "@/features/gallery/components/GalleryPage";
 
 export const metadata: Metadata = {
   title: "Gallery",

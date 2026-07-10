@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import ContactUsPage from "@/app/client/contactus/page";
+import ContactUsPage from "@/features/contactus/components/ContactUsPage";
 
 export const metadata: Metadata = {
   title: "Contact Us",
