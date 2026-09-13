@@ -3,23 +3,28 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { DynamicField } from "@/components/recruitment/FormInput";
 import { useAuth } from "@/contexts/AuthContext";
+import { auth } from "@/lib/firebase-client";
 import { useRole, useSettings } from "@/lib/recruitment/hooks";
 import { uploadFile } from "@/lib/recruitment/upload";
-import { submitApplication } from "@/lib/recruitment/submit";
+import { submitApplication, hasAlreadyApplied } from "@/lib/recruitment/submit";
 import { buildFormSchema, ALL_RESERVED_FIELDS } from "@/types/recruitment";
-import type { RecruitmentRoleField, RecruitmentFileMeta } from "@/types/recruitment";
+import type { RecruitmentRoleField } from "@/types/recruitment";
 
 const themeColors = ["#E6452D", "#33A854", "#F1AE08", "#4584F4"];
 const getRandomColor = () =>
   themeColors[Math.floor(Math.random() * themeColors.length)];
 
-export default function WebDevRecruitmentPage() {
+export default function RecruitmentRolePage() {
+  const params = useParams();
+  const router = useRouter();
+  const roleId = params.roleId as string;
   const { firebaseUser, userProfile } = useAuth();
-  const { role, loading: loadingRole } = useRole("web-dev");
+  const { role, loading: loadingRole } = useRole(roleId);
   const { settings, ready: settingsReady } = useSettings();
 
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
@@ -28,6 +33,8 @@ export default function WebDevRecruitmentPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState("");
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const [checkingDuplicate, setCheckingDuplicate] = useState(true);
 
   const formSchema = useMemo(() => {
     if (!role) return z.object({});
@@ -37,6 +44,7 @@ export default function WebDevRecruitmentPage() {
   type FormData = z.infer<typeof formSchema>;
 
   const [inputColors, setInputColors] = useState<Record<string, string>>({});
+  const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
 
   useMemo(() => {
     if (role) {
@@ -52,6 +60,7 @@ export default function WebDevRecruitmentPage() {
     formState: { errors },
     reset,
     trigger,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -61,38 +70,87 @@ export default function WebDevRecruitmentPage() {
   const fieldsForStep = (step: number): RecruitmentRoleField[] =>
     role?.fields.filter((f) => f.section === step) ?? [];
 
-  // ── Submit handler ────────────────────────────────────────
+  useEffect(() => {
+    console.log("[Prefill Effect] Started.", { firebaseUser: !!firebaseUser, userProfile: !!userProfile, role: !!role });
+    if (!firebaseUser || !role) return;
+
+    const prefill: Record<string, string> = {};
+    const locked = new Set<string>();
+
+    const name = userProfile?.name || firebaseUser.displayName;
+
+    role.fields.forEach((field) => {
+      if (field.name === "fullName" && name) {
+        prefill[field.name] = name;
+        locked.add(field.name);
+      }
+      if (field.name === "email" && firebaseUser.email) {
+        prefill[field.name] = firebaseUser.email;
+        locked.add(field.name);
+      }
+    });
+
+    console.log("[Prefill Effect] prefill object:", prefill);
+    if (Object.keys(prefill).length === 0) return;
+
+    setLockedFields(locked);
+    for (const [fieldName, value] of Object.entries(prefill)) {
+      (setValue as any)(fieldName, value, { shouldValidate: true, shouldDirty: true });
+    }
+  }, [role, setValue, firebaseUser, userProfile]);
+
+  // ── Auto-redirect after success dialog ───────────────────
+  useEffect(() => {
+    if (showSuccessDialog) {
+      const timer = setTimeout(() => {
+        router.push("/");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessDialog, router]);
+
+  // ── Check if user already applied ────────────────────────
+  useEffect(() => {
+    if (!firebaseUser || !roleId) {
+      setCheckingDuplicate(false);
+      return;
+    }
+    hasAlreadyApplied().then((applied) => {
+      setAlreadyApplied(applied);
+      setCheckingDuplicate(false);
+    });
+  }, [firebaseUser, roleId]);
+
   const onSubmit = async (data: FormData) => {
-    if (!role || !firebaseUser || !settings) return;
+    if (!role || !settings) return;
+
+    // Auth check only at submit time
+    if (!firebaseUser) {
+      setSubmitError("Please sign in with your @vishnu.edu.in account to submit your application.");
+      return;
+    }
 
     try {
       setIsSubmitting(true);
       setSubmitError("");
       setSubmitSuccess("");
 
-      // 1. Check recruitment is active
       if (!settings.isRecruitmentActive) {
         setSubmitError(settings.globalMessage || "Recruitment is not currently active.");
         return;
       }
 
-      // 2. Check email domain
       const email = firebaseUser.email ?? "";
       if (!email.endsWith(settings.allowedEmailDomain)) {
         setSubmitError(`Only ${settings.allowedEmailDomain} email addresses are allowed.`);
         return;
       }
 
-      // 3. Check deadline
-      if (role.applicationEnd) {
-        const deadline = new Date(role.applicationEnd);
-        if (new Date() > deadline) {
-          setSubmitError("Application deadline has passed.");
-          return;
-        }
+      if (role.applicationEnd && new Date() > new Date(role.applicationEnd)) {
+        setSubmitError("Application deadline has passed.");
+        return;
       }
 
-      // 4. Upload files via admin portal proxy
       const dataRecord = data as Record<string, unknown>;
       let resumeMeta: Record<string, unknown> | null = null;
       let taskMeta: Record<string, unknown> | null = null;
@@ -121,7 +179,6 @@ export default function WebDevRecruitmentPage() {
         };
       }
 
-      // 5. Build applicant info
       const applicant: Record<string, string> = {
         fullName: (dataRecord.fullName as string) ?? userProfile?.name ?? "",
         email,
@@ -130,14 +187,12 @@ export default function WebDevRecruitmentPage() {
         yearOfStudy: (dataRecord.yearOfStudy as string) ?? "",
       };
 
-      // 6. Build social links
       const socialLinks: Record<string, string> = {};
       if (dataRecord.linkedinUrl) socialLinks.linkedin = dataRecord.linkedinUrl as string;
       if (dataRecord.githubUrl) socialLinks.github = dataRecord.githubUrl as string;
       if (dataRecord.portfolioUrl) socialLinks.portfolio = dataRecord.portfolioUrl as string;
       if (dataRecord.gitRepoLink) socialLinks.gitRepoLink = dataRecord.gitRepoLink as string;
 
-      // 7. Build answers (non-reserved fields only)
       const answers: Record<string, unknown> = {};
       for (const field of role.fields) {
         if ((ALL_RESERVED_FIELDS as readonly string[]).includes(field.name)) continue;
@@ -148,15 +203,15 @@ export default function WebDevRecruitmentPage() {
         }
       }
 
-      // 8. Submit to Firestore
+      const filesData: Record<string, unknown> = {};
+      if (resumeMeta) filesData.resume = resumeMeta;
+      if (taskMeta) filesData.taskSubmission = taskMeta;
+
       const appId = await submitApplication({
         roleId: role.id,
         applicant,
         socialLinks,
-        files: {
-          resume: resumeMeta!,
-          ...(taskMeta ? { taskSubmission: taskMeta } : {}),
-        },
+        files: filesData,
         answers,
         agreeToTerms: (dataRecord.agreeToTerms as boolean) ?? false,
         confirmInfo: (dataRecord.confirmInfo as boolean) ?? false,
@@ -168,13 +223,20 @@ export default function WebDevRecruitmentPage() {
         setShowSuccessDialog(true);
         setSubmitSuccess("");
       }, 1500);
-    } catch (err) {
+    } catch (err: any) {
       console.error("[Recruitment] Submission error:", err);
-      setSubmitError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while submitting the form. Please try again.",
-      );
+      
+      let errorMessage = "An error occurred while submitting the form. Please try again.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      
+      // If Firebase Security Rules block the write (because the deterministic document already exists), it throws permission-denied
+      if (err?.code === "permission-denied" || errorMessage.includes("permission-denied") || errorMessage.includes("Missing or insufficient permissions")) {
+        errorMessage = "You have already submitted an application. You can only apply to one department.";
+      }
+      
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -191,6 +253,7 @@ export default function WebDevRecruitmentPage() {
     reset();
     setFileNames({});
     setCurrentStep(1);
+    router.push("/");
   };
 
   const handleNext = async () => {
@@ -203,7 +266,7 @@ export default function WebDevRecruitmentPage() {
 
   const handlePrevious = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
-  // ── Loading / Error states ────────────────────────────────
+  // ── Loading state ────────────────────────────────────────
   if (loadingRole || !settingsReady) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -220,8 +283,8 @@ export default function WebDevRecruitmentPage() {
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
           <div className="text-5xl mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Unable to Load</h2>
-          <p className="text-gray-500">Recruitment role not found.</p>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Role Not Found</h2>
+          <p className="text-gray-500">This recruitment role doesn't exist.</p>
         </div>
       </div>
     );
@@ -230,16 +293,33 @@ export default function WebDevRecruitmentPage() {
   if (!firebaseUser) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="text-5xl mb-4">🔒</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
-          <p className="text-gray-500">Please sign in with your @vishnu.edu.in account to apply.</p>
+        <div className="text-center max-w-md">
+          <Image src="/favicon.ico" alt="GDG Logo" width={96} height={96} className="w-24 h-24 rounded-full mx-auto mb-6" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <span className="text-blue-600">{role.title}</span>
+            <span className="text-gray-400"> - </span>
+            <span className="text-red-500">Hiring</span>
+          </h1>
+          <p className="text-gray-500 mb-8">Sign in with your college email to apply for this position.</p>
+          <a href="/auth/login" className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md">
+            Sign In to Apply
+          </a>
         </div>
       </div>
     );
   }
 
-  // ── Gating: recruitment inactive ──────────────────────────
+  if (firebaseUser && checkingDuplicate) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-gray-500">Checking your application status...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (settings && !settings.isRecruitmentActive) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -252,7 +332,6 @@ export default function WebDevRecruitmentPage() {
     );
   }
 
-  // ── Gating: role not open ─────────────────────────────────
   if (role.status !== "open" && role.status !== "closing-soon") {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -265,7 +344,6 @@ export default function WebDevRecruitmentPage() {
     );
   }
 
-  // ── Gating: deadline passed ───────────────────────────────
   if (role.applicationEnd && new Date() > new Date(role.applicationEnd)) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -278,10 +356,22 @@ export default function WebDevRecruitmentPage() {
     );
   }
 
-  // ── Render ────────────────────────────────────────────────
+  // ── Already applied ──────────────────────────────────────
+  if (!checkingDuplicate && alreadyApplied) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="text-5xl mb-4">✅</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Already Applied</h2>
+          <p className="text-gray-500">You have already submitted an application. You can only apply to one department.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Render form ──────────────────────────────────────────
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      {/* ── Success Dialog ──────────────────────────────── */}
       {showSuccessDialog && (
         <div className="fixed inset-0 bg-white bg-opacity-95 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div className="relative bg-white rounded-lg shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-300">
@@ -298,9 +388,7 @@ export default function WebDevRecruitmentPage() {
             <div className="bg-blue-500 pt-12 pb-8 px-8 relative">
               <div className="absolute top-8 right-6 bg-yellow-400 rounded-full w-32 h-32 flex items-center justify-center shadow-lg">
                 <div className="text-center">
-                  <p className="text-black font-bold text-sm leading-tight">
-                    Application<br />Submitted
-                  </p>
+                  <p className="text-black font-bold text-sm leading-tight">Application<br />Submitted</p>
                 </div>
               </div>
               <div className="pr-20">
@@ -309,10 +397,7 @@ export default function WebDevRecruitmentPage() {
               </div>
             </div>
             <div className="bg-white px-8 py-10">
-              <button
-                onClick={handleCloseDialog}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
+              <button onClick={handleCloseDialog} className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 Close
               </button>
             </div>
@@ -322,7 +407,6 @@ export default function WebDevRecruitmentPage() {
 
       <div className="w-full max-w-3xl">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 md:p-12">
-          {/* ── Header ───────────────────────────────────── */}
           <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-200">
             <Image src="/favicon.ico" alt="GDG Logo" width={128} height={128} className="w-32 h-32 rounded-full" />
             <div>
@@ -331,7 +415,6 @@ export default function WebDevRecruitmentPage() {
             </div>
           </div>
 
-          {/* ── Title ────────────────────────────────────── */}
           <h1 className="text-3xl font-bold mb-2">
             <span className="text-blue-600">{role.title}</span>
             <span className="text-gray-400"> - </span>
@@ -343,47 +426,30 @@ export default function WebDevRecruitmentPage() {
             This form will help us evaluate your application. Please fill in your details carefully.
           </p>
 
-          {/* ── Global Message ───────────────────────────── */}
           {settings?.globalMessage && (
             <div className="mb-6 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
               <p className="text-sm text-yellow-800">{settings.globalMessage}</p>
             </div>
           )}
 
-          {/* ── Form ─────────────────────────────────────── */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Progress Indicator */}
             <div className="flex items-center justify-between mb-8">
               {role.sections.map((section, i) => (
                 <div key={section.number} className="flex items-center flex-1">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                      currentStep >= section.number
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 text-gray-600"
-                    }`}
-                  >
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${currentStep >= section.number ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-600"}`}>
                     {section.number}
                   </div>
                   {i < role.sections.length - 1 && (
-                    <div
-                      className={`flex-1 h-1 mx-2 ${
-                        currentStep > section.number ? "bg-blue-600" : "bg-gray-200"
-                      }`}
-                    />
+                    <div className={`flex-1 h-1 mx-2 ${currentStep > section.number ? "bg-blue-600" : "bg-gray-200"}`} />
                   )}
                 </div>
               ))}
             </div>
 
-            {/* ── Dynamic Sections ───────────────────────── */}
             {role.sections.map((section) =>
               currentStep === section.number ? (
                 <div key={section.number} className="space-y-6">
-                  <h2
-                    className="text-xl font-bold text-gray-900 border-b-2 pb-2"
-                    style={{ borderColor: section.borderColor }}
-                  >
+                  <h2 className="text-xl font-bold text-gray-900 border-b-2 pb-2" style={{ borderColor: section.borderColor }}>
                     {section.title}
                   </h2>
 
@@ -395,45 +461,28 @@ export default function WebDevRecruitmentPage() {
                       error={(errors as Record<string, { message?: string }>)[field.name]?.message}
                       borderColor={inputColors[field.name] ?? "#E6452D"}
                       fileName={fileNames[field.name]}
-                      onFileChange={(name) =>
-                        setFileNames((prev) => ({ ...prev, [field.name]: name }))
-                      }
+                      onFileChange={(name) => setFileNames((prev) => ({ ...prev, [field.name]: name }))}
+                      disabled={lockedFields.has(field.name)}
                     />
                   ))}
 
-                  {/* Navigation Buttons */}
                   <div className="flex justify-between pt-4">
                     {currentStep > 1 && (
-                      <button
-                        type="button"
-                        onClick={handlePrevious}
-                        className="px-8 py-3 bg-gray-200 text-gray-700 text-base font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-                      >
+                      <button type="button" onClick={handlePrevious} className="px-8 py-3 bg-gray-200 text-gray-700 text-base font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
                         ← Previous
                       </button>
                     )}
                     <div className="flex gap-4 ml-auto">
-                      <button
-                        type="button"
-                        onClick={handleClearForm}
-                        className="text-base text-red-600 hover:text-red-700 font-semibold hover:underline"
-                      >
+                      <button type="button" onClick={handleClearForm} className="text-base text-red-600 hover:text-red-700 font-semibold hover:underline">
                         Clear Form
                       </button>
                       {currentStep < maxSection ? (
-                        <button
-                          type="button"
-                          onClick={handleNext}
-                          className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md"
-                        >
+                        <button type="button" onClick={handleNext} className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md">
                           Next →
                         </button>
                       ) : (
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                        >
+                        <>
+                          <button type="submit" disabled={isSubmitting} className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                           {isSubmitting ? (
                             <>
                               <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -446,11 +495,11 @@ export default function WebDevRecruitmentPage() {
                             "Submit Application"
                           )}
                         </button>
+                        </>
                       )}
                     </div>
                   </div>
 
-                  {/* Messages */}
                   {submitSuccess && (
                     <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
                       <p className="text-sm text-green-600 font-medium flex items-center gap-2">

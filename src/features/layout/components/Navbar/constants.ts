@@ -6,5 +6,5 @@ export const navItems: NavItem[] = [
   { label: "Events", href: "/events" },
   { label: "Ongoing", href: "/events/ongoing" },
   { label: "Gallery", href: "/gallery" },
-  // { label: "Recruitment", href: "/recruitment" },
+  { label: "Recruiting", href: "/recruitment" },
 ];
