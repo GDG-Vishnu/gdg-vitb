@@ -188,7 +188,6 @@ export default function RecruitmentPage() {
                 className="block bg-white border-2 rounded-2xl p-6 hover:shadow-lg transition-all group"
                 style={{ borderColor: role.color }}
               >
-                <div className="text-4xl mb-3">{role.icon}</div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                   {role.title}
                 </h3>
@@ -213,7 +212,6 @@ export default function RecruitmentPage() {
                 className="block bg-white border-2 border-dashed rounded-2xl p-6 opacity-75"
                 style={{ borderColor: role.color }}
               >
-                <div className="text-4xl mb-3">{role.icon}</div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{role.title}</h3>
                 <p className="text-sm text-gray-600 mb-4">{role.description}</p>
                 <span className="inline-block px-4 py-2 bg-gray-200 text-gray-600 text-sm font-semibold rounded-lg">
@@ -235,7 +233,6 @@ export default function RecruitmentPage() {
                   className="bg-gray-50 border border-gray-200 rounded-xl p-4 opacity-60"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{role.icon}</span>
                     <div>
                       <h4 className="text-sm font-bold text-gray-700">{role.title}</h4>
                       <span className="text-xs text-gray-400 capitalize">{role.status}</span>

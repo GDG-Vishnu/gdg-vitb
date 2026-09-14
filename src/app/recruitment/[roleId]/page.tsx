@@ -24,8 +24,14 @@ export default function RecruitmentRolePage() {
   const params = useParams();
   const router = useRouter();
   const roleId = params.roleId as string;
-  const { firebaseUser, userProfile } = useAuth();
+  const { firebaseUser, userProfile, loading: authLoading } = useAuth();
   const { role, loading: loadingRole } = useRole(roleId);
+
+  useEffect(() => {
+    if (!authLoading && !firebaseUser) {
+      router.push("/auth/login");
+    }
+  }, [authLoading, firebaseUser, router]);
   const { settings, ready: settingsReady } = useSettings();
 
   console.log("[RecruitmentRolePage] Render", { roleId, hasUser: !!firebaseUser, hasRole: !!role, loadingRole, settingsReady });
@@ -315,7 +321,7 @@ export default function RecruitmentRolePage() {
   const handlePrevious = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
   // ── Loading state ────────────────────────────────────────
-  if (loadingRole || !settingsReady) {
+  if (loadingRole || !settingsReady || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -339,22 +345,7 @@ export default function RecruitmentRolePage() {
   }
 
   if (!firebaseUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <Image src="/favicon.ico" alt="GDG Logo" width={96} height={96} className="w-24 h-24 rounded-full mx-auto mb-6" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            <span className="text-blue-600">{role.title}</span>
-            <span className="text-gray-400"> - </span>
-            <span className="text-red-500">Hiring</span>
-          </h1>
-          <p className="text-gray-500 mb-8">Sign in with your college email to apply for this position.</p>
-          <a href="/auth/login" className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md">
-            Sign In to Apply
-          </a>
-        </div>
-      </div>
-    );
+    return null; // Redirecting to login...
   }
 
   if (firebaseUser && checkingDuplicate) {
