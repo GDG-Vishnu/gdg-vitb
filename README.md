@@ -1,6 +1,8 @@
+ge 
+
 # GDG On Campus — Vishnu Institute of Technology, Bhimavaram
 
-> Official website for **Google Developer Group On Campus** at Vishnu Institute of Technology (VITB), Bhimavaram.  
+> Official website for **Google Developer Group On Campus** at Vishnu Institute of Technology (VITB), Bhimavaram.
 > A student-driven, Google-supported community that incubates ideas from prototyping to product — running hackathons, workshops, and collaborative projects.
 
 🌐 **Live at** — [https://gdgvitb.in](https://gdgvitb.in)
@@ -9,8 +11,8 @@
 
 ## Features
 
-| Page                | Description                                                                    |
-| ------------------- | ------------------------------------------------------------------------------ |
+| Page                      | Description                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------ |
 | **Home**            | Hero section, upcoming events, about snippet, FAQs, and extension section      |
 | **About**           | Mission, vision, and community info                                            |
 | **Events**          | Browse all past & upcoming events with theme-coloured cards, tags, and filters |
@@ -28,21 +30,21 @@
 
 ## Tech Stack
 
-| Layer             | Technology                                                                                     |
-| ----------------- | ---------------------------------------------------------------------------------------------- |
-| **Framework**     | [Next.js 15](https://nextjs.org) (App Router, Turbopack)                                       |
-| **Language**      | TypeScript                                                                                     |
-| **Styling**       | Tailwind CSS v4                                                                                |
-| **UI Components** | Radix UI, Lucide Icons, Tabler Icons                                                           |
-| **Animations**    | Framer Motion                                                                                  |
-| **State / Data**  | TanStack React Query, nuqs (URL state)                                                         |
-| **Forms**         | React Hook Form + Zod validation                                                               |
-| **Auth**          | Firebase Auth (Google OAuth + Email/Password with credential linking) via custom `AuthContext` |
-| **Database**      | Cloud Firestore                                                                                |
-| **Image Hosting** | Cloudinary, Unsplash, Freepik CDN                                                              |
-| **Analytics**     | Vercel Speed Insights                                                                          |
-| **Testing**       | Playwright (e2e)                                                                               |
-| **Linting**       | ESLint (typescript-eslint)                                                                     |
+| Layer                   | Technology                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| **Framework**     | [Next.js 15](https://nextjs.org) (App Router, Turbopack)                                         |
+| **Language**      | TypeScript                                                                                      |
+| **Styling**       | Tailwind CSS v4                                                                                 |
+| **UI Components** | Radix UI, Lucide Icons, Tabler Icons                                                            |
+| **Animations**    | Framer Motion                                                                                   |
+| **State / Data**  | TanStack React Query, nuqs (URL state)                                                          |
+| **Forms**         | React Hook Form + Zod validation                                                                |
+| **Auth**          | Firebase Auth (Google OAuth + Email/Password with credential linking) via custom`AuthContext` |
+| **Database**      | Cloud Firestore                                                                                 |
+| **Image Hosting** | Cloudinary, Unsplash, Freepik CDN                                                               |
+| **Analytics**     | Vercel Speed Insights                                                                           |
+| **Testing**       | Playwright (e2e)                                                                                |
+| **Linting**       | ESLint (typescript-eslint)                                                                      |
 
 ---
 
@@ -101,8 +103,8 @@ Open [http://localhost:3050](http://localhost:3050) in your browser.
 
 ## Available Scripts
 
-| Command         | Description                               |
-| --------------- | ----------------------------------------- |
+| Command           | Description                               |
+| ----------------- | ----------------------------------------- |
 | `npm run dev`   | Start dev server on port 3050 (Turbopack) |
 | `npm run build` | Production build                          |
 | `npm run start` | Start production server                   |

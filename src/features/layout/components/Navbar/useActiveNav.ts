@@ -13,7 +13,7 @@ export const useActiveNav = () => {
         "/about",
         "/gallery",
         "/contactus",
-        // "/recruitment",
+        "/recruitment",
         "/hack-a-tron-3.0",
       ];
       const isNested = nested.includes(href);
