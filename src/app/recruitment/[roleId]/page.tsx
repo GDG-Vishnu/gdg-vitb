@@ -480,6 +480,20 @@ export default function RecruitmentRolePage() {
             </div>
           )}
 
+          <div className="mb-6 bg-green-50 border-2 border-green-200 rounded-xl p-4">
+            <p className="text-sm text-green-800 font-medium">
+              📱 Follow this link to join our WhatsApp group:{" "}
+              <a 
+                href="https://chat.whatsapp.com/EnIx8a3HL4u0JXND6otEkl?s=sw&p=a&mlu=4&ilr=4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-700 underline hover:text-green-900 font-bold"
+              >
+                Join WhatsApp Group
+              </a>
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex items-center justify-between mb-8">
               {role.sections.map((section, i) => (
@@ -514,23 +528,22 @@ export default function RecruitmentRolePage() {
                     />
                   ))}
 
-                  <div className="flex justify-between pt-4">
+                  <div className="flex flex-col sm:flex-row justify-between gap-4 pt-4">
                     {currentStep > 1 && (
-                      <button type="button" onClick={handlePrevious} className="px-8 py-3 bg-gray-200 text-gray-700 text-base font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                      <button type="button" onClick={handlePrevious} className="w-full sm:w-auto px-8 py-3 bg-gray-200 text-gray-700 text-base font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
                         ← Previous
                       </button>
                     )}
-                    <div className="flex gap-4 ml-auto">
-                      <button type="button" onClick={handleClearForm} className="text-base text-red-600 hover:text-red-700 font-semibold hover:underline">
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto sm:ml-auto">
+                      <button type="button" onClick={handleClearForm} className="order-last sm:order-first w-full sm:w-auto text-base text-red-600 hover:text-red-700 font-semibold hover:underline text-center">
                         Clear Form
                       </button>
                       {currentStep < maxSection ? (
-                        <button type="button" onClick={handleNext} className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md">
+                        <button type="button" onClick={handleNext} className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md">
                           Next →
                         </button>
                       ) : (
-                        <>
-                          <button type="submit" disabled={isSubmitting} className="px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                        <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                           {isSubmitting ? (
                             <>
                               <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -543,7 +556,6 @@ export default function RecruitmentRolePage() {
                             "Submit Application"
                           )}
                         </button>
-                        </>
                       )}
                     </div>
                   </div>

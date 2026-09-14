@@ -114,20 +114,25 @@ export default function ProfileCard({ user }: ProfileCardProps) {
             </div>
           </div>
 
-          {/* ROW 2 — Branch / Phone / Graduation */}
-          <div className="w-full flex flex-col sm:flex-row sm:items-start gap-[12px] sm:gap-[20px] lg:gap-[60px]">
-            <div className="min-w-0 flex-1">
+          {/* ROW 2 — Branch / Phone / Graduation / Applied Role */}
+          <div className="w-full flex flex-col sm:flex-row sm:items-start gap-[12px] sm:gap-[20px] lg:gap-[40px] flex-wrap">
+            <div className="min-w-0 flex-[1_1_auto]">
               <FieldBlock label="Branch" value={branch || "—"} />
             </div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-[1_1_auto]">
               <FieldBlock label="Phone" value={phoneNumber || "—"} />
             </div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-[1_1_auto]">
               <FieldBlock
                 label="Graduation"
                 value={graduationYear ? String(graduationYear) : "—"}
               />
             </div>
+            {user.appliedRoleId && (
+              <div className="min-w-0 flex-[1_1_auto]">
+                <FieldBlock label="Applied Role" value={user.appliedRoleId} />
+              </div>
+            )}
           </div>
 
           {/* ROW 3 — Socials + Resume */}
