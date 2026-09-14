@@ -7,15 +7,23 @@ import {
 import { db, auth } from "@/lib/firebase-client";
 
 /**
- * Check if the user already applied for this role.
- * Looks for the deterministic application document: recruitment_applications/{roleId}_{email}
+ * Check if the user has already applied for ANY role.
+ * Uses the appliedRoleId field on the user's profile.
  */
-export async function hasAlreadyApplied(): Promise<boolean> {
+export async function hasAlreadyApplied(roleId: string): Promise<boolean> {
   if (!auth.currentUser) return false;
-  const email = auth.currentUser.email!;
-  const applicationId = email;
-  const snap = await getDoc(doc(db, "recruitment_applications", applicationId));
-  return snap.exists();
+  try {
+    const uid = auth.currentUser.uid;
+    const snap = await getDoc(doc(db, "client_users", uid));
+    if (snap.exists() && snap.data().appliedRoleId) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error("[Recruitment] Failed to check duplicate application:", err);
+    // On error, assume not applied — let submit proceed and fail with proper message
+    return false;
+  }
 }
 
 export async function submitApplication(payload: {
@@ -30,7 +38,7 @@ export async function submitApplication(payload: {
   if (!auth.currentUser) throw new Error("Sign in required");
   const email = auth.currentUser.email!;
   const uid = auth.currentUser.uid;
-  const applicationId = email;
+  const applicationId = `${payload.roleId}_${email}`;
 
   const appData = {
     roleId: payload.roleId,
@@ -58,13 +66,13 @@ export async function submitApplication(payload: {
   };
 
   console.log("[Recruitment] Writing application...");
-  
-  // By using setDoc with a deterministic ID, we eliminate the need for a separate dedupe collection.
-  // If the document already exists, Firebase Security Rules should reject the write (or overwrite it if allowed).
-  // Ideally, your security rules should have: allow create: if !exists(...)
-  await setDoc(doc(db, "recruitment_applications", applicationId), appData);
-  
-  console.log("[Recruitment] Application written, id:", applicationId);
 
+  // setDoc with merge:false ensures create-only — fails if doc already exists
+  await setDoc(doc(db, "recruitment_applications", applicationId), appData, { merge: false });
+
+  // Update the user's profile to indicate they have applied
+  await setDoc(doc(db, "client_users", uid), { appliedRoleId: payload.roleId, updatedAt: serverTimestamp() }, { merge: true });
+
+  console.log("[Recruitment] Application written, id:", applicationId);
   return applicationId;
 }

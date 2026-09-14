@@ -128,6 +128,17 @@ export const DynamicField: React.FC<DynamicFieldProps> = ({
   }
 
   // ── Text / Email / Tel / URL / Number ───────────────────
+  const nameLower = field.name.toLowerCase();
+  const autocompleteAttr = nameLower === "fullname" || nameLower === "full_name" || nameLower === "name"
+    ? "name"
+    : nameLower === "email"
+      ? "email"
+      : nameLower === "phone"
+        ? "tel"
+        : nameLower === "branch"
+          ? "on"
+          : "on";
+
   return (
     <div
       className="border-2 rounded-3xl p-6"
@@ -140,6 +151,7 @@ export const DynamicField: React.FC<DynamicFieldProps> = ({
         type={field.type === "url" ? "url" : field.type}
         placeholder={field.placeholder}
         disabled={disabled}
+        autoComplete={autocompleteAttr}
         {...register}
         className={`w-full px-0 py-0 border-0 border-b focus:outline-none text-sm bg-transparent ${
           disabled

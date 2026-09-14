@@ -12,6 +12,7 @@ import { auth } from "@/lib/firebase-client";
 import { useRole, useSettings } from "@/lib/recruitment/hooks";
 import { uploadFile } from "@/lib/recruitment/upload";
 import { submitApplication, hasAlreadyApplied } from "@/lib/recruitment/submit";
+import { sendConfirmationEmail } from "@/lib/recruitment/email";
 import { buildFormSchema, ALL_RESERVED_FIELDS } from "@/types/recruitment";
 import type { RecruitmentRoleField } from "@/types/recruitment";
 
@@ -26,6 +27,8 @@ export default function RecruitmentRolePage() {
   const { firebaseUser, userProfile } = useAuth();
   const { role, loading: loadingRole } = useRole(roleId);
   const { settings, ready: settingsReady } = useSettings();
+
+  console.log("[RecruitmentRolePage] Render", { roleId, hasUser: !!firebaseUser, hasRole: !!role, loadingRole, settingsReady });
 
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
   const [currentStep, setCurrentStep] = useState(1);
@@ -71,32 +74,70 @@ export default function RecruitmentRolePage() {
     role?.fields.filter((f) => f.section === step) ?? [];
 
   useEffect(() => {
-    console.log("[Prefill Effect] Started.", { firebaseUser: !!firebaseUser, userProfile: !!userProfile, role: !!role });
-    if (!firebaseUser || !role) return;
+    console.log("[Prefill] Running prefill effect");
+    console.log("[Prefill] firebaseUser:", firebaseUser ? { uid: firebaseUser.uid, email: firebaseUser.email, displayName: firebaseUser.displayName } : null);
+    console.log("[Prefill] userProfile:", userProfile ? { name: userProfile.name, phoneNumber: userProfile.phoneNumber } : null);
+    console.log("[Prefill] role.fields:", role?.fields?.map(f => f.name));
+
+    if (!firebaseUser || !role) {
+      console.log("[Prefill] Skipped — missing", !firebaseUser ? "firebaseUser" : "role");
+      return;
+    }
 
     const prefill: Record<string, string> = {};
     const locked = new Set<string>();
+    const skipped: string[] = [];
 
     const name = userProfile?.name || firebaseUser.displayName;
+    console.log("[Prefill] Resolved name:", name ?? "(empty)");
 
     role.fields.forEach((field) => {
-      if (field.name === "fullName" && name) {
-        prefill[field.name] = name;
-        locked.add(field.name);
+      const nameLower = field.name.toLowerCase();
+
+      if (nameLower === "fullname" || nameLower === "full_name" || nameLower === "name") {
+        if (name) {
+          prefill[field.name] = name;
+          locked.add(field.name);
+          console.log(`[Prefill] Matched name field "${field.name}" → "${name}"`);
+        } else {
+          skipped.push(`${field.name} (no name value available)`);
+          console.log(`[Prefill] Skipped name field "${field.name}" — no name value`);
+        }
       }
-      if (field.name === "email" && firebaseUser.email) {
-        prefill[field.name] = firebaseUser.email;
-        locked.add(field.name);
+
+      if (nameLower === "email") {
+        if (firebaseUser.email) {
+          prefill[field.name] = firebaseUser.email;
+          locked.add(field.name);
+          console.log(`[Prefill] Matched email field "${field.name}" → "${firebaseUser.email}"`);
+        } else {
+          skipped.push(`${field.name} (no email on auth user)`);
+          console.log(`[Prefill] Skipped email field "${field.name}" — no email`);
+        }
       }
     });
 
-    console.log("[Prefill Effect] prefill object:", prefill);
-    if (Object.keys(prefill).length === 0) return;
-
-    setLockedFields(locked);
-    for (const [fieldName, value] of Object.entries(prefill)) {
-      (setValue as any)(fieldName, value, { shouldValidate: true, shouldDirty: true });
+    if (Object.keys(prefill).length === 0) {
+      console.log("[Prefill] No fields matched. Skipped:", skipped.length ? skipped.join(", ") : "none — field names don't match");
+      return;
     }
+
+    console.log("[Prefill] Setting locked fields:", Array.from(locked));
+    setLockedFields(locked);
+
+    // Delay setValue to ensure react-hook-form has registered all fields from the schema
+    const timer = setTimeout(() => {
+      for (const [fieldName, value] of Object.entries(prefill)) {
+        try {
+          (setValue as any)(fieldName, value, { shouldValidate: false, shouldDirty: false });
+          console.log(`[Prefill] setValue("${fieldName}") → OK`);
+        } catch (err) {
+          console.error(`[Prefill] setValue("${fieldName}") → FAILED:`, err);
+        }
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [role, setValue, firebaseUser, userProfile]);
 
   // ── Auto-redirect after success dialog ───────────────────
@@ -115,7 +156,7 @@ export default function RecruitmentRolePage() {
       setCheckingDuplicate(false);
       return;
     }
-    hasAlreadyApplied().then((applied) => {
+    hasAlreadyApplied(roleId).then((applied) => {
       setAlreadyApplied(applied);
       setCheckingDuplicate(false);
     });
@@ -130,11 +171,11 @@ export default function RecruitmentRolePage() {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      setSubmitError("");
-      setSubmitSuccess("");
+    setIsSubmitting(true);
+    setSubmitError("");
+    setSubmitSuccess("");
 
+    try {
       if (!settings.isRecruitmentActive) {
         setSubmitError(settings.globalMessage || "Recruitment is not currently active.");
         return;
@@ -152,31 +193,28 @@ export default function RecruitmentRolePage() {
       }
 
       const dataRecord = data as Record<string, unknown>;
-      let resumeMeta: Record<string, unknown> | null = null;
-      let taskMeta: Record<string, unknown> | null = null;
+      const filesData: Record<string, unknown> = {};
 
-      const resumeFiles = dataRecord.resume as FileList | undefined;
-      if (resumeFiles && resumeFiles.length > 0) {
-        const result = await uploadFile(resumeFiles[0], role.id, "resume");
-        resumeMeta = {
-          url: result.url,
-          cloudinaryId: result.driveFileId,
-          originalName: result.originalName,
-          mimeType: result.mimeType,
-          sizeBytes: result.sizeBytes,
-        };
-      }
-
-      const taskFiles = dataRecord.taskSubmission as FileList | undefined;
-      if (taskFiles && taskFiles.length > 0) {
-        const result = await uploadFile(taskFiles[0], role.id, "taskSubmission");
-        taskMeta = {
-          url: result.url,
-          cloudinaryId: result.driveFileId,
-          originalName: result.originalName,
-          mimeType: result.mimeType,
-          sizeBytes: result.sizeBytes,
-        };
+      // Handle all dynamic file fields
+      for (const field of role.fields) {
+        if (field.type === "file") {
+          const fileList = dataRecord[field.name] as FileList | undefined;
+          console.log(`[Upload Debug] Field ${field.name} value:`, dataRecord[field.name]);
+          console.log(`[Upload Debug] Is FileList?`, fileList instanceof FileList, "Length:", fileList?.length);
+          
+          if (fileList && fileList.length > 0) {
+            const result = await uploadFile(fileList[0], role.scriptUrl, role.driveFolderId);
+            filesData[field.name] = {
+              url: result.url,
+              driveFileId: result.driveFileId,
+              originalName: result.originalName,
+              mimeType: result.mimeType,
+              sizeBytes: result.sizeBytes,
+            };
+          } else {
+            console.log(`[Upload Debug] Skipping upload for ${field.name} - fileList empty or undefined`);
+          }
+        }
       }
 
       const applicant: Record<string, string> = {
@@ -203,10 +241,6 @@ export default function RecruitmentRolePage() {
         }
       }
 
-      const filesData: Record<string, unknown> = {};
-      if (resumeMeta) filesData.resume = resumeMeta;
-      if (taskMeta) filesData.taskSubmission = taskMeta;
-
       const appId = await submitApplication({
         roleId: role.id,
         applicant,
@@ -218,6 +252,20 @@ export default function RecruitmentRolePage() {
       });
 
       console.log("[Recruitment] Application submitted:", appId);
+
+      // Send confirmation email (non-blocking)
+      if (settings.emailScriptUrl) {
+        const fullName = (dataRecord.fullName as string) ?? userProfile?.name ?? "";
+        sendConfirmationEmail({
+          scriptUrl: settings.emailScriptUrl,
+          to: email,
+          fullName,
+          roleTitle: role.title,
+          applicationId: appId,
+          ccEmails: settings.notifyOnApplication ? settings.notificationEmails : [],
+        });
+      }
+
       setSubmitSuccess("Form submitted successfully!");
       setTimeout(() => {
         setShowSuccessDialog(true);

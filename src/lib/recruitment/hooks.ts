@@ -39,6 +39,7 @@ export function useSettings() {
             notifyOnApplication: data.notifyOnApplication ?? false,
             notificationEmails: data.notificationEmails ?? [],
             scriptUrl: data.scriptUrl ?? null,
+            emailScriptUrl: data.emailScriptUrl ?? null,
             updatedAt: data.updatedAt,
           });
         }
@@ -85,6 +86,8 @@ export function useRole(roleId: string) {
             applicationEnd: serializeTimestamp(data.applicationEnd),
             sections: data.sections,
             fields: data.fields,
+            driveFolderId: data.driveFolderId ?? "",
+            scriptUrl: data.scriptUrl ?? "",
             createdBy: data.createdBy,
             createdAt: serializeTimestamp(data.createdAt) ?? new Date().toISOString(),
             updatedAt: serializeTimestamp(data.updatedAt) ?? new Date().toISOString(),
@@ -130,6 +133,8 @@ export function useOpenRoles() {
             applicationEnd: serializeTimestamp(data.applicationEnd),
             sections: data.sections,
             fields: data.fields,
+            driveFolderId: data.driveFolderId ?? "",
+            scriptUrl: data.scriptUrl ?? "",
             createdBy: data.createdBy,
             createdAt: serializeTimestamp(data.createdAt) ?? new Date().toISOString(),
             updatedAt: serializeTimestamp(data.updatedAt) ?? new Date().toISOString(),

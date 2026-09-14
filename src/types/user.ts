@@ -20,6 +20,7 @@ export interface User {
   profileUrl: string;
   socialMedia: UserSocialMedia;
   resumeUrl?: string;
+  appliedRoleId?: string | null;
   participations: string[];
   isBlocked: boolean;
   profileCompleted: boolean;
@@ -41,6 +42,7 @@ export interface UserSerialized {
   profileUrl: string;
   socialMedia: UserSocialMedia;
   resumeUrl?: string | null;
+  appliedRoleId?: string | null;
   participations: string[];
   isBlocked: boolean;
   profileCompleted: boolean;

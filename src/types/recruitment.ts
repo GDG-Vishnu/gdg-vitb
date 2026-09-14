@@ -70,6 +70,8 @@ export interface RecruitmentRole {
   applicationEnd: Timestamp | null;
   sections: RecruitmentRoleSection[];
   fields: RecruitmentRoleField[];
+  driveFolderId: string;        // Google Drive folder ID for uploads
+  scriptUrl: string;            // Apps Script exec URL
   createdBy: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -87,6 +89,8 @@ export interface RecruitmentRoleSerialized {
   applicationEnd: string | null;
   sections: RecruitmentRoleSection[];
   fields: RecruitmentRoleField[];
+  driveFolderId: string;
+  scriptUrl: string;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -228,6 +232,7 @@ export interface RecruitmentSettings {
   notifyOnApplication: boolean;
   notificationEmails: string[];
   scriptUrl: string | null;
+  emailScriptUrl: string | null;
   updatedAt: Timestamp;
 }
 
@@ -270,8 +275,8 @@ export function buildFormSchema(fields: RecruitmentRoleField[]) {
   const shape: Record<string, z.ZodTypeAny> = {};
 
   for (const field of fields) {
-    // Skip reserved names — they go in applicant/files, not answers
-    if ((ALL_RESERVED_FIELDS as readonly string[]).includes(field.name)) continue;
+    // Note: Reserved fields used to be skipped here, but they MUST be included in the schema
+    // so that zod validates them and includes them in the output data object.
 
     switch (field.type) {
       case "text":
