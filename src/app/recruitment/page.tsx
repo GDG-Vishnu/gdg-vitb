@@ -142,10 +142,7 @@ export default function RecruitmentPage() {
             Join Google Developer Groups at VITB and be part of an amazing
             community of developers, designers, and innovators.
           </p>
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg max-w-3xl mx-auto text-sm text-amber-800 text-left sm:text-center">
-            <strong>Note for Lateral Entries / Login Issues:</strong> If you are a Lateral Entry student or having trouble logging in, please mail us at <a href="mailto:gdg.dev@vishnu.edu.in" className="font-semibold underline">gdg.dev@vishnu.edu.in</a> with your full name, email, mobile number, resume, GitHub profile, LinkedIn URL, tech stack, and experience (if any).
-          </div>
-        </div>
+        
 
         {/* ── Applied State ──────────────────────────────── */}
         {appliedRole && (
