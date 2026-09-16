@@ -142,7 +142,7 @@ export default function RecruitmentPage() {
             Join Google Developer Groups at VITB and be part of an amazing
             community of developers, designers, and innovators.
           </p>
-        
+        </div>
 
         {/* ── Applied State ──────────────────────────────── */}
         {appliedRole && (
