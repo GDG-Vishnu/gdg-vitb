@@ -24,7 +24,8 @@ export async function fetchTeamList<T = unknown>(): Promise<T[]> {
   }
 
   _inflight = (async () => {
-    const res = await fetch("/api/teams/list");
+    // Add a cache buster to force the browser to bypass its HTTP cache
+    const res = await fetch(`/api/teams/list?_t=${Date.now()}`);
     if (!res.ok) throw new Error("Failed to fetch team members");
     const data = await res.json();
     const list: unknown[] = Array.isArray(data) ? data : [];

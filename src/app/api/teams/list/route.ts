@@ -23,6 +23,7 @@ const TEAM_LIST_FIELDS = [
   "bgColor",
   "rank",
   "dept_rank",
+  "isAlumni",
 ] as const;
 
 export async function GET() {
@@ -60,6 +61,7 @@ export async function GET() {
             bgColor: data.bgColor ?? null,
             rank: data.rank ?? 0,
             dept_rank: data.dept_rank ?? 0,
+            isAlumni: data.isAlumni ?? false,
           };
         });
 
