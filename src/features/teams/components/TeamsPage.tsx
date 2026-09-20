@@ -20,11 +20,153 @@ type TeamMember = {
   dept_logo?: string | null;
   linkedinUrl?: string | null;
   mail?: string | null;
+  isAlumni?: boolean;
 };
+
+const TeamSection = ({ membersList }: { membersList: TeamMember[] }) => (
+  <div className="space-y-8 w-full">
+    {Object.entries(
+      // sort by dept_rank (ascending), then rank, then name, then group by position
+      membersList
+        .slice()
+        .sort((a, b) => {
+          // First sort by dept_rank (department position on page)
+          const dra = typeof a.dept_rank === "number" ? a.dept_rank : 0;
+          const drb = typeof b.dept_rank === "number" ? b.dept_rank : 0;
+          if (dra !== drb) return dra - drb;
+          // Then sort by rank within the position
+          const ra = typeof a.rank === "number" ? a.rank : 0;
+          const rb = typeof b.rank === "number" ? b.rank : 0;
+          if (ra !== rb) return ra - rb;
+          // Finally sort by name
+          return (a.name || "").localeCompare(b.name || "");
+        })
+        .reduce<Record<string, TeamMember[]>>((acc, member) => {
+          const pos = (member.position || "").trim() || "Unspecified";
+          if (!acc[pos]) acc[pos] = [];
+          acc[pos].push(member);
+          return acc;
+        }, {}),
+    ).map(([position, members]) => (
+      <section
+        key={position}
+        aria-labelledby={`pos-${position}`}
+        className="flex flex-col items-center w-full"
+      >
+        <div
+          style={{
+            backgroundColor: members[0]?.bgColor || undefined,
+          }}
+          className="
+            w-[330px]            /* mobile default */
+            h-[54px]
+            sm:w-[370px]         /* optional - keeps 370px on small screens */
+            lg:w-[800px]         /* large screen width */
+            text-center
+            rounded-[100px]
+            items-center
+            justify-center
+            flex
+            border-2
+            border-stone-900
+          "
+        >
+          <h2
+            id={`pos-${position}`}
+            className="text-xl font-semibold  sm:m-1 p-2 text-center text-stone-950 font-productSans"
+          >
+            {position}
+          </h2>
+        </div>
+        <div className="h-4"></div>
+        {/* Mobile: horizontal scroll */}
+        <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 md:hidden">
+          <div className="flex gap-6 px-4 min-w-max justify-center">
+            {members.map((m, i) => (
+              <div key={m.id} className="flex-shrink-0">
+                <MemberCard
+                  id={m.id}
+                  imageUrl={m.imageUrl || "/file.svg"}
+                  name={m.name}
+                  designation={m.designation || "MEMBER"}
+                  position={m.position || undefined}
+                  linkedinUrl={m.linkedinUrl || undefined}
+                  mail={m.mail || undefined}
+                  bgColor={m.bgColor || undefined}
+                  logo={m.logo || undefined}
+                  index={i}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: 3-2-3-2 pattern when more than 4 members, otherwise centered flex */}
+        <div className="hidden md:block w-full px-4">
+          {members.length > 4 ? (
+            <div className="space-y-6">
+              {(() => {
+                const rows = [];
+                let index = 0;
+                while (index < members.length) {
+                  const isFirstRow = rows.length % 2 === 0;
+                  const cardsInRow = isFirstRow ? 3 : 2;
+                  const rowMembers = members.slice(index, index + cardsInRow);
+                  rows.push(
+                    <div key={index} className="flex gap-6 justify-center">
+                      {rowMembers.map((m, ri) => (
+                        <div key={m.id} className="flex-shrink-0">
+                          <MemberCard
+                            id={m.id}
+                            imageUrl={m.imageUrl || "/file.svg"}
+                            name={m.name}
+                            designation={m.designation || "MEMBER"}
+                            position={m.position || undefined}
+                            linkedinUrl={m.linkedinUrl || undefined}
+                            mail={m.mail || undefined}
+                            bgColor={m.bgColor || undefined}
+                            logo={m.logo || undefined}
+                            index={ri}
+                          />
+                        </div>
+                      ))}
+                    </div>,
+                  );
+                  index += cardsInRow;
+                }
+                return rows;
+              })()}
+            </div>
+          ) : (
+            <div className="flex gap-6 justify-center">
+              {members.map((m, i) => (
+                <div key={m.id} className="flex-shrink-0">
+                  <MemberCard
+                    id={m.id}
+                    imageUrl={m.imageUrl || "/file.svg"}
+                    name={m.name}
+                    designation={m.designation || "MEMBER"}
+                    position={m.position || undefined}
+                    linkedinUrl={m.linkedinUrl || undefined}
+                    mail={m.mail || undefined}
+                    bgColor={m.bgColor || undefined}
+                    logo={m.logo || undefined}
+                    index={i}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    ))}
+  </div>
+);
 
 export default function TeamsPage() {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<"active" | "alumni">("active");
   useEffect(() => {
     let mounted = true;
 
@@ -57,6 +199,28 @@ export default function TeamsPage() {
     >
       {/* Site navbar */}
       {/* Navbar removed */}
+
+      {/* Sticky Side Button */}
+      {!loading && team.length > 0 && (
+        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50">
+          <button
+            onClick={() => setActiveTab(activeTab === "active" ? "alumni" : "active")}
+            className="bg-[#F4D03F] border-y-2 border-r-2 border-black px-1 md:px-2 py-4 md:py-6 rounded-r-xl transition-transform hover:-translate-x-1 flex items-center justify-center cursor-pointer"
+            style={{
+              boxShadow: "-4px 4px 0px rgba(0,0,0,1)",
+              writingMode: "vertical-rl",
+              transform: "rotate(180deg)",
+            }}
+          >
+            <span className="font-productSans font-bold text-black tracking-wider text-xs md:text-sm hidden sm:inline">
+              {activeTab === "active" ? "ALUMINI - CHAPTER 2025-26" : "CURRENT TEAM"}
+            </span>
+            <span className="font-productSans font-bold text-black tracking-wider text-[10px] sm:hidden">
+              {activeTab === "active" ? "ALUMINI" : "TEAM"}
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* Meet the Team CTA */}
 
@@ -121,152 +285,33 @@ export default function TeamsPage() {
           )}
 
           {!loading && team.length > 0 && (
-            // Group members by position and render a section per position
-            <div id="team" className="space-y-8 w-full">
-              {Object.entries(
-                // sort by dept_rank (ascending), then rank, then name, then group by position
-                team
-                  .slice()
-                  .sort((a, b) => {
-                    // First sort by dept_rank (department position on page)
-                    const dra =
-                      typeof a.dept_rank === "number" ? a.dept_rank : 0;
-                    const drb =
-                      typeof b.dept_rank === "number" ? b.dept_rank : 0;
-                    if (dra !== drb) return dra - drb;
-                    // Then sort by rank within the position
-                    const ra = typeof a.rank === "number" ? a.rank : 0;
-                    const rb = typeof b.rank === "number" ? b.rank : 0;
-                    if (ra !== rb) return ra - rb;
-                    // Finally sort by name
-                    return (a.name || "").localeCompare(b.name || "");
-                  })
-                  .reduce<Record<string, TeamMember[]>>((acc, member) => {
-                    const pos = (member.position || "").trim() || "Unspecified";
-                    if (!acc[pos]) acc[pos] = [];
-                    acc[pos].push(member);
-                    return acc;
-                  }, {}),
-              ).map(([position, members]) => (
-                <section
-                  key={position}
-                  aria-labelledby={`pos-${position}`}
-                  className="flex flex-col items-center w-full"
-                >
-                  <div
-                    style={{
-                      backgroundColor: members[0]?.bgColor || undefined,
-                    }}
-                    className="
-  w-[330px]            /* mobile default */
-  h-[54px]
-  sm:w-[370px]         /* optional - keeps 370px on small screens */
-  lg:w-[800px]         /* large screen width */
-  text-center
-  rounded-[100px]
-  items-center
-  justify-center
-  flex
-  border-2
-  border-stone-900
-"
-                  >
-                    <h2
-                      id={`pos-${position}`}
-                      className="text-xl font-semibold  sm:m-1 p-2 text-center text-stone-950 font-productSans"
-                    >
-                      {position}
-                    </h2>
-                    {/* <img src={members[0].dept_logo || "/default-logo.png"} alt={`${position} logo`} />*/}
-                  </div>
-                  <div className="h-4"></div>
-                  {/* Mobile: horizontal scroll */}
-                  <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 md:hidden">
-                    <div className="flex gap-6 px-4 min-w-max justify-center">
-                      {members.map((m, i) => (
-                        <div key={m.id} className="flex-shrink-0">
-                          <MemberCard
-                            id={m.id}
-                            imageUrl={m.imageUrl || "/file.svg"}
-                            name={m.name}
-                            designation={m.designation || "MEMBER"}
-                            position={m.position || undefined}
-                            linkedinUrl={m.linkedinUrl || undefined}
-                            mail={m.mail || undefined}
-                            bgColor={m.bgColor || undefined}
-                            logo={m.logo || undefined}
-                            index={i}
-                          />
-                        </div>
-                      ))}
+            <div id="team" className="w-full flex flex-col items-center gap-16">
+              {activeTab === "active" ? (
+                <div className="w-full">
+                  {team.filter((m) => !m.isAlumni).length > 0 ? (
+                    <TeamSection membersList={team.filter((m) => !m.isAlumni)} />
+                  ) : (
+                    <div className="text-center font-productSans py-12">
+                      No active team members found.
                     </div>
+                  )}
+                </div>
+              ) : (
+                <div className="w-full">
+                  <div className="w-full flex justify-center mb-8">
+                    <h2 className="text-2xl md:text-4xl font-bold text-stone-950 font-productSans">
+                      ALUMINI - CHAPTER 2025-26
+                    </h2>
                   </div>
-
-                  {/* Desktop: 3-2-3-2 pattern when more than 4 members, otherwise centered flex */}
-                  <div className="hidden md:block w-full px-4">
-                    {members.length > 4 ? (
-                      <div className="space-y-6">
-                        {(() => {
-                          const rows = [];
-                          let index = 0;
-                          while (index < members.length) {
-                            const isFirstRow = rows.length % 2 === 0;
-                            const cardsInRow = isFirstRow ? 3 : 2;
-                            const rowMembers = members.slice(
-                              index,
-                              index + cardsInRow,
-                            );
-                            rows.push(
-                              <div
-                                key={index}
-                                className="flex gap-6 justify-center"
-                              >
-                                {rowMembers.map((m, ri) => (
-                                  <div key={m.id} className="flex-shrink-0">
-                                    <MemberCard
-                                      id={m.id}
-                                      imageUrl={m.imageUrl || "/file.svg"}
-                                      name={m.name}
-                                      designation={m.designation || "MEMBER"}
-                                      position={m.position || undefined}
-                                      linkedinUrl={m.linkedinUrl || undefined}
-                                      mail={m.mail || undefined}
-                                      bgColor={m.bgColor || undefined}
-                                      logo={m.logo || undefined}
-                                      index={ri}
-                                    />
-                                  </div>
-                                ))}
-                              </div>,
-                            );
-                            index += cardsInRow;
-                          }
-                          return rows;
-                        })()}
-                      </div>
-                    ) : (
-                      <div className="flex gap-6 justify-center">
-                        {members.map((m, i) => (
-                          <div key={m.id} className="flex-shrink-0">
-                            <MemberCard
-                              id={m.id}
-                              imageUrl={m.imageUrl || "/file.svg"}
-                              name={m.name}
-                              designation={m.designation || "MEMBER"}
-                              position={m.position || undefined}
-                              linkedinUrl={m.linkedinUrl || undefined}
-                              mail={m.mail || undefined}
-                              bgColor={m.bgColor || undefined}
-                              logo={m.logo || undefined}
-                              index={i}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </section>
-              ))}
+                  {team.filter((m) => m.isAlumni).length > 0 ? (
+                    <TeamSection membersList={team.filter((m) => m.isAlumni)} />
+                  ) : (
+                    <div className="text-center font-productSans">
+                      No alumni found.
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
