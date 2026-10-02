@@ -6,12 +6,20 @@ import {
   useLightboxState,
 } from "yet-another-react-lightbox";
 
+type LightboxSlide = {
+  src: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+  blurDataURL?: string;
+};
+
 export default function NextJsImage({
   slide,
   offset,
   rect,
 }: {
-  slide: any;
+  slide: LightboxSlide;
   offset: number;
   rect: { width: number; height: number };
 }) {
@@ -45,16 +53,21 @@ export default function NextJsImage({
     <div style={{ position: "relative", width, height }}>
       <Image
         fill
-        src={slide.src || slide}
-        alt=""
+        src={slide.src || ""}
+        alt={slide.alt ?? "Event gallery image"}
         loading="eager"
         draggable={false}
         placeholder={slide.blurDataURL ? "blur" : undefined}
+        blurDataURL={slide.blurDataURL}
         style={{
           objectFit: cover ? "cover" : "contain",
           cursor: click ? "pointer" : undefined,
         }}
-        sizes={`${Math.ceil((width / window.innerWidth) * 100)}vw`}
+        sizes={
+          typeof window !== "undefined" && window.innerWidth > 0
+            ? `${Math.ceil((width / window.innerWidth) * 100)}vw`
+            : "100vw"
+        }
         onClick={
           offset === 0 ? () => click?.({ index: currentIndex }) : undefined
         }

@@ -30,14 +30,10 @@ import {
   Calendar,
   Clock,
   Users,
-  Star,
   CheckCircle,
   ChevronDown,
   Github,
   User,
-  Globe,
-  Monitor,
-  Wifi,
 } from "lucide-react";
 
 /* ─── Types ──────────────────────────────────────────────── */
@@ -89,7 +85,9 @@ type OngoingEvent = {
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "TBA";
-  return new Date(dateStr).toLocaleDateString("en-IN", {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "TBA";
+  return d.toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -98,7 +96,9 @@ function formatDate(dateStr: string | null): string {
 
 function formatTime(dateStr: string | null): string {
   if (!dateStr) return "";
-  return new Date(dateStr).toLocaleTimeString("en-IN", {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleTimeString("en-IN", {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -140,15 +140,24 @@ function EventHeroCard({
   return (
     <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-5 sm:p-7 lg:p-10 bg-[#C3ECF6] min-h-[420px] sm:min-h-[500px]">
       {/* ── Left: Poster image ────────────────────────────── */}
-      {event.posterImage && (
-        <div className="w-full sm:w-[240px] lg:w-[320px] flex-shrink-0">
+      <div className="w-full sm:w-[240px] lg:w-[320px] flex-shrink-0">
+        {event.posterImage?.trim() ? (
           <img
-            src={event.posterImage}
+            src={event.posterImage.trim()}
             alt={event.title}
+            loading="lazy"
             className="w-full h-72 sm:h-full object-cover border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           />
-        </div>
-      )}
+        ) : (
+          <div
+            role="img"
+            aria-label={`${event.title} poster placeholder`}
+            className="w-full h-72 sm:h-full flex items-center justify-center border-2 border-dashed border-stone-400 bg-white/60 text-4xl font-bold text-stone-500"
+          >
+            {event.title.charAt(0).toUpperCase()}
+          </div>
+        )}
+      </div>
 
       {/* ── Right: Content (grows) ────────────────────────── */}
       <div className="flex flex-col gap-4 flex-1 min-w-0">
@@ -241,10 +250,11 @@ function OrganizingTeamCard({
 }: {
   executiveBoard: OngoingEvent["executiveBoard"];
 }) {
+  const board = executiveBoard ?? { organiser: "", coOrganiser: "", facilitator: "" };
   const members = [
-    { label: "Organizer", name: executiveBoard.organiser },
-    { label: "Co-Organizer", name: executiveBoard.coOrganiser },
-    { label: "Facilitator", name: executiveBoard.facilitator },
+    { label: "Organizer", name: board.organiser },
+    { label: "Co-Organizer", name: board.coOrganiser },
+    { label: "Facilitator", name: board.facilitator },
   ].filter((m) => m.name);
 
   if (members.length === 0) return null;
@@ -328,23 +338,9 @@ function EligibilityCard({
    SPEAKER CARD (alternating layout)
    ═══════════════════════════════════════════════════════════ */
 
-const SPEAKER_IMAGE_FALLBACKS: Record<string, string> = {
-  narashima:
-    "https://res.cloudinary.com/dlupkibvq/image/upload/v1767886987/ngv6uefackvxzjz1rozc.png",
-  narasimha:
-    "https://res.cloudinary.com/dlupkibvq/image/upload/v1767886987/ngv6uefackvxzjz1rozc.png",
-  naidu:
-    "https://res.cloudinary.com/dlupkibvq/image/upload/v1767886987/ngv6uefackvxzjz1rozc.png",
-  ganesh:
-    "https://res.cloudinary.com/dlupkibvq/image/upload/Ganesh_Android_lead_ctuyis.png",
-};
-
 function resolveSpeakerImage(official: EventOfficial): string | null {
+  // Prefer explicit imageUrl; otherwise use generic placeholder (no name hardcoding).
   if (official.imageUrl) return official.imageUrl;
-  const words = official.name.toLowerCase().split(/\s+/);
-  for (const word of words) {
-    if (SPEAKER_IMAGE_FALLBACKS[word]) return SPEAKER_IMAGE_FALLBACKS[word];
-  }
   return null;
 }
 
@@ -399,7 +395,7 @@ function SpeakerCard({
 
         {/* SpeakerDescription */}
         {official.bio && (
-          <p className="text-[15px] leading-relaxed text-gray-700 font-productSans line-clamp-6">
+          <p className="text-[15px] leading-relaxed text-gray-700 font-productSans">
             {official.bio}
           </p>
         )}
@@ -444,8 +440,12 @@ function SpeakersSection({ officials }: { officials: EventOfficial[] }) {
         SPEAKERS & GUESTS
       </h3>
       <div className="flex flex-col gap-8 w-full">
-        {officials.map((official, i) => (
-          <SpeakerCard key={i} official={official} reverse={i % 2 !== 0} />
+        {officials.map((official) => (
+          <SpeakerCard
+            key={`${official.email || official.name}`}
+            official={official}
+            reverse={officials.indexOf(official) % 2 !== 0}
+          />
         ))}
       </div>
     </div>
@@ -464,13 +464,13 @@ function KeyHighlightsSection({ highlights }: { highlights: string[] }) {
         KEY HIGHLIGHTS
       </h3>
       <div className="flex flex-wrap w-full flex-col gap-3">
-        {highlights.map((highlight, i) => (
+        {highlights.map((highlight, idx) => (
           <div
-            key={i}
+            key={`${highlight.slice(0, 48)}-${idx}`}
             className="flex items-start gap-2 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-3 bg-white flex-1 min-w-[200px]"
           >
             <span className="flex-shrink-0 w-6 h-6 bg-[#CCF6C5]  border-2 border-black rounded-none flex items-center justify-center text-black text-xs font-bold">
-              {i + 1}
+              {idx + 1}
             </span>
             <span className="text-stone-800 font-productSans text-sm leading-relaxed">
               {highlight}
@@ -494,13 +494,13 @@ function RulesSection({ rules }: { rules: { rule: string }[] }) {
         Rules & Guidelines
       </h3>
       <div className="flex flex-col w-full gap-2">
-        {rules.map((r, i) => (
+        {rules.map((r, idx) => (
           <div
-            key={i}
+            key={`${r.rule.slice(0, 48)}-${idx}`}
             className="flex items-start gap-3 bg-white border-2 border-black p-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
           >
             <span className="flex-shrink-0 w-6 h-6 bg-[#F8D8D8] text-black border-2 border-black flex items-center justify-center text-xs font-bold">
-              {i + 1}
+              {idx + 1}
             </span>
             <span className="text-stone-800 font-productSans text-sm leading-relaxed">
               {r.rule}
@@ -519,33 +519,37 @@ function RulesSection({ rules }: { rules: { rule: string }[] }) {
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <button
-      onClick={() => setOpen(!open)}
+    <div
       className={`w-full text-left border-2 border-black p-4 transition-all duration-200 ${
         open
           ? "bg-yellow-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           : "bg-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]"
       }`}
     >
-      <div className="flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 text-left"
+      >
         <span className="font-semibold text-black font-productSans text-sm md:text-base">
           {question}
         </span>
-        <div className="flex-shrink-0 bg-black text-white w-7 h-7 flex items-center justify-center border-2 border-black">
+        <span className="flex-shrink-0 bg-black text-white w-7 h-7 flex items-center justify-center border-2 border-black">
           <ChevronDown
             className={`w-4 h-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           />
-        </div>
-      </div>
+        </span>
+      </button>
       <div
         className="overflow-hidden transition-all duration-300"
-        style={{ maxHeight: open ? "600px" : "0px" }}
+        style={{ maxHeight: open ? "none" : "0px" }}
       >
         <p className="pt-3 text-stone-700 font-productSans text-sm leading-relaxed">
           {answer}
         </p>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -562,8 +566,12 @@ function FAQSection({
         FAQs
       </h3>
       <div className="flex flex-col gap-3">
-        {faqs.map((faq, i) => (
-          <FAQItem key={i} question={faq.question} answer={faq.answer} />
+        {faqs.map((faq) => (
+          <FAQItem
+            key={`${faq.question.slice(0, 48)}`}
+            question={faq.question}
+            answer={faq.answer}
+          />
         ))}
       </div>
     </div>
@@ -654,7 +662,9 @@ export default function OngoingEventDetailPage() {
     const eligibleDepts =
       event.eligibilityCriteria?.Dept?.filter(Boolean) ?? [];
     if (eligibleDepts.length > 0 && userProfile.branch) {
-      if (!eligibleDepts.includes(userProfile.branch)) return false;
+      const normalized = eligibleDepts.map((d) => d.trim().toLowerCase());
+      if (!normalized.includes(userProfile.branch.trim().toLowerCase()))
+        return false;
     }
     return true;
   }
@@ -665,6 +675,16 @@ export default function OngoingEventDetailPage() {
     if (!user || !event) return;
     const regId = `${user.uid}_${eventId}`;
     const phoneNumber: string = userProfile?.phoneNumber ?? "";
+
+    if (!event.isRegistrationOpen) {
+      toast.error("Registrations are closed for this event.");
+      return;
+    }
+
+    if (event.status === "COMPLETED") {
+      toast.error("This event has concluded. Registrations are closed.");
+      return;
+    }
 
     if (event.maxParticipants > 0) {
       const regColRef = collection(
@@ -696,6 +716,14 @@ export default function OngoingEventDetailPage() {
     );
 
     await runTransaction(db, async (tx) => {
+      const eventDocRef = doc(db, "managed_events", eventId);
+      const freshEventSnap = await tx.get(eventDocRef);
+      if (
+        freshEventSnap.exists() &&
+        freshEventSnap.data()?.isRegistrationOpen === false
+      ) {
+        throw new Error("REGISTRATION_CLOSED");
+      }
       const snap = await tx.get(userRegRef);
       if (snap.exists()) {
         setAlreadyRegistered(true);
@@ -714,7 +742,7 @@ export default function OngoingEventDetailPage() {
       tx.set(userRegRef, {
         event_id: eventId,
         event_name: event.title ?? "Unknown Event",
-        event_data: new Date().toISOString(),
+        event_date: new Date().toISOString(),
         isAttended: false,
         certificationLink: "",
         // ── Event snapshot (for profile page — avoids N+1 reads) ──
@@ -874,7 +902,7 @@ export default function OngoingEventDetailPage() {
           <div>
             <Link
               href="/events/ongoing"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm  font-bold bg-[#C3ECF6] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none hover:border-none"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm  font-bold bg-[#C3ECF6] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Events

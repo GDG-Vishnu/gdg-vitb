@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "@/components/footer/Footer";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { fetchEventList } from "@/lib/events-list-cache";
 
 type Event = {
@@ -27,11 +29,34 @@ type Event = {
   Theme?: string[];
 };
 
+function getSortTime(dateStr: string | null | undefined): number | null {
+  if (!dateStr) return null;
+  const t = new Date(dateStr).getTime();
+  return Number.isNaN(t) ? null : t;
+}
+
+function normalizeImageSrc(src: string | null | undefined): string | null {
+  if (!src) return null;
+  const trimmed = src.trim();
+  return trimmed ? trimmed : null;
+}
+
+function formatCardDate(dateStr: string | null | undefined): string {
+  const t = getSortTime(dateStr);
+  if (t === null) return "TBA";
+  return new Date(t).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 function EventCard({ event, index = 0 }: { event: Event; index?: number }) {
   const accentColor = event.Theme?.[0] ?? "#4285F4";
+  const posterSrc = normalizeImageSrc(event.posterImage);
   const getButtonStyle = () => ({
     backgroundColor: accentColor,
-    color: "#000000",
+    color: "#ffffff",
     borderColor: "#000000",
     borderWidth: "3px",
     borderStyle: "solid",
@@ -41,29 +66,62 @@ function EventCard({ event, index = 0 }: { event: Event; index?: number }) {
     <motion.article
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: index * 0.06, ease: "easeOut" }}
+      transition={{
+        duration: 0.35,
+        delay: Math.min(index, 6) * 0.06,
+        ease: "easeOut",
+      }}
       className={`relative bg-white shadow-md snap-start overflow-hidden w-full border border-black flex flex-col justify-between
         rounded-[30px] sm:rounded-[40px] lg:rounded-[50px]
         h-[380px] sm:h-[420px] lg:h-[472px]`}
     >
       {/* Image Container */}
-      {event.posterImage && (
-        <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
-          <img
-            src={event.posterImage}
+      <div className="flex-1 flex items-center justify-center bg-stone-100 overflow-hidden p-3 sm:p-4">
+        {posterSrc ? (
+          <Image
+            src={posterSrc}
             alt={event.title}
+            width={800}
+            height={600}
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="w-full h-full object-cover rounded-[24px] sm:rounded-[32px] lg:rounded-[40px]"
           />
-        </div>
-      )}
+        ) : (
+          <div
+            role="img"
+            aria-label={`${event.title} poster placeholder`}
+            className="w-full h-full flex flex-col items-center justify-center gap-2 rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] border-2 border-dashed border-stone-300 bg-stone-50"
+          >
+            <span
+              aria-hidden
+              className="flex h-14 w-14 items-center justify-center rounded-full text-2xl font-bold text-white"
+              style={{ backgroundColor: accentColor }}
+            >
+              {event.title.charAt(0).toUpperCase()}
+            </span>
+            <span className="px-4 text-center text-sm font-semibold text-stone-500">
+              Poster coming soon
+            </span>
+          </div>
+        )}
+      </div>
 
       {/* Content Container */}
       <div className="px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-6">
         <div className="flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-stone-950 font-productSans truncate">
+            <h3
+              title={event.title}
+              className="text-lg sm:text-xl lg:text-2xl font-semibold text-stone-950 font-productSans truncate"
+            >
               {event.title}
             </h3>
+            <p className="mt-1 truncate text-xs sm:text-sm text-stone-500 font-productSans">
+              {formatCardDate(event.startDate)}
+              {event.venue ? ` · ${event.venue}` : ""}
+              {event.status ? ` · ${event.status}` : ""}
+            </p>
           </div>
           <div className="flex-shrink-0">
             <Button
@@ -76,13 +134,12 @@ function EventCard({ event, index = 0 }: { event: Event; index?: number }) {
                 hover:translate-x-0 hover:translate-y-0 hover:shadow-none transition-all
                 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 p-0 flex items-center justify-center"
             >
-              <Link href={`/events/${event.id}`}>
-                <img
-                  src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
-                  alt=""
-                  className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
-                  style={{ filter: "brightness(0) invert(1)" }}
-                />
+              <Link
+                href={`/events/${event.id}`}
+                aria-label={`Open ${event.title}`}
+                className="flex h-full w-full items-center justify-center"
+              >
+                <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-white" />
               </Link>
             </Button>
           </div>
@@ -96,39 +153,49 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [tab, setTab] = useState<"ALL" | "ONGOING" | "UPCOMING" | "COMPLETED">(
+    "ALL",
+  );
+
+  const loadEvents = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchEventList<Event>();
+      const eventsList: Event[] = [...data];
+      // Sort each group: ONGOING/UPCOMING by soonest startDate first,
+      // COMPLETED by most recent startDate first. Invalid/missing dates last.
+      eventsList.sort((a, b) => {
+        const timeA = getSortTime(a.startDate);
+        const timeB = getSortTime(b.startDate);
+        if (timeA === null && timeB === null) return 0;
+        if (timeA === null) return 1;
+        if (timeB === null) return -1;
+        if (a.status === "COMPLETED" && b.status === "COMPLETED")
+          return timeB - timeA;
+        return timeA - timeB;
+      });
+      setEvents(eventsList);
+    } catch (err: unknown) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
-
     (async () => {
-      try {
-        const data = await fetchEventList<Event>();
-        if (!mounted) return;
-        const eventsList: Event[] = [...data];
-        // Sort each group: ONGOING/UPCOMING by soonest startDate first,
-        // COMPLETED by most recent startDate first
-        eventsList.sort((a, b) => {
-          const dateA = a.startDate ? new Date(a.startDate).getTime() : 0;
-          const dateB = b.startDate ? new Date(b.startDate).getTime() : 0;
-          if (a.status === "COMPLETED" && b.status === "COMPLETED")
-            return dateB - dateA;
-          return dateA - dateB;
-        });
-        setEvents(eventsList);
-      } catch (err: unknown) {
-        console.error(err);
-        if (mounted) {
-          setError(err instanceof Error ? err.message : "Unknown error");
-        }
-      } finally {
-        if (mounted) setLoading(false);
-      }
+      if (!mounted) return;
+      await loadEvents();
     })();
 
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [loadEvents]);
 
   return (
     <div
@@ -184,7 +251,7 @@ export default function EventsPage() {
                   ⚠️ Error: {error}
                 </p>
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={() => loadEvents()}
                   className="px-6 py-3 bg-red-500 text-white font-bold border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-200 font-productSans"
                 >
                   Try Again
@@ -249,31 +316,122 @@ export default function EventsPage() {
                 </motion.div>
               )}
 
-              {/* ── ALL Events ── */}
-              {events.filter((e) => e.status === "COMPLETED").length > 0 && (
-                <section>
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 0.2 }}
-                    className="flex items-center gap-3 mb-7"
+              {/* ── Search + Tabs ── */}
+              <div className="mb-10 flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  <label htmlFor="event-search" className="sr-only">
+                    Search events
+                  </label>
+                  <input
+                    id="event-search"
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search by title, venue, or tag..."
+                    className="w-full sm:max-w-md px-4 py-2.5 bg-white text-black font-productSans border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div
+                    role="tablist"
+                    aria-label="Filter events by status"
+                    className="flex flex-wrap gap-2"
                   >
-                    <div className="bg-stone-100 border-2 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      <h2 className="text-xl md:text-2xl font-bold text-stone-600 font-productSans">
-                        All Events
-                      </h2>
-                    </div>
-                    <div className="flex-1 h-0.5 bg-stone-200 rounded-full" />
-                  </motion.div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events
-                      .filter((e) => e.status === "COMPLETED")
-                      .map((event, i) => (
-                        <EventCard key={event.id} event={event} index={i} />
-                      ))}
+                    {(["ALL", "ONGOING", "UPCOMING", "COMPLETED"] as const).map(
+                      (t) => (
+                        <button
+                          key={t}
+                          role="tab"
+                          aria-selected={tab === t}
+                          onClick={() => setTab(t)}
+                          className={`px-4 py-2 text-sm font-bold border-2 border-black font-productSans transition-all ${
+                            tab === t
+                              ? "bg-black text-white shadow-[4px_4px_0px_0px_rgba(66,133,244,1)]"
+                              : "bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5"
+                          }`}
+                        >
+                          {t === "ALL"
+                            ? "All"
+                            : t === "ONGOING"
+                              ? "Happening Now"
+                              : t === "UPCOMING"
+                                ? "Upcoming"
+                                : "Past"}
+                        </button>
+                      ),
+                    )}
                   </div>
-                </section>
-              )}
+                </div>
+              </div>
+
+              {/* ── Grouped Events ── */}
+              {(() => {
+                const q = query.trim().toLowerCase();
+                const matches = (e: Event) =>
+                  !q ||
+                  e.title.toLowerCase().includes(q) ||
+                  (e.venue ?? "").toLowerCase().includes(q) ||
+                  (e.tags ?? []).some((t) => t.toLowerCase().includes(q));
+                const byTab = (e: Event) =>
+                  tab === "ALL" ? true : e.status === tab;
+                const ongoing = events.filter(
+                  (e) => e.status === "ONGOING" && byTab(e) && matches(e),
+                );
+                const upcoming = events.filter(
+                  (e) => e.status === "UPCOMING" && byTab(e) && matches(e),
+                );
+                const completed = events.filter(
+                  (e) => e.status === "COMPLETED" && byTab(e) && matches(e),
+                );
+                const groups = [
+                  { title: "Happening Now", items: ongoing },
+                  { title: "Upcoming Events", items: upcoming },
+                  { title: "Past Events", items: completed },
+                ].filter((g) => g.items.length > 0);
+                if (groups.length === 0)
+                  return (
+                    <div className="text-center py-16">
+                      <div className="bg-white border-4 border-black rounded-2xl p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md mx-auto">
+                        <p className="text-black font-bold text-lg font-productSans mb-2">
+                          No events match your search.
+                        </p>
+                        <button
+                          onClick={() => {
+                            setQuery("");
+                            setTab("ALL");
+                          }}
+                          className="mt-2 px-5 py-2.5 bg-yellow-300 text-black font-bold border-2 border-black font-productSans text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                        >
+                          Clear filters
+                        </button>
+                      </div>
+                    </div>
+                  );
+                return (
+                  <div className="flex flex-col gap-12">
+                    {groups.map((group) => (
+                      <section key={group.title}>
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.2 }}
+                          className="flex items-center gap-3 mb-7"
+                        >
+                          <div className="bg-stone-100 border-2 border-black rounded-2xl px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <h2 className="text-xl md:text-2xl font-bold text-stone-600 font-productSans">
+                              {group.title}
+                            </h2>
+                          </div>
+                          <div className="flex-1 h-0.5 bg-stone-200 rounded-full" />
+                        </motion.div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {group.items.map((event, i) => (
+                            <EventCard key={event.id} event={event} index={i} />
+                          ))}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                );
+              })()}
             </>
           )}
         </div>
