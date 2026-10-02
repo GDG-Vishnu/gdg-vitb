@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Footer from "@/components/footer/Footer";
 import { Button } from "@/components/ui/button";
 import LoadingEvents from "@/components/loadingPage/loading_events";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, Clock } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Calendar, Clock } from "lucide-react";
 import { fetchEventList } from "@/lib/events-list-cache";
 
 /* ─── Types ──────────────────────────────────────────────── */
@@ -24,7 +24,9 @@ type OngoingEvent = {
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "TBA";
-  return new Date(dateStr).toLocaleDateString("en-IN", {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "TBA";
+  return d.toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -35,6 +37,18 @@ function formatDate(dateStr: string | null): string {
    EVENT LIST CARD
    ═══════════════════════════════════════════════════════════ */
 
+function getSortTime(dateStr: string | null | undefined): number | null {
+  if (!dateStr) return null;
+  const t = new Date(dateStr).getTime();
+  return Number.isNaN(t) ? null : t;
+}
+
+function normalizeImageSrc(src: string | null | undefined): string | null {
+  if (!src) return null;
+  const trimmed = src.trim();
+  return trimmed ? trimmed : null;
+}
+
 function EventListCard({
   event,
   index,
@@ -42,15 +56,23 @@ function EventListCard({
   event: OngoingEvent;
   index: number;
 }) {
-  const router = useRouter();
   const isLive = event.status === "ONGOING";
+  const posterSrc = normalizeImageSrc(event.posterImage);
 
   return (
+    <Link
+      href={`/events/ongoing/${event.id}`}
+      aria-label={`Open ${event.title}`}
+      className="block rounded-[30px] sm:rounded-[40px] lg:rounded-[50px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
+    >
     <motion.article
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: index * 0.06, ease: "easeOut" }}
-      onClick={() => router.push(`/events/ongoing/${event.id}`)}
+      transition={{
+        duration: 0.35,
+        delay: Math.min(index, 6) * 0.06,
+        ease: "easeOut",
+      }}
       className={`relative bg-white shadow-md snap-start overflow-hidden w-full border flex flex-col justify-between cursor-pointer
         rounded-[30px] sm:rounded-[40px] lg:rounded-[50px]
         h-[380px] sm:h-[420px] lg:h-[472px] transition-transform hover:-translate-y-1
@@ -80,21 +102,36 @@ function EventListCard({
       )}
 
       {/* Image */}
-      {event.posterImage && (
-        <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
-          <img
-            src={event.posterImage}
+      <div className="flex-1 flex items-center justify-center bg-stone-100 overflow-hidden p-3 sm:p-4">
+        {posterSrc ? (
+          <Image
+            src={posterSrc}
             alt={event.title}
+            width={800}
+            height={600}
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="w-full h-full object-cover rounded-[24px] sm:rounded-[32px] lg:rounded-[40px]"
           />
-        </div>
-      )}
+        ) : (
+          <div
+            role="img"
+            aria-label={`${event.title} poster placeholder`}
+            className="w-full h-full flex items-center justify-center rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] border-2 border-dashed border-stone-300 bg-stone-50 text-3xl font-bold text-stone-400"
+          >
+            {event.title.charAt(0).toUpperCase()}
+          </div>
+        )}
+      </div>
 
       {/* Content */}
       <div className="px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-6">
         <div className="flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-stone-950 font-productSans truncate">
+            <h3
+              title={event.title}
+              className="text-lg sm:text-xl lg:text-2xl font-semibold text-stone-950 font-productSans truncate"
+            >
               {event.title}
             </h3>
             {event.startDate && (
@@ -111,17 +148,13 @@ function EventListCard({
                 rounded-full border-2 border-black"
               style={{ backgroundColor: "#4285F4" }}
             >
-              <img
-                src="https://res.cloudinary.com/duvr3z2z0/image/upload/v1760609469/Arrow_left_3x_dte4bu.png"
-                alt=""
-                className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
-                style={{ filter: "brightness(0) invert(1)" }}
-              />
+              <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-white" />
             </div>
           </div>
         </div>
       </div>
     </motion.article>
+    </Link>
   );
 }
 
@@ -134,39 +167,37 @@ export default function OngoingEventsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let mounted = true;
+  const loadEvents = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchEventList<OngoingEvent>();
 
-    (async () => {
-      try {
-        const data = await fetchEventList<OngoingEvent>();
-        if (!mounted) return;
+      const filtered: OngoingEvent[] = data
+        .filter((e) => e.status === "UPCOMING" || e.status === "ONGOING")
+        .sort((a, b) => {
+          if (a.status === "ONGOING" && b.status !== "ONGOING") return -1;
+          if (a.status !== "ONGOING" && b.status === "ONGOING") return 1;
+          const timeA = getSortTime(a.startDate);
+          const timeB = getSortTime(b.startDate);
+          if (timeA === null && timeB === null) return 0;
+          if (timeA === null) return 1;
+          if (timeB === null) return -1;
+          return timeA - timeB;
+        });
 
-        const filtered: OngoingEvent[] = data
-          .filter((e) => e.status === "UPCOMING" || e.status === "ONGOING")
-          .sort((a, b) => {
-            if (a.status === "ONGOING" && b.status !== "ONGOING") return -1;
-            if (a.status !== "ONGOING" && b.status === "ONGOING") return 1;
-            const dateA = a.startDate ? new Date(a.startDate).getTime() : 0;
-            const dateB = b.startDate ? new Date(b.startDate).getTime() : 0;
-            return dateA - dateB;
-          });
-
-        setEvents(filtered);
-      } catch (err: unknown) {
-        console.error(err);
-        if (mounted) {
-          setError(err instanceof Error ? err.message : "Unknown error");
-        }
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
+      setEvents(filtered);
+    } catch (err: unknown) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
 
   const ongoingEvents = events.filter((e) => e.status === "ONGOING");
   const upcomingEvents = events.filter((e) => e.status === "UPCOMING");
@@ -233,7 +264,7 @@ export default function OngoingEventsPage() {
                   ⚠️ {error}
                 </p>
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={() => loadEvents()}
                   className="px-6 py-3 bg-red-500 text-white font-bold border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-200 font-productSans"
                 >
                   Try Again

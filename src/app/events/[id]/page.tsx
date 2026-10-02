@@ -9,7 +9,6 @@ import {
   Users,
   Tag,
   ArrowLeft,
-  Clock,
   Star,
   CheckCircle,
   Images,
@@ -59,11 +58,11 @@ type Event = {
   posterImage: string | null;
   bannerImage: string | null;
   eligibilityCriteria: { yearOfGrad: boolean[]; Dept: string[] };
-  executiveBoard: {
+  executiveBoard?: {
     organiser: string;
     coOrganiser: string;
     facilitator: string;
-  };
+  } | null;
   eventOfficials: {
     role: string;
     name: string;
@@ -81,9 +80,16 @@ type Event = {
 
 const DEFAULT_ACCENT = "#4285F4";
 
+function normalizeImageSrc(src: string | null | undefined): string | null {
+  if (!src) return null;
+  const trimmed = src.trim();
+  return trimmed ? trimmed : null;
+}
+
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "TBA";
   const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return "TBA";
   return date.toLocaleDateString("en-IN", {
     day: "numeric",
     month: "long",
@@ -159,13 +165,22 @@ export default function EventDetailPage() {
     // Phone number is already in the AuthContext profile — no extra fetch needed
     const phoneNumber: string = userProfile?.phoneNumber ?? "";
 
-    // ── Check isRegistrationOpen (from already-loaded event state) ──
+    // ── Re-read fresh event state inside the transaction window ──
+    // Pre-check for fast UX, then re-verify authoritative fields in tx.
     if (!event?.isRegistrationOpen) {
       toast.error("Registrations are closed for this event.");
       return;
     }
 
+    if (event?.status === "COMPLETED") {
+      toast.error("This event has concluded. Registrations are closed.");
+      return;
+    }
+
     // ── Check maxParticipants via server-side count (no doc downloads) ──
+    // NOTE: count + write is not atomic in Firestore. This is a best-effort
+    // UX guard; authoritative capacity must also be enforced by
+    // firestore.rules / backend counter. See firestore.rules.
     if (event?.maxParticipants > 0) {
       const regColRef = collection(
         db,
@@ -200,6 +215,14 @@ export default function EventDetailPage() {
     );
 
     await runTransaction(db, async (tx) => {
+      const eventDocRef = doc(db, "managed_events", eventId);
+      const freshEventSnap = await tx.get(eventDocRef);
+      const fresh = freshEventSnap.exists()
+        ? (freshEventSnap.data() as Partial<Event>)
+        : null;
+      if (fresh && fresh.isRegistrationOpen === false) {
+        throw new Error("REGISTRATION_CLOSED");
+      }
       const userRegSnap = await tx.get(userRegRef);
       if (userRegSnap.exists()) {
         // Already registered
@@ -224,7 +247,7 @@ export default function EventDetailPage() {
       tx.set(userRegRef, {
         event_id: eventId,
         event_name: event?.title ?? "Unknown Event",
-        event_data: new Date().toISOString(),
+        event_date: new Date().toISOString(),
         isAttended: false,
         certificationLink: "",
         // ── Event snapshot (for profile page — avoids N+1 reads) ──
@@ -335,6 +358,9 @@ export default function EventDetailPage() {
   useEffect(() => {
     let mounted = true;
     const eventId = params.id as string;
+    setImageLoaded(false);
+    setAlreadyRegistered(false);
+    setError(null);
 
     (async () => {
       try {
@@ -419,6 +445,11 @@ export default function EventDetailPage() {
   }
 
   const ACCENT_COLOR = event.Theme?.[0] || DEFAULT_ACCENT;
+  const bannerSrc = normalizeImageSrc(event.bannerImage);
+  const posterSrc = normalizeImageSrc(event.posterImage);
+  const gallerySlides = (event.eventGallery ?? [])
+    .map((u) => normalizeImageSrc(u))
+    .filter((u): u is string => Boolean(u));
 
   return (
     <div
@@ -445,7 +476,7 @@ export default function EventDetailPage() {
           </div>
 
           {/* Event Image Banner */}
-          {(event.bannerImage || event.posterImage) && (
+          {(bannerSrc || posterSrc) && (
             <div
               className="w-full mb-6 rounded-2xl overflow-hidden shadow-lg relative"
               style={{ maxWidth: 1394, height: 315 }}
@@ -455,26 +486,18 @@ export default function EventDetailPage() {
                   <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
                 </div>
               )}
-              <picture>
-                {/* Desktop image (≥1024px) */}
-                {event.bannerImage && (
-                  <source
-                    media="(min-width: 1024px)"
-                    srcSet={event.bannerImage}
-                  />
-                )}
-
-                {/* Mobile image (<1024px) */}
-                <img
-                  src={event.posterImage || event.bannerImage || ""}
-                  alt={event.title}
-                  className={`w-full h-full object-cover transition-opacity duration-700 ${
-                    imageLoaded ? "opacity-100" : "opacity-0"
-                  }`}
-                  style={{ width: "100%", height: 315 }}
-                  onLoad={() => setImageLoaded(true)}
-                />
-              </picture>
+              <Image
+                src={bannerSrc || posterSrc || ""}
+                alt={event.title}
+                fill
+                priority
+                sizes="100vw"
+                className={`object-cover transition-opacity duration-700 ${
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                }`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageLoaded(true)}
+              />
             </div>
           )}
           <div className="flex flex-col flex-wrap sm:flex-row sm:justify-center sm:items-center w-full">
@@ -522,7 +545,7 @@ export default function EventDetailPage() {
         </div>
 
         {/* ── Event Gallery ── */}
-        {event.eventGallery && event.eventGallery.length > 0 && (
+        {gallerySlides.length > 0 && (
           <div className="max-w-7xl mx-auto rounded-[32px] overflow-hidden bg-[#111111] px-6 md:px-12 lg:px-20 py-8 md:py-14 mt-4">
             <div className="relative rounded-[32px]">
               <div
@@ -548,10 +571,12 @@ export default function EventDetailPage() {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {event.eventGallery.map((url, index) => (
-                    <div
-                      key={index}
-                      className="overflow-hidden rounded-xl cursor-pointer hover:opacity-90 transition-opacity"
+                  {gallerySlides.map((url, index) => (
+                    <button
+                      key={`${url}-${index}`}
+                      type="button"
+                      aria-label={`Open gallery image ${index + 1} of ${event.title}`}
+                      className="overflow-hidden rounded-xl cursor-pointer hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                       onClick={() => {
                         setLightboxIndex(index);
                         setLightboxOpen(true);
@@ -562,21 +587,21 @@ export default function EventDetailPage() {
                         alt={`${event.title} gallery ${index + 1}`}
                         width={400}
                         height={300}
+                        loading="lazy"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="w-full h-60 object-cover"
                       />
-                    </div>
+                    </button>
                   ))}
                 </div>
                 <Lightbox
                   open={lightboxOpen}
                   close={() => setLightboxOpen(false)}
                   index={lightboxIndex}
-                  slides={event.eventGallery.map((url) => ({
+                  slides={gallerySlides.map((url) => ({
                     src: url,
-                    width: 1600,
-                    height: 900,
                   }))}
-                  plugins={[Thumbnails]}
+                  plugins={[Thumbnails, Zoom]}
                   render={{ slide: NextJsImage }}
                 />
               </div>
@@ -685,8 +710,9 @@ export default function EventDetailPage() {
               {/* Right Half - Organizers + Tags */}
               <div className="flex flex-col gap-8">
                 {/* Organizers */}
-                {(event.executiveBoard.organiser ||
-                  event.executiveBoard.coOrganiser) && (
+                {(event.executiveBoard?.organiser ||
+                  event.executiveBoard?.coOrganiser ||
+                  event.executiveBoard?.facilitator) && (
                   <div>
                     <div className="flex items-center mb-6">
                       <Users className="w-10 h-10 text-green-400" />
@@ -696,7 +722,7 @@ export default function EventDetailPage() {
                     </div>
 
                     <div className="flex flex-wrap gap-4">
-                      {event.executiveBoard.organiser && (
+                      {event.executiveBoard?.organiser && (
                         <div className="flex items-center gap-3 p-4 bg-[#1a1a1a] rounded-2xl border border-stone-800 flex-1 min-w-[200px]">
                           <div
                             className="w-12 h-12 rounded-full flex items-center justify-center"
@@ -712,12 +738,12 @@ export default function EventDetailPage() {
                           <div>
                             <p className="text-stone-400 text-xs">Organizer</p>
                             <p className="text-white text-base font-semibold">
-                              {event.executiveBoard.organiser}
+                              {event.executiveBoard?.organiser}
                             </p>
                           </div>
                         </div>
                       )}
-                      {event.executiveBoard.coOrganiser && (
+                      {event.executiveBoard?.coOrganiser && (
                         <div className="flex items-center gap-3 p-4 bg-[#1a1a1a] rounded-2xl border border-stone-800 flex-1 min-w-[200px]">
                           <div
                             className="w-12 h-12 rounded-full flex items-center justify-center"
@@ -735,12 +761,12 @@ export default function EventDetailPage() {
                               Co-Organizer
                             </p>
                             <p className="text-white text-base font-semibold">
-                              {event.executiveBoard.coOrganiser}
+                              {event.executiveBoard?.coOrganiser}
                             </p>
                           </div>
                         </div>
                       )}
-                      {event.executiveBoard.facilitator && (
+                      {event.executiveBoard?.facilitator && (
                         <div className="flex items-center gap-3 p-4 bg-[#1a1a1a] rounded-2xl border border-stone-800 flex-1 min-w-[200px]">
                           <div
                             className="w-12 h-12 rounded-full flex items-center justify-center"
@@ -758,7 +784,7 @@ export default function EventDetailPage() {
                               Facilitator
                             </p>
                             <p className="text-white text-base font-semibold">
-                              {event.executiveBoard.facilitator}
+                              {event.executiveBoard?.facilitator}
                             </p>
                           </div>
                         </div>
@@ -877,7 +903,7 @@ interface ParticipantBadgeProps {
 }
 
 function ParticipantBadge({
-  text = "500+",
+  text = "Info",
   className = "",
   icon,
   bgColor = "#f75590",
@@ -886,8 +912,7 @@ function ParticipantBadge({
     <div
       role="group"
       aria-label={text ? `badge ${text}` : "badge"}
-      className={`flex items-center bg-[#1a1a1a] rounded-full pr-3 md:pr-6 mb-4 ${className}`}
-      style={{ height: "48px" }}
+      className={`flex items-center bg-[#1a1a1a] rounded-full pr-3 md:pr-6 mb-4 min-h-[48px] py-1 ${className}`}
     >
       {/* Colored circle with icon */}
       <div

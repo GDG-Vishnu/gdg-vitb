@@ -61,9 +61,15 @@ service cloud.firestore {
       // Registrations subcollection under each managed event
       match /registrations/{regId} {
         // Doc ID must be {userId}_{eventId} — enforce ownership via ID
+        // Best-effort capacity guard: authoritative maxParticipants enforcement
+        // needs a backend counter/Cloud Function (count+write is not atomic
+        // from the client). Rules enforce ownership, payload shape, and
+        // isRegistrationOpen flag here.
         allow create: if isAuthenticated()
           && request.resource.data.userId == request.auth.uid
-          && regId.matches(request.auth.uid + '_.*');
+          && regId.matches(request.auth.uid + '_.*')
+          && request.resource.data.keys().hasAll(['userId', 'name', 'email', 'registeredAt'])
+          && get(/databases/$(database)/documents/managed_events/$(eventId)).data.isRegistrationOpen == true;
         // Users can get their own registration doc
         allow get: if isAuthenticated()
           && (resource == null || resource.data.userId == request.auth.uid);
