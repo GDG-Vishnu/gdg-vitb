@@ -58,6 +58,7 @@ function EventListCard({
 }) {
   const isLive = event.status === "ONGOING";
   const posterSrc = normalizeImageSrc(event.posterImage);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <Link
@@ -75,7 +76,7 @@ function EventListCard({
       }}
       className={`relative bg-white shadow-md snap-start overflow-hidden w-full border flex flex-col justify-between cursor-pointer
         rounded-[30px] sm:rounded-[40px] lg:rounded-[50px]
-        h-[380px] sm:h-[420px] lg:h-[472px] transition-transform hover:-translate-y-1
+        h-[440px] sm:h-[420px] lg:h-[472px] transition-transform hover:-translate-y-1
         ${
           isLive
             ? "border-2 border-green-500 ring-2 ring-green-300/50"
@@ -102,17 +103,19 @@ function EventListCard({
       )}
 
       {/* Image */}
-      <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
-        {posterSrc ? (
-          <Image
-            src={posterSrc}
-            alt={event.title}
-            width={800}
-            height={600}
-            loading="lazy"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="w-full h-full object-cover rounded-[24px] sm:rounded-[32px] lg:rounded-[40px]"
-          />
+      <div className="flex-1 relative overflow-hidden p-3 sm:p-4">
+        {posterSrc && !imgError ? (
+          <span className="relative block w-full h-full">
+            <Image
+              src={posterSrc}
+              alt={event.title}
+              fill
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover rounded-[24px] sm:rounded-[32px] lg:rounded-[40px]"
+              onError={() => setImgError(true)}
+            />
+          </span>
         ) : (
           <div
             role="img"
@@ -144,11 +147,11 @@ function EventListCard({
             <div
               className="translate-x-1 translate-y-1 shadow-[3px_3px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_rgba(0,0,0,1)]
                 hover:translate-x-0 hover:translate-y-0 hover:shadow-none transition-all
-                w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 p-0 flex items-center justify-center
+                w-16 h-16 sm:w-12 sm:h-12 lg:w-14 lg:h-14 p-0 flex items-center justify-center
                 rounded-full border-2 border-black"
               style={{ backgroundColor: "#4285F4" }}
             >
-              <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-white" />
+              <ArrowUpRight className="w-12 h-12 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-white" />
             </div>
           </div>
         </div>
