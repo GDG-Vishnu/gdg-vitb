@@ -649,7 +649,7 @@ export default function EventDetailPage() {
                 src="/about_page_eye.png"
                 alt=""
                 aria-hidden
-                className="absolute -top-6 left-0 w-30 h-30 object-contain pointer-events-none select-none"
+                className="absolute -top-6 left-0 w-16 h-16 sm:w-30 sm:h-30 object-contain pointer-events-none select-none"
               />
               <h1 className="text-3xl font-bold text-white font-productSans">
                 About the Event{" "}
