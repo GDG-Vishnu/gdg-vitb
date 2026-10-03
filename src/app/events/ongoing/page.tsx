@@ -102,7 +102,7 @@ function EventListCard({
       )}
 
       {/* Image */}
-      <div className="flex-1 flex items-center justify-center bg-stone-100 overflow-hidden p-3 sm:p-4">
+      <div className="flex-1 flex items-center justify-center bg-transparent overflow-hidden p-3 sm:p-4">
         {posterSrc ? (
           <Image
             src={posterSrc}
