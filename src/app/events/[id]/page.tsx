@@ -475,30 +475,49 @@ export default function EventDetailPage() {
             </Link>
           </div>
 
-          {/* Event Image Banner */}
+          {/* Event Image Banner — 1:1 poster on mobile, wide banner on desktop */}
           {(bannerSrc || posterSrc) && (
-            <div
-              className="w-full mb-6 rounded-2xl overflow-hidden shadow-lg relative"
-              style={{ maxWidth: 1394, height: 315 }}
-            >
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-zinc-900 animate-pulse flex items-center justify-center z-10">
-                  <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-                </div>
-              )}
-              <Image
-                src={bannerSrc || posterSrc || ""}
-                alt={event.title}
-                fill
-                priority
-                sizes="100vw"
-                className={`object-cover transition-opacity duration-700 ${
-                  imageLoaded ? "opacity-100" : "opacity-0"
-                }`}
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageLoaded(true)}
-              />
-            </div>
+            <>
+              <div className="lg:hidden w-full mb-6 rounded-2xl overflow-hidden shadow-lg relative">
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-zinc-900 animate-pulse flex items-center justify-center z-10 min-h-40">
+                    <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                  </div>
+                )}
+                <img
+                  src={posterSrc || bannerSrc || ""}
+                  alt={event.title}
+                  loading="eager"
+                  className={`w-full h-auto transition-opacity duration-700 ${
+                    imageLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageLoaded(true)}
+                />
+              </div>
+              <div
+                className="hidden lg:block w-full mb-6 rounded-2xl overflow-hidden shadow-lg relative"
+                style={{ maxWidth: 1394, height: 315 }}
+              >
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-zinc-900 animate-pulse flex items-center justify-center z-10">
+                    <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                  </div>
+                )}
+                <Image
+                  src={bannerSrc || posterSrc || ""}
+                  alt={event.title}
+                  fill
+                  priority
+                  sizes="100vw"
+                  className={`object-cover transition-opacity duration-700 ${
+                    imageLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageLoaded(true)}
+                />
+              </div>
+            </>
           )}
           <div className="flex flex-col flex-wrap sm:flex-row sm:justify-center sm:items-center w-full">
             <ParticipantBadge
