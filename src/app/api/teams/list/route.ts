@@ -11,21 +11,6 @@ let _cached: unknown[] | null = null;
 let _cacheExpiresAt = 0; // starts expired — forces fresh fetch on first request
 let _inflight: Promise<unknown[]> | null = null;
 
-const TEAM_LIST_FIELDS = [
-  "imageUrl",
-  "logo",
-  "name",
-  "designation",
-  "position",
-  "linkedinUrl",
-  "mail",
-  "dept_logo",
-  "bgColor",
-  "rank",
-  "dept_rank",
-  "isAlumni",
-] as const;
-
 export async function GET() {
   // ── Serve from cache if still fresh ─────────────────────
   if (_cached && Date.now() < _cacheExpiresAt) {
@@ -40,27 +25,36 @@ export async function GET() {
   try {
     if (!_inflight) {
       _inflight = (async () => {
-        const snap = await adminDb
-          .collection("team_members")
-          .select(...TEAM_LIST_FIELDS)
-          .orderBy("name", "asc")
-          .get();
+        // Departments/positions are small, rarely-changing lookup tables —
+        // joined here server-side so the public contract below (flat
+        // position/designation/rank/dept_rank/dept_logo/bgColor fields)
+        // never has to change even though the source schema is normalized.
+        const [memberSnap, deptSnap, posSnap] = await Promise.all([
+          adminDb.collection("team_members").orderBy("name", "asc").get(),
+          adminDb.collection("departments").get(),
+          adminDb.collection("position_levels").get(),
+        ]);
 
-        const members = snap.docs.map((doc) => {
+        const depts = new Map(deptSnap.docs.map((d) => [d.id, d.data()]));
+        const positions = new Map(posSnap.docs.map((d) => [d.id, d.data()]));
+
+        const members = memberSnap.docs.map((doc) => {
           const data = doc.data();
+          const dept = depts.get(data.deptId);
+          const position = positions.get(data.positionId);
           return {
             id: doc.id,
             imageUrl: data.imageUrl,
             logo: data.logo ?? null,
             name: data.name,
-            designation: data.designation,
-            position: data.position ?? null,
+            designation: position?.name ?? null,
+            position: dept?.name ?? null,
             linkedinUrl: data.linkedinUrl ?? null,
             mail: data.mail ?? null,
-            dept_logo: data.dept_logo ?? null,
-            bgColor: data.bgColor ?? null,
-            rank: data.rank ?? 0,
-            dept_rank: data.dept_rank ?? 0,
+            dept_logo: dept?.logo ?? null,
+            bgColor: dept?.bgColor ?? null,
+            rank: data.order ?? 0,
+            dept_rank: dept?.order ?? 0,
             isAlumni: data.isAlumni ?? false,
           };
         });
